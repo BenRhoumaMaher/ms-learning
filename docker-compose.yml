@@ -1,0 +1,66 @@
+version: '3.8'
+
+services:
+  php:
+    build:
+      context: ./ms-learning-backend
+      dockerfile: Dockerfile
+    container_name: mslearning-php
+    volumes:
+      - ./ms-learning-backend:/var/www/html
+    depends_on:
+      - db
+    networks:
+      - mslearning
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    ports:
+      - "8080:80"
+    volumes:
+      - ./ms-learning-backend:/var/www/html
+      - ./docker/nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - php
+    networks:
+      - mslearning
+
+  db:
+    image: mysql:8.0
+    container_name: mslearning_db
+    restart: always
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+      MYSQL_DATABASE: ms-learning
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - mslearning
+
+  ### React Frontend ###
+  react:
+    build:
+      context: ./ms-learning-frontend
+      dockerfile: Dockerfile
+    container_name: mslearning_react
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./ms-learning-frontend:/app
+      - /app/node_modules
+    depends_on:
+      - php
+    networks:
+      - mslearning
+    environment:
+      - WATCHPACK_POLLING=true
+
+networks:
+  mslearning:
+    driver: bridge
+
+volumes:
+  db_data:
