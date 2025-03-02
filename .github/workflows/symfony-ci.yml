@@ -46,7 +46,7 @@ jobs:
         working-directory: ms-learning-backend
         run: |
           echo "APP_ENV=test" > .env.test
-          echo "DATABASE_URL=mysql://root:@localhost:${{ job.services.database.ports['3306']}}/ms-learning" >> .env.test
+          echo "DATABASE_URL=mysql://root:@127.0.0.1:${{ job.services.database.ports['3306']}}/ms-learning" >> .env.test
 
       - name: Ensure .env.test is Used in CI
         working-directory: ms-learning-backend
@@ -76,4 +76,4 @@ jobs:
         run: composer app:tests
         env:
           APP_ENV: test
-          DATABASE_URL: mysql://root:@localhost:${{ job.services.database.ports['3306']}}/ms-learning
+          DATABASE_URL: mysql://root:root:@127.0.0.1:${{ job.services.database.ports['3306']}}/ms-learning
