@@ -42,7 +42,7 @@ jobs:
         working-directory: ms-learning-backend
         run: composer install --prefer-dist --no-scripts --no-interaction --no-progress --optimize-autoloader
 
-            - name: Create .env.test File in CI
+      - name: Create .env.test File in CI
         working-directory: ms-learning-backend
         run: |
           echo "APP_ENV=test" > .env.test
