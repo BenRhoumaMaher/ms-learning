@@ -1,5 +1,22 @@
-controllers:
-    resource:
-        path: ../src/Controller/
-        namespace: App\Controller
-    type: attribute
+api_login_check:
+  path: /api/login_check
+  
+App\Controller\authentification\RegisterController:
+    resource: routes/register.yaml
+    prefix: /api
+    name_prefix: 'user_'
+
+App\Controller\authentification\LoginController:
+    resource: routes/login.yaml
+    prefix: /api
+    name_prefix: 'user_'
+
+App\Controller\authentification\PasswordResetController:
+    resource: routes/forgot.yaml
+    prefix: /
+    name_prefix: 'forgot_'      
+
+App\Controller\authentification\AuthController:
+  resource: routes/oauth.yaml
+  prefix: /
+  name_prefix: 'auth_'

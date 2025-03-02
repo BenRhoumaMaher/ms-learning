@@ -1,0 +1,9 @@
+auth_oauth_connect:
+  path: auth/google/connect
+  controller: App\Controller\authentification\AuthController::connect
+  methods: GET
+
+auth_oauth_check:
+  path: auth/google
+  controller: App\Controller\authentification\AuthController::check
+  methods: [GET, POST]

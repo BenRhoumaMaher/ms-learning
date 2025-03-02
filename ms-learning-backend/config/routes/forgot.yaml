@@ -1,0 +1,9 @@
+forgot:
+    path: forgot-password
+    controller: App\Controller\authentification\PasswordResetController::forgotPassword
+    methods: POST
+
+reset:
+    path: reset-password
+    controller: App\Controller\authentification\PasswordResetController::resetPassword
+    methods: POST
