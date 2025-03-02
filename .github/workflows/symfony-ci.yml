@@ -46,11 +46,23 @@ jobs:
         working-directory: ms-learning-backend
         run: |
           echo "APP_ENV=test" > .env.test
-          echo "DATABASE_URL=mysql://root:@database:3306/ms-learning" >> .env.test
+          echo "DATABASE_URL=mysql://root:@localhost:3306/ms-learning" >> .env.test
 
       - name: Ensure .env.test is Used in CI
         working-directory: ms-learning-backend
         run: cp .env.test .env
+
+      - name: Wait for MySQL to be ready
+        run: |
+          for i in `seq 1 10`; do
+            if mysqladmin ping -h localhost --silent; then
+              echo "MySQL is ready!"
+              break
+            else
+              echo "Waiting for MySQL..."
+              sleep 5
+            fi
+          done
 
       - name: Prepare the Database
         working-directory: ms-learning-backend
@@ -64,4 +76,4 @@ jobs:
         run: composer app:tests
         env:
           APP_ENV: test
-          DATABASE_URL: mysql://root:@database:3306/ms-learning
+          DATABASE_URL: mysql://root:@localhost:3306/ms-learning
