@@ -45,9 +45,9 @@ jobs:
       - name: Create .env.test File in CI
         working-directory: ms-learning-backend
         run: |
-          cp .env .env.test
-          echo "APP_ENV=test" > .env.test
-          echo "DATABASE_URL=mysql://root:@127.0.0.1:${{ job.services.database.ports['3306']}}/ms-learning" >> .env.test
+          cp ms-learning-backend/.env ms-learning-backend/.env.test
+          echo "APP_ENV=test" >> ms-learning-backend/.env.test
+          echo "DATABASE_URL=mysql://root:@127.0.0.1:${{ job.services.database.ports['3306']}}/ms-learning" >> ms-learning-backend/.env.test
         
       - name: Ensure .env.test is Used in CI
         working-directory: ms-learning-backend
