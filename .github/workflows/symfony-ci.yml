@@ -64,6 +64,10 @@ jobs:
             fi
           done
 
+      - name: Test MySQL Connection
+        run: |
+          mysql -h localhost -u root -e "SHOW DATABASES;"
+
       - name: Prepare the Database
         working-directory: ms-learning-backend
         run: |
