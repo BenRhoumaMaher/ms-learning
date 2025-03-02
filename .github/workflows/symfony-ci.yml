@@ -45,10 +45,15 @@ jobs:
       - name: Create .env.test File in CI
         working-directory: ms-learning-backend
         run: |
-          cp ms-learning-backend/.env ms-learning-backend/.env.test
-          echo "APP_ENV=test" >> ms-learning-backend/.env.test
           echo "DATABASE_URL=mysql://root:@127.0.0.1:${{ job.services.database.ports['3306']}}/ms-learning" >> ms-learning-backend/.env.test
-        
+          echo "APP_ENV=test" >> ms-learning-backend/.env.test
+          echo "APP_SECRET=your_test_secret_key" >> .env.test
+          echo "MESSENGER_TRANSPORT_DSN=doctrine://default" >> .env.test
+          echo "MAILER_DSN=null://null" >> .env.test
+          echo "JWT_SECRET_KEY=%kernel.project_dir%/config/jwt/private.pem" >> .env.test
+          echo "JWT_PUBLIC_KEY=%kernel.project_dir%/config/jwt/public.pem" >> .env.test
+          echo "JWT_PASSPHRASE=your_test_jwt_passphrase" >> .env.test
+
       - name: Ensure .env.test is Used in CI
         working-directory: ms-learning-backend
         run: cp .env.test .env
