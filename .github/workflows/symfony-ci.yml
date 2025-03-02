@@ -1,0 +1,46 @@
+name: Tests
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    name: Run Symfony Tests
+    runs-on: ubuntu-latest
+
+    services:
+      database:
+        image: mysql:8.0
+        env:
+          MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+          MYSQL_DATABASE: ms-learning
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping -h localhost --silent" --health-interval=10s --health-timeout=5s --health-retries=3
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Start Docker Containers
+        working-directory: ms-learning-backend
+        run: |
+          docker-compose up -d
+          docker ps  # Verify running containers
+
+      - name: Wait for MySQL to be Ready
+        run: |
+          echo "Waiting for MySQL to be ready..."
+          until docker exec mslearning_db mysqladmin ping -h"mslearning_db" --silent; do
+            sleep 5
+          done
+
+      - name: Install Dependencies
+        run: docker exec mslearning-php sh -c "cd /var/www/html && composer install --prefer-dist --no-interaction --no-progress --optimize-autoloader"
+
+      - name: Prepare .env.test.local
+        run: |
+          docker exec mslearning-php sh -c "cp /var/www/html/.env.test /var/www/html/.env.test.local"
+          docker exec mslearning-php sh -c "echo 'DATABASE_URL=mysql://root:@mslearning_db:3306/ms-learning?serverVersion=8&charset=utf8mb4' >> /var/www/html/.env.test.local"
+
+      - name: Run Symfony Tests
+        run: docker exec mslearning-php sh -c "cd /var/www/html && composer app:tests"
