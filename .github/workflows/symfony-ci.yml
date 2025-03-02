@@ -1,15 +1,6 @@
 name: Tests
 
-on:
-  push:
-    branches:
-      - "feature/**"
-      - "dev"
-      - "staging"
-  pull_request:
-    branches:
-      - "dev"
-      - "staging"
+on: [push, pull_request]
 
 jobs:
   test:
@@ -17,46 +8,50 @@ jobs:
     runs-on: ubuntu-latest
 
     services:
-      database:
+      mysql:
         image: mysql:8.0
         env:
           MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
           MYSQL_DATABASE: ms-learning
         ports:
-          - 3306:3306
-        options: --health-cmd="mysqladmin ping -h localhost --silent" --health-interval=10s --health-timeout=5s --health-retries=3
+          - 3306/tcp
+        options: --health-cmd="mysqladmin ping -h 127.0.0.1 --silent" --health-interval=10s --health-timeout=5s --health-retries=3
 
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Install Docker Compose
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y docker-compose
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.2
+          tools: composer:v2
 
-      - name: Start Docker Containers
-        working-directory: ms-learning-backend
-        run: |
-          docker-compose up -d
-          docker ps  # Verify running containers
+      - name: Setup Cache
+        run: echo "COMPOSER_CACHE_DIR=$(composer config cache-dir)" >> $GITHUB_ENV
 
-      - name: Wait for MySQL to be Ready
-        run: |
-          echo "Waiting for MySQL to be ready..."
-          until docker exec mslearning_db mysqladmin ping -h"mslearning_db" --silent; do
-            sleep 5
-          done
+      - name: Caching Dependencies
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.COMPOSER_CACHE_DIR }}
+          key: php8.2-composer-${{ hashFiles('**/composer.json') }}
+          restore-keys: |
+            php8.2-composer-latest-
 
       - name: Install Dependencies
+        working-directory: ms-learning-backend
+        run: composer install --prefer-dist --no-interaction --no-progress --optimize-autoloader
+
+      - name: Prepare the Database
         run: |
-          docker exec mslearning-php sh -c "export COMPOSER_MEMORY_LIMIT=-1 && composer install --prefer-dist --no-interaction --no-progress --optimize-autoloader"
+          php bin/console doctrine:database:create --env=test
+          php bin/console doctrine:schema:create --env=test
+          php bin/console cache:clear --env=test
+        working-directory: ms-learning-backend
 
-
-      - name: Prepare .env.test.local
-        run: |
-          docker exec mslearning-php sh -c "cp /var/www/html/.env.test /var/www/html/.env.test.local"
-          docker exec mslearning-php sh -c "echo 'DATABASE_URL=mysql://root:@mslearning_db:3306/ms-learning?serverVersion=8&charset=utf8mb4' >> /var/www/html/.env.test.local"
-
-      - name: Run Symfony Tests
-        run: docker exec mslearning-php sh -c "cd /var/www/html && composer app:tests"
+      - name: Run Tests
+        working-directory: ms-learning-backend
+        run: composer app:tests
+        env:
+          APP_ENV: test
+          DATABASE_URL: mysql://root:@127.0.0.1:3306/ms-learning
