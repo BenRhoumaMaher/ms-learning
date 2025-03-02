@@ -46,7 +46,7 @@ jobs:
         working-directory: ms-learning-backend
         run: |
           echo "DATABASE_URL=mysql://root:@127.0.0.1:${{ job.services.database.ports['3306']}}/ms-learning" >> .env.test
-          echo "APP_ENV=test" >> ms-learning-backend/.env.test
+          echo "APP_ENV=test" >> .env.test
           echo "APP_SECRET=your_test_secret_key" >> .env.test
           echo "MESSENGER_TRANSPORT_DSN=doctrine://default" >> .env.test
           echo "MAILER_DSN=null://null" >> .env.test
