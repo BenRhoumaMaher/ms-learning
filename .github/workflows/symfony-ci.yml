@@ -15,7 +15,7 @@ jobs:
           MYSQL_DATABASE: ms-learning
         ports:
           - 3306:3306
-        options: --health-cmd="mysqladmin ping -h database --silent" --health-interval=10s --health-timeout=5s --health-retries=3
+        options: --health-cmd "bash -c 'mysqladmin ping -h localhost --silent'" --health-interval=10s --health-timeout=5s --health-retries=5
 
     steps:
       - name: Checkout Code
