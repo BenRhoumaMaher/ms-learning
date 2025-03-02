@@ -4,57 +4,69 @@ on: [push, pull_request]
 
 jobs:
   test:
-    name: Tests
+    name: Run Symfony Tests
     runs-on: ubuntu-latest
 
     services:
       database:
-        image: mariadb:10.7.3
+        image: mysql:8.0
         env:
-          MARIADB_USER: root
-          MARIADB_ROOT_PASSWORD: 
-          MARIADB_DATABASE: ms-learning
-          MARIADB_ALLOW_EMPTY_ROOT_PASSWORD: 'yes'
+          MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+          MYSQL_DATABASE: ms-learning
         ports:
-          - 3306/tcp
-        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+          - 3306:3306
+        options: --health-cmd "bash -c 'mysqladmin ping -h localhost --silent'" --health-interval=10s --health-timeout=5s --health-retries=5
 
     steps:
-      - name: Checkout
+      - name: Checkout Code
         uses: actions/checkout@v4
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: 8.3
+          php-version: 8.2
           tools: composer:v2
 
       - name: Setup Cache
         run: echo "COMPOSER_CACHE_DIR=$(composer config cache-dir)" >> $GITHUB_ENV
 
-      - name: Caching deps
+      - name: Caching Dependencies
         uses: actions/cache@v4
         with:
           path: ${{ env.COMPOSER_CACHE_DIR }}
-          key: php8.3-composer-${{ hashFiles('**/composer.json') }}
+          key: php8.2-composer-${{ hashFiles('**/composer.json') }}
           restore-keys: |
-            php8.3-composer-latest-
+            php8.2-composer-latest-
 
-      - name: Update composer
-        run: composer self-update
-
-      - name: Install deps
-        run: composer install --prefer-dist --no-scripts --no-interaction --no-progress --optimize-autoloader --ansi
+      - name: Install Dependencies
+        working-directory: ms-learning-backend
+        run: composer install --prefer-dist --no-scripts --no-interaction --no-progress --optimize-autoloader
 
       - name: Create .env.test File in CI
         working-directory: ms-learning-backend
         run: |
           echo "APP_ENV=test" > .env.test
-          echo "DATABASE_URL=mysql://root:@127.0.0.1:${{ job.services.database.ports['3306'] }}/ms-learning" >> .env.test
+          echo "DATABASE_URL=mysql://root:@localhost:3306/ms-learning" >> .env.test
 
       - name: Ensure .env.test is Used in CI
         working-directory: ms-learning-backend
         run: cp .env.test .env
+
+      - name: Wait for MySQL to be ready
+        run: |
+          for i in `seq 1 10`; do
+            if mysqladmin ping -h localhost --silent; then
+              echo "MySQL is ready!"
+              break
+            else
+              echo "Waiting for MySQL..."
+              sleep 5
+            fi
+          done
+
+      - name: Test MySQL Connection
+        run: |
+          mysql -h localhost -u root -e "SHOW DATABASES;"
 
       - name: Prepare the Database
         working-directory: ms-learning-backend
@@ -68,4 +80,4 @@ jobs:
         run: composer app:tests
         env:
           APP_ENV: test
-          DATABASE_URL: mysql://root:@127.0.0.1:${{ job.services.database.ports['3306'] }}/ms-learning
+          DATABASE_URL: mysql://root:@localhost:3306/ms-learning
