@@ -52,20 +52,6 @@ jobs:
         working-directory: ms-learning-backend
         run: cp .env.test .env
 
-      - name: Wait for MySQL to Be Ready
-        run: |
-          echo "Waiting for MySQL to be ready..."
-          for i in {1..30}; do
-            if mysqladmin ping -h "database" --silent; then
-              echo "MySQL is ready!"
-              exit 0
-            fi
-            echo "Waiting for MySQL to start..."
-            sleep 2
-          done
-          echo "MySQL failed to start"
-          exit 1
-
       - name: Prepare the Database
         working-directory: ms-learning-backend
         run: |
