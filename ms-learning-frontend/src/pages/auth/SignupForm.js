@@ -1,48 +1,93 @@
-import React, { useState } from 'react';
-import { useForm, FormProvider, Controller } from 'react-hook-form';
-import { useNavigate } from 'react-router-dom';
-import { signup } from '../../helpers/api';
-import Credentials from '../../components/Credentials';
+import React, { useState } from 'react'
+import { useForm, FormProvider, Controller } from 'react-hook-form'
+import { useNavigate } from 'react-router-dom'
+import { signup } from '../../helpers/api'
+import Credentials from '../../components/Credentials'
 
-const logo = require('../../assets/logo.png');
-const backgroundImage = require('../../assets/back.jpg');
+const logo = require('../../assets/logo.png')
+const backgroundImage = require('../../assets/back.jpg')
 
-export default function SignupForm() {
+/**
+ * @author Maher Ben Rhouma
+ * 
+ * SignupForm Component
+ * 
+ * This component provides a user registration form using **React Hook Form** for form handling 
+ * and validation. It integrates API calls for user registration and navigates the user upon success.
+ * 
+ * @component
+ * @returns {JSX.Element} The signup form UI.
+ */
+export default function SignupForm () {
+
+  /**
+   * React Hook Form instance to manage form state and validation.
+   * 
+   * @constant
+   * @type {import('react-hook-form').UseFormReturn}
+   */
   const formMethods = useForm({
     defaultValues: {
       firstname: '',
       lastname: '',
       email: '',
       password: '',
-      confirmPassword: '',
+      confirmPassword: ''
     }
-  });
+  })
 
-  const navigate = useNavigate();
-  const [globalError, setGlobalError] = useState(null);
+  /** 
+   * React Router hook for navigation.
+   * 
+   * @constant
+   * @type {Function}
+   */
+  const navigate = useNavigate()
 
-  const onSubmit = async (data) => {
-     try {
-      const response = await signup(data);
-      navigate('/login');
+  /**
+   * Global error message for API validation errors.
+   * 
+   * @state
+   * @type {string | null}
+   */
+  const [globalError, setGlobalError] = useState(null)
+  
+  /**
+   * Handles form submission.
+   * 
+   * Sends user data to the `signup` API. If successful, the user is redirected to the login page.
+   * Otherwise, backend validation errors are displayed.
+   * 
+   * @async
+   * @function
+   * @param {Object} data - The submitted form data.
+   * @param {string} data.firstname - User's first name.
+   * @param {string} data.lastname - User's last name.
+   * @param {string} data.email - User's email.
+   * @param {string} data.password - User's password.
+   * @param {string} data.confirmPassword - User's password confirmation.
+   * @returns {Promise<void>}
+   */
+  const onSubmit = async data => {
+    try {
+      const response = await signup(data)
+      navigate('/login')
     } catch (error) {
       if (error.response && error.response.data.errors) {
-        const backendErrors = error.response.data.errors;
-        if (backendErrors.email === "User already exists") {
-          setGlobalError(
-            "User already exists. Please log in or use another email.");
+        const backendErrors = error.response.data.errors
+        if (backendErrors.email === 'User already exists') {
+          setGlobalError('Please log in or use another email.')
         } else {
-          Object.keys(backendErrors).forEach((field) => {
+          Object.keys(backendErrors).forEach(field => {
             formMethods.setError(field, {
               type: 'server',
-              message: backendErrors[field],
-            });
-          });
+              message: backendErrors[field]
+            })
+          })
         }
       }
     }
-  };
-
+  }
   return (
     <FormProvider {...formMethods}>
       <div
@@ -53,7 +98,7 @@ export default function SignupForm() {
           backgroundPosition: 'center',
           backgroundRepeat: 'no-repeat',
           width: '100%',
-          height: '100vh',
+          height: '100vh'
         }}
       >
         <div
@@ -61,7 +106,7 @@ export default function SignupForm() {
           style={{
             width: '100%',
             maxWidth: '600px',
-            backgroundColor: 'rgba(255, 255, 255, 0.9)',
+            backgroundColor: 'rgba(255, 255, 255, 0.9)'
           }}
         >
           <div className='text-center'>
@@ -75,7 +120,7 @@ export default function SignupForm() {
           </div>
 
           {globalError && (
-            <div className="alert alert-danger text-center" role="alert">
+            <div className='alert alert-danger text-center' role='alert'>
               {globalError}
             </div>
           )}
@@ -142,7 +187,10 @@ export default function SignupForm() {
                 />
               </div>
             </div>
-            <button className='btn btn-danger w-100 m-auto mt-3 fw-bold' type="submit">
+            <button
+              className='btn btn-danger w-100 m-auto mt-3 fw-bold'
+              type='submit'
+            >
               SIGN UP
             </button>
           </form>
@@ -160,5 +208,5 @@ export default function SignupForm() {
         </div>
       </div>
     </FormProvider>
-  );
+  )
 }

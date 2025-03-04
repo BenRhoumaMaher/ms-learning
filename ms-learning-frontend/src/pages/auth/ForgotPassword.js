@@ -6,12 +6,31 @@ import { useForm, FormProvider } from 'react-hook-form'
 const logo = require('../../assets/logo.png')
 const backgroundImage = require('../../assets/back.jpg')
 
+/**
+ * ForgotPassword Component that allows users to request a password reset link.
+ *
+ * @component
+ * @returns {JSX.Element} The forgot password form.
+ */
 export default function ForgotPassword() {
+  /** 
+   * @state {string} message - Success message after sending reset link. 
+  */
   const [message, setMessage] = useState('')
+  /** 
+   * @state {string} error - Error message in case of failure. 
+  */
   const [error, setError] = useState('')
   const formMethods = useForm()
   const navigate = useNavigate()
 
+  /**
+   * Submits the email to request a password reset.
+   *
+   * @async
+   * @function
+   * @param {Object} data - Form data containing email.
+   */
   const onSubmit = async data => {
     try {
       const response = await forgotPassword(data.email)

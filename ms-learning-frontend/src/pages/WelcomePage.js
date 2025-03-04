@@ -9,7 +9,7 @@ export default function WelcomePage () {
   return (
     <div className='d-flex vh-100 justify-content-center align-items-center'>
       <div className='text-center'>
-        <h1 className='text-success'>Welcome, {user.username}!</h1>
+        <h1 className='text-success'>Welcome</h1>
         <p>You have successfully logged in.</p>
         <button
           className='btn btn-danger'

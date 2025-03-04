@@ -8,12 +8,33 @@ import { googleLogin } from '../../helpers/api'
 const logo = require('../../assets/logo.png')
 const backgroundImage = require('../../assets/back.jpg')
 
+/**
+ * LoginForm Component that handles user authentication.
+ * Uses React Hook Form for validation and allows login via Google OAuth.
+ *
+ * @component
+ * @returns {JSX.Element} The login form UI.
+ */
+
 export default function LoginForm () {
+  /** 
+   * @state {boolean} remember - To remember the user. 
+  */
   const [remember, setRemember] = useState(false)
-  const [globalError, setGlobalError] = useState(null);
+  /** 
+   * @state {string|null} globalError - Stores error messages from API responses. 
+  */
+  const [globalError, setGlobalError] = useState(null)
   const formMethods = useForm()
   const navigate = useNavigate()
 
+  /**
+   * Handles form submission and API login.
+   *
+   * @async
+   * @function
+   * @param {Object} data - Form data (email, password, username).
+   */
   const onSubmit = async data => {
     try {
       const response = await login(
@@ -29,9 +50,11 @@ export default function LoginForm () {
       navigate('/')
     } catch (err) {
       if (err.response && err.response.data.error) {
-        setGlobalError(err.response.data.error);
+        setGlobalError(err.response.data.error)
       } else {
-        setGlobalError('An unexpected error occurred. Please Check your credentials.');
+        setGlobalError(
+          'An unexpected error occurred. Please Check your credentials.'
+        )
       }
     }
   }
@@ -68,7 +91,7 @@ export default function LoginForm () {
           </div>
 
           {globalError && (
-            <div className="alert alert-danger text-center" role="alert">
+            <div className='alert alert-danger text-center' role='alert'>
               {globalError}
             </div>
           )}
@@ -112,8 +135,11 @@ export default function LoginForm () {
                   console.log('Google Token:', response.credential)
 
                   try {
-                    const data = await googleLogin(response.credential, remember)
-                    console.log("Login Success:", data);
+                    const data = await googleLogin(
+                      response.credential,
+                      remember
+                    )
+                    console.log('Login Success:', data)
                     navigate('/')
                   } catch (err) {
                     console.error('Google login error:', err)

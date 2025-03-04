@@ -1,11 +1,9 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
-import 'bootstrap/dist/css/bootstrap.min.css'
 import SignupForm from './pages/auth/SignupForm'
 import LoginForm from './pages/auth/LoginForm'
 import WelcomePage from './pages/WelcomePage'
 import ResetPassword from './pages/auth/ResetPassword'
 import ForgotPassword from './pages/auth/ForgotPassword'
-
 
 function App () {
   return (
@@ -22,4 +20,5 @@ function App () {
     </div>
   )
 }
+
 export default App
