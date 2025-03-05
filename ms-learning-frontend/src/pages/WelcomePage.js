@@ -1,7 +1,10 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
+import useAuthRedirect from '../hooks/useAuthRedirect'
+
 
 export default function WelcomePage () {
+  useAuthRedirect()
   const navigate = useNavigate()
   const token = localStorage.getItem('token') || sessionStorage.getItem('token')
   const user = token ? JSON.parse(atob(token.split('.')[1])) : null
@@ -9,7 +12,7 @@ export default function WelcomePage () {
   return (
     <div className='d-flex vh-100 justify-content-center align-items-center'>
       <div className='text-center'>
-        <h1 className='text-success'>Welcome</h1>
+        <h1 className='text-success'>Welcome, {user?.username}</h1>
         <p>You have successfully logged in.</p>
         <button
           className='btn btn-danger'

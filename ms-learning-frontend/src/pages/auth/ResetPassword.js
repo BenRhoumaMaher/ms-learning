@@ -17,7 +17,7 @@ export default function ResetPassword() {
       await resetPassword(token, data.password)
       navigate('/login')
     } catch (error) {
-      console.error('Error resetting password:', error)
+      // console.error('Error resetting password:', error)
     }
   }
 

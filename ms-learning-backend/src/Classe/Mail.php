@@ -1,41 +1,12 @@
 <?php
 
-/**
- * Mail
- *
- * This class handles the sending of emails using the Mailjet API.
- *
- * @category Classes
- * @package  Src\Classe
- * @author   Maher Ben Rhouma <maherbenrhoumaaa@gmail.com>
- * @license  No license (Personal project)
- * @link     https://github.com/mailjet/mailjet-apiv3-php
- */
-
 namespace Src\Classe;
 
 use Mailjet\Client;
 use Mailjet\Resources;
 
-/**
- * Mail
- *
- * Manages email sending functionality.
- *
- * @category Classes
- * @package  Src\Classe
- */
 class Mail
 {
-    /**
-     * Sends an email using the Mailjet API.
-     *
-     * @param string $to_email The recipient's email address.
-     * @param string $to_name  The recipient's name.
-     * @param string $subject  The subject of the email.
-     * @param string $template The email template file name.
-     * @param array  $vars     (Optional) Variables to replace in the template.
-     */
     public function send(
         $to_email,
         $to_name,

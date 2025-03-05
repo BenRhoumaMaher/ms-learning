@@ -19,7 +19,7 @@ export const signup = async newuserdata => {
     const response = await api.post('/register', newuserdata)
     return response.data
   } catch (error) {
-    console.error("Signup Error Response:", error.response?.data);
+    // console.error("Signup Error Response:", error.response?.data);
     throw error
   }
 }
@@ -60,7 +60,7 @@ export const resetPassword = async (token, password) => {
 }
 
 export const googleLogin = async (googleToken, rememberMe) => {
-  console.log("Sending Google Token to Backend:", googleToken)
+  // console.log("Sending Google Token to Backend:", googleToken)
 
   try {
     const response = await axios.post(
@@ -81,7 +81,7 @@ export const googleLogin = async (googleToken, rememberMe) => {
     }
     return response.data
   } catch (error) {
-    console.error("Backend Error:", error.response?.data || error.message)
+    // console.error("Backend Error:", error.response?.data || error.message)
     throw error
   }
 }

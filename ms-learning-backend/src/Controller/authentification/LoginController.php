@@ -2,16 +2,17 @@
 
 namespace App\Controller\authentification;
 
+use OpenApi\Attributes as OA;
 use Symfony\Component\HttpFoundation\Request;
+use App\Service\AuthService\AuthServiceInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
-use OpenApi\Attributes as OA;
 
 final class LoginController extends AbstractController
 {
-    public function __construct(private JWTTokenManagerInterface $jwtManager)
-    {
+    public function __construct(
+        private AuthServiceInterface $authService
+    ) {
     }
 
     #[OA\Post(
@@ -73,8 +74,10 @@ final class LoginController extends AbstractController
         )
     )]
     #[OA\Tag(name: "Authentication")]
-    public function login(Request $request): JsonResponse
-    {
+    public function login(
+        Request $request
+    ): JsonResponse {
+
         $user = $this->getUser();
         if (!$user) {
             return $this->json(
@@ -82,16 +85,10 @@ final class LoginController extends AbstractController
                 401
             );
         }
-        $token = $this->jwtManager->createFromPayload(
-            $this->getUser(),
-            ['user_id' => $this->getUser()->getId()]
-        );
+        $tokenData = $this->authService->generateToken($user);
+
         return $this->json(
-            [
-            'token' => $token,
-            'username' => $this->getUser()->getUsername(),
-            'user_id' => $this->getUser()->getId()
-            ]
+            $tokenData
         );
     }
 }

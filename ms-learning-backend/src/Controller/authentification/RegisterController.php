@@ -2,25 +2,19 @@
 
 namespace App\Controller\authentification;
 
-use App\Entity\User;
-use App\Service\MailService;
-use App\Service\UserService;
-use Doctrine\ORM\EntityManagerInterface;
+use OpenApi\Attributes as OA;
+use App\Service\UserService\UserService;
 use Symfony\Component\HttpFoundation\Request;
+use App\Service\MailService\MailServiceInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-use OpenApi\Attributes as OA;
-use Nelmio\ApiDocBundle\Annotation\Model;
 
 final class RegisterController extends AbstractController
 {
     public function __construct(
-        private UserPasswordHasherInterface $passwordHasher,
-        private EntityManagerInterface $em,
-        private MailService $mailService,
-        private UserService $userService
+        private UserService $userService,
+        private MailServiceInterface $mailService
     ) {
     }
     #[OA\Post(
@@ -121,40 +115,20 @@ final class RegisterController extends AbstractController
     ): JsonResponse {
 
         $data = json_decode($request->getContent(), true);
-        $errors = [];
 
-        $existingUser = $this->em->getRepository(
-            User::class
-        )->findOneBy(['email' => $data['email'] ?? null]);
-
-        if ($existingUser) {
+        $errors = $this->userService->validateUserData($data);
+        if (!empty($errors)) {
             return $this->json(
-                ['errors' => ['email' => 'User already exists']],
+                ['errors' => $errors],
                 400
             );
         }
 
-        if ($data['password'] !== ($data['confirmPassword'] ?? null)) {
-            $errors['confirmPassword'] = 'Passwords do not match';
-        }
-
-        $user = new User();
-        $user->setFirstname($data['firstname'] ?? null);
-        $user->setLastname($data['lastname'] ?? null);
-        $user->setEmail($data['email'] ?? null);
-        $user->setPassword($data['password'] ?? null);
-        $user->setRoles(['ROLE_USER']);
-
-        $violations = $validator->validate($user);
-        if (count($violations) > 0) {
-            foreach ($violations as $violation) {
-                $field = $violation->getPropertyPath();
-                $errors[$field] = $violation->getMessage();
-            }
-        }
-
-        if (!empty($errors)) {
-            return $this->json(['errors' => $errors], 400);
+        if ($this->userService->userExists($data['email'])) {
+            return $this->json(
+                ['errors' => ['email' => 'User already exists']],
+                400
+            );
         }
 
         $user = $this->userService->createUser(
@@ -174,7 +148,9 @@ final class RegisterController extends AbstractController
         );
 
         return $this->json(
-            ['message' => 'User registered successfully']
+            [
+                'message' => 'User registered successfully'],
+            201
         );
     }
 }

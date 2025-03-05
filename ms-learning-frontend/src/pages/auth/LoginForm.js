@@ -132,17 +132,17 @@ export default function LoginForm () {
                 useOneTap
                 ux_mode='popup'
                 onSuccess={async response => {
-                  console.log('Google Token:', response.credential)
+                  // console.log('Google Token:', response.credential)
 
                   try {
                     const data = await googleLogin(
                       response.credential,
                       remember
                     )
-                    console.log('Login Success:', data)
+                    // console.log('Login Success:', data)
                     navigate('/')
                   } catch (err) {
-                    console.error('Google login error:', err)
+                    // console.error('Google login error:', err)
                     setGlobalError('Google login failed')
                   }
                 }}
