@@ -1,26 +1,10 @@
 import React from 'react'
-import { useNavigate, useSearchParams } from 'react-router-dom'
-import { useForm, Controller, FormProvider } from 'react-hook-form'
-import { resetPassword } from '../../helpers/api'
+import { FormProvider, Controller } from 'react-hook-form'
 
 const logo = require('../../assets/logo.png')
 const backgroundImage = require('../../assets/back.jpg')
 
-export default function ResetPassword() {
-  const [searchParams] = useSearchParams()
-  const token = searchParams.get('token')
-  const navigate = useNavigate()
-  const formMethods = useForm()
-
-  const onSubmit = async (data) => {
-    try {
-      await resetPassword(token, data.password)
-      navigate('/login')
-    } catch (error) {
-      // console.error('Error resetting password:', error)
-    }
-  }
-
+export default function ResetPasswordForm ({ formMethods, onSubmit, navigate }) {
   return (
     <FormProvider {...formMethods}>
       <div
@@ -49,13 +33,17 @@ export default function ResetPassword() {
               alt='Logo'
               style={{ height: '120px' }}
             />
-            <h4 className='text-uppercase text-danger fw-bold'>Reset Password</h4>
+            <h4 className='text-uppercase text-danger fw-bold'>
+              Reset Password
+            </h4>
           </div>
 
           <div className='mt-4'>
             <form onSubmit={formMethods.handleSubmit(onSubmit)}>
               <div className='mb-3'>
-                <label className='form-label fw-semibold'>Enter New Password</label>
+                <label className='form-label fw-semibold'>
+                  Enter New Password
+                </label>
                 <Controller
                   control={formMethods.control}
                   name='password'
@@ -80,7 +68,9 @@ export default function ResetPassword() {
                         placeholder='New Password'
                         {...field}
                       />
-                      {error && <div className='text-danger'>{error.message}</div>}
+                      {error && (
+                        <div className='text-danger'>{error.message}</div>
+                      )}
                     </>
                   )}
                 />

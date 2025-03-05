@@ -1,20 +1,20 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
-import SignupForm from './pages/auth/SignupForm'
-import LoginForm from './pages/auth/LoginForm'
+import SignupContainer from './components/containers/auth/SignupContainer'
+import LoginContainer from './components/containers/auth/LoginContainer'
 import WelcomePage from './pages/WelcomePage'
-import ResetPassword from './pages/auth/ResetPassword'
-import ForgotPassword from './pages/auth/ForgotPassword'
+import ResetPasswordContainer from './components/containers/auth/ResetPasswordContainer' 
+import ForgotPasswordContainer from './components/containers/auth/ForgotPasswordContainer'
 
 function App () {
   return (
     <div className='App'>
       <Router>
         <Routes>
-          <Route path='/signup' element={<SignupForm />} />
-          <Route path='/login' element={<LoginForm />} />
+          <Route path='/signup' element={<SignupContainer />} />
+          <Route path='/login' element={<LoginContainer  />} />
           <Route path='/' element={<WelcomePage />} />
-          <Route path='/forgot-password' element={<ForgotPassword />} />
-          <Route path='/reset-password' element={<ResetPassword />} />
+          <Route path='/forgot-password' element={<ForgotPasswordContainer />} />
+          <Route path='/reset-password' element={<ResetPasswordContainer />} />
         </Routes>
       </Router>
     </div>

@@ -1,48 +1,16 @@
-import React, { useState } from 'react'
-import { forgotPassword } from '../../helpers/api'
-import { useNavigate } from 'react-router-dom'
-import { useForm, FormProvider } from 'react-hook-form'
+import React from 'react'
+import { FormProvider } from 'react-hook-form'
 
 const logo = require('../../assets/logo.png')
 const backgroundImage = require('../../assets/back.jpg')
 
-/**
- * ForgotPassword Component that allows users to request a password reset link.
- *
- * @component
- * @returns {JSX.Element} The forgot password form.
- */
-export default function ForgotPassword() {
-  /** 
-   * @state {string} message - Success message after sending reset link. 
-  */
-  const [message, setMessage] = useState('')
-  /** 
-   * @state {string} error - Error message in case of failure. 
-  */
-  const [error, setError] = useState('')
-  const formMethods = useForm()
-  const navigate = useNavigate()
-
-  /**
-   * Submits the email to request a password reset.
-   *
-   * @async
-   * @function
-   * @param {Object} data - Form data containing email.
-   */
-  const onSubmit = async data => {
-    try {
-      const response = await forgotPassword(data.email)
-      setMessage(response.message)
-      setError('')
-      formMethods.reset()
-    } catch (error) {
-      setMessage('')
-      setError('Failed to send reset email. Please try again.')
-    }
-  }
-
+export default function ForgotPasswordForm ({
+  formMethods,
+  message,
+  error,
+  onSubmit,
+  navigate
+}) {
   return (
     <FormProvider {...formMethods}>
       <div
@@ -71,7 +39,9 @@ export default function ForgotPassword() {
               alt='Logo'
               style={{ height: '120px' }}
             />
-            <h4 className='text-uppercase text-danger fw-bold'>Forgot Password</h4>
+            <h4 className='text-uppercase text-danger fw-bold'>
+              Forgot Password
+            </h4>
           </div>
 
           <div className='mt-4'>
@@ -79,19 +49,28 @@ export default function ForgotPassword() {
             {error && <p className='text-danger'>{error}</p>}
             <form onSubmit={formMethods.handleSubmit(onSubmit)}>
               <div className='mb-3'>
-                <label className='form-label fw-semibold'>Enter your Email</label>
+                <label className='form-label fw-semibold'>
+                  Enter your Email
+                </label>
                 <input
                   className='form-control'
                   type='email'
-                  {...formMethods.register('email', { required: 'Email is required' })}
+                  {...formMethods.register('email', {
+                    required: 'Email is required'
+                  })}
                   placeholder='Your email'
                 />
                 {formMethods.formState.errors.email && (
-                  <p className='text-danger'>{formMethods.formState.errors.email.message}</p>
+                  <p className='text-danger'>
+                    {formMethods.formState.errors.email.message}
+                  </p>
                 )}
               </div>
 
-              <button className='btn btn-primary w-100 m-auto fw-bold' type='submit'>
+              <button
+                className='btn btn-primary w-100 m-auto fw-bold'
+                type='submit'
+              >
                 Send Reset Link
               </button>
             </form>

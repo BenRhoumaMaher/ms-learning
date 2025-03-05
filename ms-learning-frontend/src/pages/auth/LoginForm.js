@@ -1,64 +1,21 @@
-import React, { useState } from 'react'
-import { useForm, FormProvider } from 'react-hook-form'
-import { login } from '../../helpers/api'
-import Credentials from '../../components/Credentials'
-import { useNavigate } from 'react-router-dom'
+import React from 'react'
+import { FormProvider } from 'react-hook-form'
+import Credentials from '../../components/reusablecomponents/Credentials'
 import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google'
-import { googleLogin } from '../../helpers/api'
+
 const logo = require('../../assets/logo.png')
 const backgroundImage = require('../../assets/back.jpg')
 
-/**
- * LoginForm Component that handles user authentication.
- * Uses React Hook Form for validation and allows login via Google OAuth.
- *
- * @component
- * @returns {JSX.Element} The login form UI.
- */
-
-export default function LoginForm () {
-  /** 
-   * @state {boolean} remember - To remember the user. 
-  */
-  const [remember, setRemember] = useState(false)
-  /** 
-   * @state {string|null} globalError - Stores error messages from API responses. 
-  */
-  const [globalError, setGlobalError] = useState(null)
-  const formMethods = useForm()
-  const navigate = useNavigate()
-
-  /**
-   * Handles form submission and API login.
-   *
-   * @async
-   * @function
-   * @param {Object} data - Form data (email, password, username).
-   */
-  const onSubmit = async data => {
-    try {
-      const response = await login(
-        {
-          email: data.email,
-          password: data.password,
-          username: data.username
-        },
-        remember
-      )
-      localStorage.setItem('username', response.username)
-      formMethods.reset()
-      navigate('/')
-    } catch (err) {
-      if (err.response && err.response.data.error) {
-        setGlobalError(err.response.data.error)
-      } else {
-        setGlobalError(
-          'An unexpected error occurred. Please Check your credentials.'
-        )
-      }
-    }
-  }
-
+export default function LoginForm ({
+  formMethods,
+  globalError,
+  setGlobalError,
+  onSubmit,
+  remember,
+  setRemember,
+  handleGoogleLogin,
+  navigate
+}) {
   return (
     <FormProvider {...formMethods}>
       <div
@@ -125,31 +82,20 @@ export default function LoginForm () {
           >
             LOGIN
           </button>
+
           <span className='m-auto'>OR</span>
+
           <div className='w-50 m-auto'>
             <GoogleOAuthProvider clientId='170311905094-lm7ardcmeeesll1sngcv4iqb6t5btmot.apps.googleusercontent.com'>
               <GoogleLogin
                 useOneTap
                 ux_mode='popup'
-                onSuccess={async response => {
-                  // console.log('Google Token:', response.credential)
-
-                  try {
-                    const data = await googleLogin(
-                      response.credential,
-                      remember
-                    )
-                    // console.log('Login Success:', data)
-                    navigate('/')
-                  } catch (err) {
-                    // console.error('Google login error:', err)
-                    setGlobalError('Google login failed')
-                  }
-                }}
+                onSuccess={handleGoogleLogin}
                 onError={() => setGlobalError('Google login failed')}
               />
             </GoogleOAuthProvider>
           </div>
+
           <p className='text-muted mt-3 text-center'>
             Don't Have an Account?{' '}
             <span
