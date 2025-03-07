@@ -17,7 +17,7 @@ const QuickAccessSection = () => {
         </div>
 
         <div className='text-center'>
-        <div className='certificate-icon'>
+          <div className='certificate-icon'>
             <i className='fas fa-calendar fa-10x text-info'></i>
           </div>
           <p className='fw-bold text-danger mt-2'>Learning Planner</p>

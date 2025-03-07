@@ -442,3 +442,162 @@
   width: 80px;
   height: auto;
 }
+.hero-icon {
+  width: 100px;
+  height: auto;
+}
+
+.new-line {
+  white-space: pre-line;
+}
+
+.hero-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* Two equal columns */
+  gap: 100px; /* Adjust for more or less space */
+}
+
+.hero-left,
+.hero-right {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+@media (max-width: 768px) {
+  .hero-grid {
+    grid-template-columns: 1fr; /* Stack on small screens */
+    gap: 50px;
+  }
+}
+
+.quiz-card {
+  border: none;
+  background: #f8f9fa;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.quiz-image {
+  background: #219ebc;
+  height: 150px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.quiz-image::before {
+  content: "🖼"; 
+  font-size: 50px;
+  color: white;
+}
+
+.pagination-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+}
+
+.pagination-btn {
+  background-color: white;
+  border: 1px solid #31b4f1;
+  color: #13d5fc;
+  padding: 6px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.pagination-btn.active {
+  background-color: #7bdaff;
+  color: white;
+}
+
+.pagination-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pagination-btn:hover:not(:disabled) {
+  background-color: #7bdaff;
+  color: white;
+}
+
+.course-cards {
+  background: white;
+  text-align: center;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  position: relative;
+  width: 100%;
+  max-width: 300px;
+}
+
+.course-top {
+  height: 120px;
+  width: 100%;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+}
+
+.course-icon {
+  background: white;
+  border-radius: 50%;
+  width: 70px;
+  height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: -35px auto 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.course-icon i {
+  font-size: 32px;
+  color: #4caf50;
+}
+
+.course-title {
+  margin-top: 10px;
+  font-size: 18px;
+}
+
+.feature-text {
+  font-size: 14px;
+  color: #666;
+}
+
+.btn-info {
+  margin-top: 10px;
+  padding: 6px 16px;
+  font-size: 14px;
+}
+
+.section-container {
+  padding: 40px 0;
+}
+
+.live-courses-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+}
+
+.course-card {
+  background: #e0e0e0;
+  padding: 20px;
+  border: 1px solid #98a5b1;
+  text-align: center;
+  width: 280px;
+  border-radius: 5px;
+}
+
+.nav-hand {
+  font-size: 40px;
+  color: green;
+}
