@@ -601,3 +601,456 @@
   font-size: 40px;
   color: green;
 }
+
+.payment-hero {
+  padding: 40px 0;
+}
+
+.payment-info {
+  max-width: 400px;
+}
+
+.subscription-status {
+  max-width: 300px;
+}
+.subscription-plan {
+  padding: 40px 0;
+}
+
+.row.g-4 {
+  gap: 20px;
+  display: flex;
+  align-items: stretch;
+}
+
+.billing-info {
+  border-radius: 10px;
+  overflow: hidden;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.billing-header {
+  background-color: #007bff;
+  text-align: center;
+  font-weight: bold;
+  padding: 10px;
+  height: 100px;
+}
+
+.billing-body {
+  background-color: #dfe6e9;
+  text-align: center;
+  flex-grow: 1; 
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+
+.benefits-container {
+  background-color: #f8f9fa;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  flex-grow: 1;
+}
+
+.benefits-list {
+  list-style: none;
+  padding: 0;
+}
+
+.benefit-item {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 10px;
+  font-weight: bold;
+  width: 100%;
+}
+
+.number {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-size: 18px;
+  font-weight: bold;
+  color: white;
+  margin-right: 10px;
+}
+
+
+.gray {
+  background-color: #ccc;
+}
+.gray .number {
+  background-color: #888;
+}
+
+.green {
+  background-color: #00b894;
+}
+.green .number {
+  background-color: #009970;
+}
+
+.blue {
+  background-color: #0984e3;
+}
+.blue .number {
+  background-color: #065aa9;
+}
+
+.image-section {
+  background-color: #e67e22;
+  width: 100%;
+  min-height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  flex-grow: 1;
+}
+
+.image-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-grow: 1;
+}
+
+.image-buttons {
+  margin-bottom: 10px;
+}
+
+.available-plans {
+  padding: 40px 0;
+}
+
+.plan-card {
+  border: 2px solid;
+  border-radius: 15px;
+  text-align: center;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 300px; 
+}
+
+.plan-number {
+  font-size: 24px;
+  font-weight: bold;
+  padding: 10px;
+}
+
+.plan-title {
+  font-size: 18px;
+  font-weight: bold;
+  padding: 10px;
+  color: white;
+  width: 100%;
+}
+
+.plan-content {
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 10px;
+  color: gray;
+}
+
+.plan-gray {
+  border-color: #b2bec3;
+}
+
+.plan-gray .plan-number {
+  color: #636e72;
+}
+
+.plan-gray .plan-title {
+  background-color: #b2bec3;
+}
+
+.plan-green {
+  border-color: #00b894;
+}
+
+.plan-green .plan-number {
+  color: #009970;
+}
+
+.plan-green .plan-title {
+  background-color: #00b894;
+}
+
+.plan-blue {
+  border-color: #0984e3;
+}
+
+.plan-blue .plan-number {
+  color: #065aa9;
+}
+
+.plan-blue .plan-title {
+  background-color: #0984e3;
+}
+
+.payment-history {
+  padding: 40px 0;
+}
+
+.sort-btn {
+  background-color: #60ef7f;
+  color: white;
+  border: none;
+  padding: 8px 20px;
+  font-size: 16px;
+  border-radius: 5px;
+}
+
+.history-card {
+  border: 2px solid;
+  border-radius: 15px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 380px;
+  overflow: hidden;
+}
+
+.history-header {
+  width: 100%;
+  height: 100px;
+  padding: 40px 0;
+  position: relative;
+}
+
+.history-number {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  font-size: 22px;
+  font-weight: bold;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  bottom: -30px;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 5px solid white;
+}
+
+.history-title {
+  font-weight: bold;
+  font-size: 14px;
+  padding: 10px;
+  margin-top: 40px;
+}
+
+.history-content {
+  flex-grow: 1;
+  padding: 10px;
+  color: gray;
+}
+
+.download-btn {
+  background-color: #57c4e5;
+  border: none;
+  color: white;
+  font-size: 14px;
+  padding: 6px 15px;
+  border-radius: 20px;
+}
+
+.history-gray {
+  border-color: #b2bec3;
+}
+
+.history-gray .history-header {
+  background-color: #636e72;
+}
+
+.history-gray .history-number {
+  background-color: #636e72;
+}
+
+.history-green {
+  border-color: #00b894;
+}
+
+.history-green .history-header {
+  background-color: #00b894;
+}
+
+.history-green .history-number {
+  background-color: #00b894;
+}
+
+.history-blue {
+  border-color: #0984e3;
+}
+
+.history-blue .history-header {
+  background-color: #0984e3;
+}
+
+.history-blue .history-number {
+  background-color: #0984e3;
+}
+
+.history-darkblue {
+  border-color: #1d7faa;
+}
+
+.history-darkblue .history-header {
+  background-color: #1d7faa;
+}
+
+.history-darkblue .history-number {
+  background-color: #1d7faa;
+}
+
+.course-container {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-top: 30px;
+}
+
+.course-cardd {
+  border-radius: 15px;
+  width: 200px;
+  padding: 20px;
+  text-align: center;
+  color: white;
+  position: relative;
+}
+
+.badge-container {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.badge-circle {
+  width: 60px;
+  height: 60px;
+  background: white;
+  border-radius: 50%;
+  font-size: 20px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+}
+
+.badge-pointer {
+  position: absolute;
+  bottom: -15px;
+  width: 30px;
+  height: 30px;
+  background: white;
+  clip-path: polygon(50% 100%, 0 0, 100% 0);
+}
+
+.course-title {
+  margin-top: 30px;
+  font-weight: bold;
+}
+
+.course-info {
+  font-size: 14px;
+}
+
+.access-btn {
+  border-radius: 20px;
+  padding: 8px 15px;
+  font-size: 14px;
+  color: white;
+  border: none;
+  margin-top: 10px;
+  cursor: pointer;
+}
+
+.show-more-btn {
+  background-color: #E77F35;
+  color: white;
+  width: 70px;
+  height: 70px;
+  border: none;
+  border-radius: 50%;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 30px auto;
+  cursor: pointer;
+}
+
+.promotions-container {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-top: 30px;
+}
+
+.promo-card {
+  width: 250px;
+  text-align: center;
+  color: white;
+}
+
+.promo-top {
+  width: 100%;
+  padding: 20px;
+  text-align: center;
+  font-weight: bold;
+  color: #666;
+}
+
+.promo-bottom {
+  padding: 30px 15px;
+  clip-path: polygon(30% 0, 70% 0, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
+}
+
+.promo-text {
+  margin-top: 10px;
+  font-size: 14px;
+}
+
+.expiration-text {
+  color: red;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.apply-btn {
+  border-radius: 20px;
+  padding: 8px 15px;
+  font-size: 14px;
+  color: white;
+  border: none;
+  margin-top: 10px;
+  cursor: pointer;
+}
+

@@ -7,6 +7,7 @@ import Navbar from "./layouts/Navbar-student";
 import Home from './pages/home/Home'
 import StudentDashboard from './pages/student-dashboard/StudentDashboard'
 import StudentNotification from './pages/student-notifications/StudentNotification'
+import StudentPayment from './pages/student-payment/StudentPayment'
 function App () {
   return (
     <div className='App'>
@@ -20,6 +21,7 @@ function App () {
           <Route path='/reset-password' element={<ResetPasswordContainer />} />
           <Route path='/student-dashboard' element={<StudentDashboard />} />
           <Route path='/student-notifications' element={<StudentNotification />} />
+          <Route path='/student-payment' element={<StudentPayment />} />
         </Routes>
       </Router>
     </div>
