@@ -3,26 +3,10 @@
 namespace App\Service\UserService;
 
 use App\Entity\User;
+use Doctrine\ORM\EntityManagerInterface;
+use App\Service\UserService\UserServiceInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-use Doctrine\ORM\EntityManagerInterface;
-
-interface UserServiceInterface
-{
-    public function validateUserData(
-        array $data
-    ): array;
-    public function userExists(
-        string $email
-    ): bool;
-    public function createUser(
-        string $email,
-        string $firstname,
-        string $lastname,
-        ?string $googleId,
-        ?string $plainPassword
-    ): User;
-}
 
 class UserService implements UserServiceInterface
 {

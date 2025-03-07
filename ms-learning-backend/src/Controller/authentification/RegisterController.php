@@ -3,9 +3,9 @@
 namespace App\Controller\authentification;
 
 use OpenApi\Attributes as OA;
-use App\Service\UserService\UserService;
 use Symfony\Component\HttpFoundation\Request;
 use App\Service\MailService\MailServiceInterface;
+use App\Service\UserService\UserServiceInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -13,7 +13,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 final class RegisterController extends AbstractController
 {
     public function __construct(
-        private UserService $userService,
+        private UserServiceInterface $userService,
         private MailServiceInterface $mailService
     ) {
     }
