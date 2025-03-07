@@ -8,6 +8,7 @@ import Home from './pages/home/Home'
 import StudentDashboard from './pages/student-dashboard/StudentDashboard'
 import StudentNotification from './pages/student-notifications/StudentNotification'
 import StudentPayment from './pages/student-payment/StudentPayment'
+import StudentCalendar from './pages/student-calendar/StudentCalendar'
 function App () {
   return (
     <div className='App'>
@@ -22,6 +23,7 @@ function App () {
           <Route path='/student-dashboard' element={<StudentDashboard />} />
           <Route path='/student-notifications' element={<StudentNotification />} />
           <Route path='/student-payment' element={<StudentPayment />} />
+          <Route path='/student-calendar' element={<StudentCalendar />} />
         </Routes>
       </Router>
     </div>

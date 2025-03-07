@@ -1054,3 +1054,125 @@
   cursor: pointer;
 }
 
+/* Hero Section Container */
+.hero-container {
+  display: flex;
+  justify-content: flex-start; /* Align to left */
+  align-items: center;
+  height: 150px; /* Adjust height as needed */
+  padding-left: 50px; /* Space from left */
+}
+
+/* Hero Content */
+.hero-content {
+  text-align: left;
+}
+
+/* Title */
+.hero-title {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+/* Countdown Alert */
+.hero-alert {
+  font-size: 14px;
+  font-weight: bold;
+  color: red;
+}
+
+/* Join Now text */
+.hero-alert span {
+  font-weight: bold;
+}
+
+/* Join Button */
+.hero-btn {
+  background-color: #4B9CD3;
+  color: white;
+  border: none;
+  padding: 8px 20px;
+  font-size: 14px;
+  border-radius: 20px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.hero-btn:hover {
+  background-color: #3581C4;
+}
+
+.calendar-container {
+  text-align: center;
+  font-family: Arial, sans-serif;
+  margin: 20px;
+}
+
+.calendar-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+
+.nav-btn {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.nav-btn:hover {
+  color: #38bdf8;
+}
+
+.calendar-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  justify-items: center;
+  margin-bottom: 10px;
+}
+
+.weekday {
+  font-weight: bold;
+  padding: 10px;
+  border: 1px solid #ccc;
+  width: 50px;
+  text-align: center;
+  border-radius: 5px;
+  color: #38bdf8;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 10px;
+  justify-items: center;
+}
+
+.calendar-empty {
+  width: 50px;
+  height: 50px;
+}
+
+.calendar-day {
+  width: 50px;
+  height: 50px;
+  border: 2px solid #ccc;
+  border-radius: 25px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  font-size: 16px;
+  transition: 0.3s;
+}
+
+.calendar-day.selected {
+  background-color: #38bdf8;
+  color: white;
+  border-color: #38bdf8;
+}

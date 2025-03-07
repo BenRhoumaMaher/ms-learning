@@ -3,8 +3,7 @@ import { MDBFooter, MDBContainer, MDBRow, MDBCol, MDBIcon } from "mdb-react-ui-k
 
 const Footer = () => {
   return (
-    <MDBFooter bgColor="light" className="text-center text-lg-start text-muted">
-      {/* Social Media Section */}
+    <MDBFooter bgColor="light" className="text-center text-lg-start text-muted mt-5">
       <section className="d-flex justify-content-center justify-content-lg-between p-4 border-bottom">
         <div className="me-5 d-none d-lg-block">
           <span>Get connected with us on social networks:</span>
@@ -22,11 +21,9 @@ const Footer = () => {
         </div>
       </section>
 
-      {/* Footer Links Section */}
       <section>
         <MDBContainer className="text-center text-md-start mt-5">
           <MDBRow className="mt-3">
-            {/* Company Info */}
             <MDBCol md="3" lg="4" xl="3" className="mx-auto mb-4">
               <h6 className="text-uppercase fw-bold mb-4">
                 <MDBIcon icon="gem" className="me-3" />
@@ -37,7 +34,6 @@ const Footer = () => {
               </p>
             </MDBCol>
 
-            {/* Products */}
             <MDBCol md="2" lg="2" xl="2" className="mx-auto mb-4">
               <h6 className="text-uppercase fw-bold mb-4">Products</h6>
               <p><a href="/" className="text-reset">Angular</a></p>
@@ -46,7 +42,6 @@ const Footer = () => {
               <p><a href="/" className="text-reset">Laravel</a></p>
             </MDBCol>
 
-            {/* Useful Links */}
             <MDBCol md="3" lg="2" xl="2" className="mx-auto mb-4">
               <h6 className="text-uppercase fw-bold mb-4">Useful Links</h6>
               <p><a href="/" className="text-reset">Pricing</a></p>
@@ -55,7 +50,6 @@ const Footer = () => {
               <p><a href="/" className="text-reset">Help</a></p>
             </MDBCol>
 
-            {/* Contact */}
             <MDBCol md="4" lg="3" xl="3" className="mx-auto mb-md-0 mb-4">
               <h6 className="text-uppercase fw-bold mb-4">Contact</h6>
               <p><MDBIcon icon="home" className="me-3" /> New York, NY 10012, US</p>
@@ -67,7 +61,6 @@ const Footer = () => {
         </MDBContainer>
       </section>
 
-      {/* Copyright */}
       <div className="text-center p-4" style={{ backgroundColor: "rgba(0, 0, 0, 0.05)" }}>
         © {new Date().getFullYear()} Copyright:
         <a className="text-reset fw-bold" href="/">MS-LEARNING</a>
