@@ -2,6 +2,12 @@
   padding: 10px 20px;
 }
 
+.sticky-navbar {
+  position: sticky;
+  top: 0;
+  z-index: 1000; /* Ensure the navbar stays above other content */
+}
+
 .navbar-brand img {
   max-height: 40px;
 }
@@ -353,3 +359,86 @@
   background-color: #e9ecef;
 }
 
+.carousel-item-content {
+  text-align: center;
+  background: #f8f9fa;
+  padding: 20px;
+  border-radius: 10px;
+}
+.status-labels .badge {
+  font-size: 14px;
+  padding: 6px 12px;
+}
+
+.interaction-box {
+  height: 50px;
+  background: #2e2e2e;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  position: relative;
+}
+
+.interaction-box::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 10%;
+  width: 60%;
+  height: 8px;
+  background: white;
+  transform: translateY(-50%);
+}
+
+.quiz-card {
+  background: #4db4e4;
+  color: white;
+  padding: 20px;
+  border-radius: 15px;
+  text-align: center;
+  position: relative;
+}
+.quiz-number {
+  background: rgb(6, 76, 104);
+  color: #ffffff;
+  font-size: 24px;
+  font-weight: bold;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  line-height: 60px;
+  text-align: center;
+  margin: auto;
+  margin-bottom: 10px;
+}
+.quiz-title {
+  font-size: 18px;
+  font-weight: bold;
+}
+.quiz-card button {
+  background: #28a745;
+  border: none;
+  padding: 8px 20px;
+  border-radius: 5px;
+  margin-top: 10px;
+}
+
+.certificate-icon {
+  text-align: center;
+  padding: 20px;
+}
+
+.progress-circle {
+  width: 200px;
+  height: 200px;
+  margin: auto;
+}
+
+.quick-access-img {
+  width: 150px;
+  height: auto;
+}
+
+.dont-stop-img {
+  width: 80px;
+  height: auto;
+}

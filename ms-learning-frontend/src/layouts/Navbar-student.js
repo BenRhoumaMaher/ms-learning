@@ -26,23 +26,23 @@ const Navbar = () => {
         </div>
 
         <div className='d-flex align-items-center'>
+        <Link to='/' className='nav-link'>
+            <i className='bi bi-shop'></i>
+          </Link>
+          <div className='nav-separator'></div>
+
           <Link to='/' className='nav-link'>
-            <i className='bi bi-house-door'></i>
+            <i className='bi bi-chat'></i>
           </Link>
           <div className='nav-separator'></div>
 
-          <Link to='/careers' className='nav-link'>
-            Careers
+          <Link to='/' className='nav-link'>
+            <i className='bi bi-bell'></i>
           </Link>
           <div className='nav-separator'></div>
 
-          <Link to='/login' className='nav-link'>
-            Login
-          </Link>
-          <div className='nav-separator'></div>
-
-          <Link to='/signup' className='nav-link'>
-            Signup
+          <Link to='/' className='nav-link'>
+            <i className='bi bi-person'></i>
           </Link>
           <div className='nav-separator'></div>
 
