@@ -1888,3 +1888,497 @@
   background-color: #117aa4;
 }
 
+.dashboard-hero {
+  padding: 40px 80px;
+}
+
+.dashboard-left {
+  text-align: left;
+}
+
+.dashboard-title {
+  font-size: 1.8rem;
+  font-weight: bold;
+}
+
+.dashboard-subtitle {
+  font-size: 1.1rem;
+  color: #555;
+}
+
+.dashboard-buttons {
+  margin-top: 20px;
+}
+
+.dashboard-btn-primary {
+  background-color: #009cfa;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  margin-right: 10px;
+}
+
+.dashboard-btn-secondary {
+  background-color: #7bc043;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+}
+
+/* Right Side - Align Chart & Stats in the Same Line */
+.dashboard-right {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.dashboard-content {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.dashboard-chart {
+  width: 150px;
+  height: 150px;
+}
+
+.dashboard-stats {
+  text-align: left;
+}
+
+.dashboard-stats p {
+  margin: 5px 0;
+  font-size: 1rem;
+}
+
+/* General Container */
+.instrc-container {
+  text-align: center;
+  padding: 40px 80px;
+}
+
+/* Section Title */
+.instrc-title {
+  font-size: 1.8rem;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.instrc-subtitle {
+  font-size: 1.1rem;
+  color: #555;
+  margin-bottom: 30px;
+}
+
+/* Cards Layout */
+.instrc-cards {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+/* Individual Card */
+.instrc-card-wrapper {
+  display: flex;
+  justify-content: center;
+}
+
+.instrc-card {
+  width: 220px;
+  padding: 20px;
+  border-radius: 15px;
+  text-align: center;
+  color: white;
+  position: relative;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Top Circle Icon */
+.instrc-icon {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  top: -40px;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 4px solid white;
+}
+
+.instrc-icon i {
+  font-size: 2rem;
+  color: #007bff;
+}
+
+/* Card Title */
+.instrc-card-title {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-top: 50px;
+}
+
+/* Card Text */
+.instrc-text {
+  font-size: 1rem;
+  margin: 5px 0;
+}
+
+/* View Details Button */
+.instrc-btn {
+  background-color: red;
+  border: none;
+  padding: 8px 16px;
+  margin-top: 10px;
+  font-size: 0.9rem;
+}
+
+/* Scroll Indicator */
+.instrc-scroll-indicator {
+  margin-top: 30px;
+}
+
+.instrc-scroll-indicator img {
+  width: 50px;
+}
+
+/* General Container */
+.instructlive-container {
+  text-align: center;
+  padding: 40px 80px;
+}
+
+/* Section Title */
+.instructlive-title {
+  font-size: 1.8rem;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.instructlive-subtitle {
+  font-size: 1.1rem;
+  color: #555;
+  margin-bottom: 30px;
+}
+
+/* Carousel Wrapper */
+.instructlive-carousel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+/* Navigation Arrows */
+.instructlive-arrow {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: gray;
+}
+
+.instructlive-left {
+  margin-right: 10px;
+}
+
+.instructlive-right {
+  margin-left: 10px;
+}
+
+/* Cards Layout */
+.instructlive-cards {
+  display: flex;
+  gap: 20px;
+  overflow: hidden;
+}
+
+/* Individual Card */
+.instructlive-card-wrapper {
+  display: flex;
+  justify-content: center;
+  width: 280px;
+}
+
+.instructlive-card {
+  width: 250px;
+  border-radius: 15px;
+  text-align: center;
+  background: white;
+  border: 3px solid;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Top Number */
+.instructlive-number {
+  font-size: 1.8rem;
+  font-weight: bold;
+  padding: 10px 0;
+}
+
+/* Header Title */
+.instructlive-header {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: white;
+  padding: 10px 0;
+}
+
+/* Card Body */
+.instructlive-body {
+  padding: 15px;
+}
+
+.instructlive-label {
+  font-size: 1rem;
+  font-weight: bold;
+  margin: 5px 0;
+}
+
+/* Buttons */
+.instructlive-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.instructlive-btn {
+  border: none;
+  padding: 8px 16px;
+  font-size: 0.9rem;
+  border-radius: 20px;
+}
+
+.instructlive-start {
+  background-color: #2D8CFF;
+  color: white;
+}
+
+.instructlive-modify {
+  background-color: red;
+  color: white;
+}
+
+.instrucear-container {
+  text-align: center;
+  padding: 20px;
+}
+
+.instrucear-title {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.instrucear-subtitle {
+  font-size: 16px;
+  color: #666;
+  margin-bottom: 30px;
+}
+
+.instrucear-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.instrucear-chart-container {
+  flex: 1;
+  text-align: center;
+}
+
+.instrucear-chart-container canvas {
+  width: 400px !important;  /* Increased chart size */
+  height: 300px !important;
+}
+
+.instrucear-label {
+  font-size: 16px;
+  font-weight: bold;
+  color: red;
+  margin-top: 10px;
+}
+
+.instrucear-calendar {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.instrucear-calendar-box {
+  width: 150px;  /* Increased calendar size */
+  height: 150px;
+  background-color: #ff4d4d;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  font-weight: bold;
+  color: white;
+}
+
+.instrucear-payment {
+  margin-top: 10px;
+  font-size: 16px;
+  color: red;
+  font-weight: bold;
+}
+
+.insctrucours-container {
+  text-align: center;
+  padding: 40px 20px;
+}
+
+.insctrucours-title {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.insctrucours-subtitle {
+  font-size: 16px;
+  color: #666;
+  margin-bottom: 30px;
+}
+
+.insctrucours-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.insctrucours-icon {
+  width: 120px;
+  height: 120px;
+  background-color: #c2185b;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 50px;
+  font-weight: bold;
+}
+
+.insctrucours-icon-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.insctrucours-icon-text {
+  margin-top: 10px;
+  font-size: 16px;
+  color: red;
+  font-weight: bold;
+}
+
+.insctrucours-step {
+  flex: 1;
+  min-width: 250px;
+  max-width: 300px;
+  background-color: #17a2b8;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+  color: white;
+  display: flex;
+  align-items: center;
+}
+
+.insctrucours-step:nth-child(odd) {
+  background-color: #28a745;
+}
+
+.insctrucours-step:nth-child(3) {
+  background-color: #007bff;
+}
+
+.insctrucours-step-number {
+  font-size: 24px;
+  font-weight: bold;
+  color: #fff;
+  flex: 1;
+}
+
+.insctrucours-step-content {
+  flex: 3;
+  text-align: left;
+}
+
+.insctrucours-step-title {
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.insctrucours-step-text {
+  font-size: 14px;
+}
+
+.insctrucomm-container {
+  padding: 40px 20px;
+}
+
+.insctrucomm-title {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.insctrucomm-subtitle {
+  font-size: 16px;
+  color: #666;
+  margin-bottom: 30px;
+}
+
+/* Discussion Topics */
+.insctrucomm-discussion-boxes {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.insctrucomm-discussion-box {
+  width: 250px;
+  height: 40px;
+  background-color: white;
+  border: 3px solid #8b0000;
+  border-radius: 5px;
+}
+
+.insctrucomm-discussion-text {
+  margin-top: 10px;
+  font-size: 16px;
+  font-weight: bold;
+  color: red;
+}
+
+/* Forum Icon */
+.insctrucomm-forum-icon {
+  width: 150px;
+  height: 100px;
+  background-color: #00bcd4;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.insctrucomm-chat-symbol {
+  font-size: 50px;
+  color: white;
+}
+
+.insctrucomm-forum-text {
+  margin-top: 10px;
+  font-size: 16px;
+  font-weight: bold;
+  color: red;
+}
+

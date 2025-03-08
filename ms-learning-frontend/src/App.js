@@ -12,6 +12,7 @@ import StudentCalendar from './pages/student-calendar/StudentCalendar'
 import RegisteredCourses from './pages/registered-courses/RegisteredCourses'
 import Quiz from './pages/quiz/Quiz'
 import InstructorPublic from './pages/insctructor-public/InstructorPublic'
+import InsctructorDashboard from './pages/insctructor-dashboard/InstructorDashboard'
 function App () {
   return (
     <div className='App'>
@@ -30,6 +31,7 @@ function App () {
           <Route path='/registered-courses' element={<RegisteredCourses />} />
           <Route path='/quiz' element={<Quiz />} />
           <Route path='/instructor-public' element={<InstructorPublic />} />
+          <Route path='/instructor-dashboard' element={<InsctructorDashboard />} />
         </Routes>
       </Router>
     </div>
