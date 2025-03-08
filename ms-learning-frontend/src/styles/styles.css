@@ -1176,3 +1176,230 @@
   color: white;
   border-color: #38bdf8;
 }
+
+.registered-hero {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 40px;
+  font-family: Arial, sans-serif;
+}
+
+.course-section {
+  text-align: center;
+}
+
+.course-thumbnail {
+  width: 180px;
+  height: 150px;
+  border-radius: 10px;
+}
+
+.course-title {
+  font-size: 16px;
+  font-weight: bold;
+  color: red;
+  margin-top: 10px;
+}
+
+.course-author {
+  font-size: 14px;
+  color: #555;
+}
+
+.star {
+  color: orange;
+}
+
+.welcome-section {
+  text-align: center;
+}
+
+.video-player {
+  width: 200px;
+  height: 120px;
+  border-radius: 10px;
+}
+
+.session-info-container {
+  display: flex;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.resume-btn {
+  background-color: #a3e635;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  font-size: 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-right: 10px;
+}
+
+.session-info {
+  color: red;
+  font-size: 14px;
+}
+
+.registered-sidebar .list-group-item {
+    border: none;
+    text-align: center;
+}
+
+.registered-sidebar .list-group-item.bg-light {
+    font-weight: bold;
+}
+
+.registered-content .list-group-item {
+    border: none;
+    background: #f8f9fa;
+}
+
+.registered-content .btn-sm {
+    font-size: 14px;
+    padding: 5px 10px;
+}
+.registered-sidebar .list-group-item {
+  border: none;
+  text-align: center;
+  transition: background 0.3s ease;
+}
+
+.registered-sidebar .list-group-item.bg-light {
+  font-weight: bold;
+}
+
+.registered-sidebar .list-group-item:hover {
+  background-color: #17a2b8 !important;
+  color: white;
+  cursor: pointer;
+}
+
+.registered-content .list-group-item {
+  border: none;
+  background: #f8f9fa;
+  transition: background 0.3s ease;
+}
+
+.registered-content .list-group-item:hover {
+  background-color: #17a2b8 !important;
+  color: white;
+  cursor: pointer;
+}
+
+.registered-content .btn-sm {
+  font-size: 14px;
+  padding: 5px 10px;
+}
+
+.instructor-section .instructor-image {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+}
+
+.instructor-section .social-icons svg {
+  cursor: pointer;
+  transition: transform 0.2s ease-in-out;
+}
+
+.instructor-section .social-icons svg:hover {
+  transform: scale(1.2);
+}
+
+.student-reviews .review-card {
+  border-radius: 15px;
+  overflow: hidden;
+  text-align: center;
+  width: 90%;
+  transition: transform 0.3s ease-in-out;
+}
+
+.student-reviews .review-card:hover {
+  transform: translateY(-5px) scale(1.05);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.student-reviews .review-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 90px;
+  height: 90px;
+  background: white;
+  border-radius: 50%;
+  border: 5px solid white;
+  transition: transform 0.3s ease-in-out;
+}
+
+.student-reviews .review-card:hover .review-icon {
+  transform: scale(1.2);
+}
+
+.student-reviews .stars {
+  font-size: 18px;
+}
+
+.student-reviews .review-btn {
+  border: 2px solid red;
+  color: red;
+  font-weight: bold;
+  border-radius: 10px;
+}
+
+.student-reviews .review-btn:hover {
+  background-color: red;
+  color: white;
+}
+
+.course-discussions .search-bar {
+  width: 50%;
+}
+
+.course-discussions .discussion-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 15px 20px;
+  border-radius: 10px;
+  border: 3px solid;
+  background: white;
+  transition: transform 0.3s ease-in-out;
+}
+
+.course-discussions .discussion-item:hover {
+  transform: scale(1.02);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.course-discussions .discussion-count {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  color: rgb(86, 255, 114);
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+}
+
+.course-discussions .discussion-text {
+  flex: 1;
+  margin: 0 15px;
+  font-size: 16px;
+  color: #555;
+}
+
+.course-discussions .discussion-btn {
+  border-radius: 50px;
+  font-weight: bold;
+  color: white;
+}
+
+.course-discussions .discussion-start-btn {
+  border-radius: 10px;
+  font-weight: bold;
+}

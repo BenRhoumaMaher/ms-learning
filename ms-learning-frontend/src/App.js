@@ -9,6 +9,7 @@ import StudentDashboard from './pages/student-dashboard/StudentDashboard'
 import StudentNotification from './pages/student-notifications/StudentNotification'
 import StudentPayment from './pages/student-payment/StudentPayment'
 import StudentCalendar from './pages/student-calendar/StudentCalendar'
+import RegisteredCourses from './pages/registered-courses/RegisteredCourses'
 function App () {
   return (
     <div className='App'>
@@ -24,6 +25,7 @@ function App () {
           <Route path='/student-notifications' element={<StudentNotification />} />
           <Route path='/student-payment' element={<StudentPayment />} />
           <Route path='/student-calendar' element={<StudentCalendar />} />
+          <Route path='/registered-courses' element={<RegisteredCourses />} />
         </Routes>
       </Router>
     </div>
