@@ -2382,3 +2382,372 @@
   color: red;
 }
 
+.courscatl-hero {
+  padding: 40px 20px;
+}
+
+.courscatl-title {
+  font-size: 22px;
+  font-weight: bold;
+}
+
+.courscatl-username {
+  color: black;
+}
+
+.courscatl-link {
+  margin-top: 5px;
+}
+
+.courscatl-add-interests {
+  color: red;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.courscatl-add-interests:hover {
+  text-decoration: underline;
+}
+
+.courscatl-btn {
+  background-color: #2ca8e0;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 20px;
+  font-size: 14px;
+  border: none;
+}
+
+.courscatl-btn:hover {
+  background-color: #1a8cc7;
+}
+
+.courscatl-image-placeholder {
+  width: 100%;
+  max-width: 400px;
+  height: 150px;
+  background-color: #2ca8e0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 5px;
+}
+
+.courscatl-image-placeholder::before {
+  content: "🖼️"; /* Placeholder icon */
+  font-size: 50px;
+  color: white;
+}
+
+.catalogcour-section {
+  padding: 40px 20px;
+}
+
+/* Categories */
+.catalogcour-categories {
+  margin-bottom: 20px;
+}
+
+.catalogcour-category {
+  border: 2px solid #2ca8e0;
+  padding: 8px 16px;
+  border-radius: 20px;
+  color: #2ca8e0;
+  font-size: 14px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.catalogcour-category:hover {
+  background-color: #2ca8e0;
+  color: white;
+}
+
+/* Sort Button */
+.catalogcour-sort-btn {
+  background-color: #8cc63f;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.catalogcour-sort-btn:hover {
+  background-color: #7bb12d;
+}
+
+/* Course Cards */
+.catalogcour-course-card {
+  width: 100%;
+  height: 150px;
+  background-color: #2ca8e0;
+  border-radius: 5px;
+  position: relative;
+}
+
+.catalogcour-course-card::before {
+  content: "🖼️"; /* Placeholder */
+  font-size: 50px;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+/* Pagination */
+.pagination .page-item.active .page-link {
+  background-color: #2ca8e0;
+  border-color: #2ca8e0;
+}
+
+.pagination .page-item .page-link {
+  color: black;
+  border-radius: 5px;
+}
+
+.pagination .page-item .page-link:hover {
+  background-color: #e0e0e0;
+}
+
+/* Live Course Catalog Section */
+.cataloglive-card {
+  display: flex;
+  background: #f8f9fa;
+  border-radius: 10px;
+  padding: 20px;
+  align-items: center;
+}
+
+/* Course Image Placeholder */
+.cataloglive-image-container {
+  text-align: center;
+}
+
+.cataloglive-image-placeholder {
+  width: 100%;
+  height: 180px;
+  background: #17a2b8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cataloglive-image-placeholder::before {
+  content: "\f03e";
+  font-family: "Font Awesome 5 Free";
+  font-weight: 900;
+  color: white;
+  font-size: 40px;
+}
+
+/* Course Content */
+.cataloglive-content {
+  padding: 20px;
+}
+
+/* Join Course Button */
+.cataloglive-join-btn {
+  background: #28a745;
+  color: white;
+  border: 2px solid black;
+  border-radius: 20px;
+  padding: 5px 15px;
+}
+
+.cataloglive-join-btn:hover {
+  background: #218838;
+  color: white;
+}
+
+/* Full Calendar Button */
+.cataloglive-calendar-btn {
+  background: #17a2b8;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+}
+
+.cataloglive-calendar-btn:hover {
+  background: #138496;
+}
+
+/* Trending Picks Section */
+.trendingpicks-card, .justforyou-card {
+  background: #f8f9fa;
+  border-radius: 10px;
+  padding: 20px;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.trendingpicks-image-placeholder, .justforyou-image-placeholder {
+  width: 100%;
+  height: 200px;
+  background: #17a2b8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.trendingpicks-image-placeholder::before, .justforyou-image-placeholder::before {
+  content: "\f03e";
+  font-family: "Font Awesome 5 Free";
+  font-weight: 900;
+  color: white;
+  font-size: 40px;
+}
+
+/* Show More Button */
+.trendingpicks-showmore-btn, .justforyou-showmore-btn {
+  background: #3fc0f3;
+  color: white;
+  border: none;
+  padding: 8px 20px;
+  border-radius: 5px;
+}
+
+.trendingpicks-showmore-btn:hover, .justforyou-showmore-btn:hover {
+  background: #0056b3;
+}
+
+/* Fresh Drops Section */
+.freshdrops-card, .budgetfriendly-card {
+  background: #f8f9fa;
+  border-radius: 10px;
+  padding: 20px;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.freshdrops-image-placeholder, .budgetfriendly-image-placeholder {
+  width: 100%;
+  height: 200px;
+  background: #17a2b8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.freshdrops-image-placeholder::before, .budgetfriendly-image-placeholder::before {
+  content: "\f03e";
+  font-family: "Font Awesome 5 Free";
+  font-weight: 900;
+  color: white;
+  font-size: 40px;
+}
+
+/* Show More Button */
+.freshdrops-showmore-btn, .budgetfriendly-showmore-btn {
+  background: #17a2b8;
+  color: white;
+  border: none;
+  padding: 8px 20px;
+  border-radius: 5px;
+}
+
+.freshdrops-showmore-btn:hover, .budgetfriendly-showmore-btn:hover {
+  background: #0056b3;
+}
+
+/* Meet the Masters Section */
+.meetmast-section {
+  text-align: center;
+  background-color: #fff;
+  padding: 50px 0;
+}
+
+.meetmast-title {
+  font-weight: bold;
+}
+
+.meetmast-subtitle {
+  margin-bottom: 20px;
+}
+
+.meetmast-link {
+  color: #007bff;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.meetmast-link:hover {
+  text-decoration: underline;
+}
+
+.meetmast-card {
+  background: #fff;
+  height: 400px;
+  border-radius: 8px;
+  overflow: hidden;
+  text-align: center;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.meetmast-card:nth-child(2) {
+  margin-top: 50px;
+}
+
+.meetmast-card:hover {
+  transform: translateY(-5px);
+}
+
+.meetmast-card-header {
+  background-color: #3498db;
+  height: 100px;
+}
+
+.meetmast-avatar {
+  background: #f8f9fa;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  margin: -30px auto 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 3px solid white;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.meetmast-avatar i {
+  font-size: 30px;
+  color: #3498db;
+}
+
+.meetmast-card-body {
+  padding: 15px;
+}
+
+.meetmast-card-body p {
+  font-size: 14px;
+  color: #333;
+}
+
+.meetmast-btn {
+  background: transparent;
+  border: 1px solid #3498db;
+  color: #3498db;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 14px;
+  transition: 0.3s;
+  cursor: pointer;
+}
+
+.meetmast-btn:hover {
+  background: #3498db;
+  color: #fff;
+}
+
+@media (max-width: 768px) {
+  .meetmast-card:nth-child(2) {
+    margin-top: 0;
+  }
+}

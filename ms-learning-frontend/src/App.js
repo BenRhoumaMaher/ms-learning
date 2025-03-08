@@ -13,6 +13,7 @@ import RegisteredCourses from './pages/registered-courses/RegisteredCourses'
 import Quiz from './pages/quiz/Quiz'
 import InstructorPublic from './pages/insctructor-public/InstructorPublic'
 import InsctructorDashboard from './pages/insctructor-dashboard/InstructorDashboard'
+import CourseCatalog from './pages/coursecatalog/CourseCatalog'
 function App () {
   return (
     <div className='App'>
@@ -32,6 +33,7 @@ function App () {
           <Route path='/quiz' element={<Quiz />} />
           <Route path='/instructor-public' element={<InstructorPublic />} />
           <Route path='/instructor-dashboard' element={<InsctructorDashboard />} />
+          <Route path='/course-catalog' element={<CourseCatalog />} />
         </Routes>
       </Router>
     </div>
