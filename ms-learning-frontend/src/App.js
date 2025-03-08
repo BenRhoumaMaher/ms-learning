@@ -11,6 +11,7 @@ import StudentPayment from './pages/student-payment/StudentPayment'
 import StudentCalendar from './pages/student-calendar/StudentCalendar'
 import RegisteredCourses from './pages/registered-courses/RegisteredCourses'
 import Quiz from './pages/quiz/Quiz'
+import InstructorPublic from './pages/insctructor-public/InstructorPublic'
 function App () {
   return (
     <div className='App'>
@@ -28,6 +29,7 @@ function App () {
           <Route path='/student-calendar' element={<StudentCalendar />} />
           <Route path='/registered-courses' element={<RegisteredCourses />} />
           <Route path='/quiz' element={<Quiz />} />
+          <Route path='/instructor-public' element={<InstructorPublic />} />
         </Routes>
       </Router>
     </div>
