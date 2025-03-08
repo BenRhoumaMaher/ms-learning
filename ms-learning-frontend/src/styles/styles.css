@@ -2751,3 +2751,330 @@
     margin-top: 0;
   }
 }
+
+/* Account Settings Hero Section */
+.accset-hero {
+  margin-top: 0;
+  padding: 30px 0;
+}
+
+/* Left Section */
+.accset-left {
+  padding-left: 5%;
+}
+
+.accset-title {
+  font-weight: bold;
+  font-size: 1.5rem;
+}
+
+.accset-subtitle {
+  color: red;
+  font-size: 1rem;
+  max-width: 400px;
+}
+
+.accset-highlight {
+  font-weight: bold;
+}
+
+/* Buttons */
+.accset-buttons {
+  margin-top: 15px;
+}
+
+.accset-btn {
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 14px;
+  transition: 0.3s;
+  cursor: pointer;
+  border: 2px solid;
+  background: transparent;
+}
+
+.accset-edit-btn {
+  border-color: lightgreen;
+  color: green;
+  margin-right: 10px;
+}
+
+.accset-edit-btn:hover {
+  background: lightgreen;
+  color: white;
+}
+
+.accset-password-btn {
+  border-color: #3498db;
+  color: #3498db;
+}
+
+.accset-password-btn:hover {
+  background: #3498db;
+  color: white;
+}
+
+/* Right Section */
+.accset-right {
+  padding-right: 5%;
+}
+
+.accset-profile {
+  display: flex;
+  align-items: center;
+}
+
+.accset-avatar {
+  width: 70px;
+  height: 70px;
+  border: 3px solid #3498db;
+  border-radius: 50%;
+  overflow: hidden;
+  margin-right: 15px;
+}
+
+.accset-avatar img {
+  width: 100%;
+  height: auto;
+}
+
+.accset-info {
+  text-align: left;
+}
+
+.accset-name {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.accset-membership {
+  color: #333;
+}
+
+.accset-delete-btn {
+  border-color: red;
+  color: red;
+  margin-top: 5px;
+}
+
+.accset-delete-btn:hover {
+  background: red;
+  color: white;
+}
+
+.accset-editable {
+  font-size: 12px;
+  color: gray;
+  display: block;
+  margin-top: 5px;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .accset-hero .row {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .accset-left,
+  .accset-right {
+    padding: 20px;
+  }
+
+  .accset-profile {
+    justify-content: center;
+  }
+
+  .accset-info {
+    text-align: center;
+  }
+}
+
+/* Profile Section */
+.profile-update {
+  padding: 40px 0;
+}
+
+/* Profile Box */
+.profile-box {
+  background: white;
+  border: 8px solid #8cc63f;
+  padding: 30px;
+  text-align: center;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Title & Subtitle */
+.profile-title {
+  font-weight: bold;
+  font-size: 1.6rem;
+}
+
+.profile-subtitle {
+  color: red;
+  font-size: 1rem;
+  margin-bottom: 20px;
+}
+
+/* Form Inputs */
+.form-label {
+  text-align: left;
+  display: block;
+  font-weight: bold;
+}
+
+.input-group-text {
+  background: white;
+  border-right: none;
+}
+
+.form-control {
+  border-left: none;
+}
+
+/* Social Media */
+.social-links p {
+  font-weight: bold;
+  margin-top: 15px;
+}
+
+.social-icons i {
+  font-size: 30px;
+  margin: 0 10px;
+  cursor: pointer;
+}
+
+.social-icons i.fab {
+  color: #007bff;
+}
+
+.social-icons i.fab.fa-facebook-square {
+  color: #3b5998;
+}
+
+.social-icons i.fab.fa-linkedin {
+  color: #0077b5;
+}
+
+.social-icons i.fab.fa-twitter {
+  color: #1da1f2;
+}
+
+.social-icons i.fab.fa-instagram {
+  color: #e4405f;
+}
+
+/* Save Button */
+.save-btn {
+  background: #3498db;
+  border: none;
+  padding: 10px 20px;
+  font-size: 1rem;
+  border-radius: 20px;
+  transition: 0.3s;
+}
+
+.save-btn:hover {
+  background: #217dbb;
+}
+
+/* Centered form container */
+.settinpass-container {
+  background-color: #1b9ac9;
+  border-radius: 10px;
+  max-width: 450px;
+  color: white;
+}
+
+/* Label styling */
+.settinpass-label {
+  font-weight: bold;
+  display: block;
+  margin-bottom: 5px;
+}
+
+/* Input field container */
+.settinpass-input-group {
+  display: flex;
+  align-items: center;
+  background: white;
+  border-radius: 5px;
+  padding: 5px;
+}
+
+/* Input field */
+.settinpass-input {
+  border: none;
+  flex-grow: 1;
+  padding: 10px;
+  outline: none;
+}
+
+/* Lock icon */
+.settinpass-icon {
+  padding: 10px;
+  color: #1b9ac9;
+}
+
+/* Eye icon for toggling password */
+.settinpass-eye {
+  padding: 10px;
+  cursor: pointer;
+  color: black;
+}
+
+/* Save button */
+.settinpass-btn {
+  background: white;
+  color: #1b9ac9;
+  font-weight: bold;
+  border: none;
+  width: 100%;
+  padding: 12px;
+  border-radius: 5px;
+}
+
+.notification-container {
+  text-align: center;
+  padding: 20px;
+}
+
+.notification-box {
+  background-color: #00a7e1;
+  padding: 20px;
+  border-radius: 10px;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.notification-header {
+  font-weight: bold;
+  color: white;
+}
+
+.notification-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: white;
+  padding: 10px;
+  border-radius: 5px;
+  margin: 10px 0;
+}
+
+.toggle-icon {
+  cursor: pointer;
+}
+
+.notification-label {
+  flex-grow: 1;
+  text-align: left;
+  padding-left: 10px;
+}
+
+.save-changes {
+  margin-top: 15px;
+  font-size: 16px;
+}

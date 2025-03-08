@@ -14,6 +14,7 @@ import Quiz from './pages/quiz/Quiz'
 import InstructorPublic from './pages/insctructor-public/InstructorPublic'
 import InsctructorDashboard from './pages/insctructor-dashboard/InstructorDashboard'
 import CourseCatalog from './pages/coursecatalog/CourseCatalog'
+import AccoyntSettings from './pages/accountsettingsstudent/AccountSettings'
 function App () {
   return (
     <div className='App'>
@@ -34,6 +35,7 @@ function App () {
           <Route path='/instructor-public' element={<InstructorPublic />} />
           <Route path='/instructor-dashboard' element={<InsctructorDashboard />} />
           <Route path='/course-catalog' element={<CourseCatalog />} />
+          <Route path='/account-settings' element={<AccoyntSettings />} />
         </Routes>
       </Router>
     </div>
