@@ -1403,3 +1403,230 @@
   border-radius: 10px;
   font-weight: bold;
 }
+
+.quiz-hero {
+  max-width: 1000px;
+  margin: auto;
+}
+
+.quiz-icon {
+  font-size: 100px;
+  color: #3498db;
+}
+
+.quiz-btn {
+  font-weight: bold;
+  border-radius: 20px;
+  padding: 8px 20px;
+}
+
+.quiz-container {
+  max-width: 900px;
+  margin: auto;
+}
+
+/* Question Box */
+.question-box {
+  background-color: #e67e22;
+  color: white;
+  padding: 20px;
+  border-radius: 15px;
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 30px;
+}
+
+.question-number {
+  font-size: 40px;
+  font-weight: bold;
+}
+
+.question-text {
+  font-size: 20px;
+}
+
+.progress-bar-custom .progress-bar {
+  background-color: #28a745 !important;
+}
+
+.timer-icon {
+  font-size: 30px;
+  color: #3498db;
+  margin-right: 10px;
+}
+
+.next-btn {
+  font-size: 18px;
+  padding: 8px 20px;
+  border-radius: 20px;
+  color: white;
+}
+.quiz-results {
+  max-width: 900px;
+  margin: auto;
+}
+
+/* Message Styling */
+.congrats-message {
+  font-size: 16px;
+  color: #555;
+}
+
+/* Final Score */
+.final-score {
+  font-size: 18px;
+}
+
+.score-text {
+  color: #00c851;
+  font-weight: bold;
+}
+
+/* Badge Unlocked */
+.badges-unlocked {
+  font-size: 16px;
+}
+
+.expert-badge {
+  color: red;
+  font-weight: bold;
+}
+
+/* Question Boxes */
+.question-box {
+  padding: 15px;
+  border-radius: 30px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  text-align: left;
+  border: 3px solid;
+  transition: 0.3s ease-in-out;
+  background-color: white; /* Keep inside white */
+  color: black;
+}
+
+/* Correct Answers - Green Border */
+.correct {
+  border-color: #00c851; /* Exact green from image */
+}
+
+/* Incorrect Answers - Red Border */
+.incorrect {
+  border-color: #ff4444; /* Exact red from image */
+}
+
+/* Question Number */
+.question-number {
+  font-size: 18px;
+  font-weight: bold;
+  color: black;
+}
+
+/* View Details Link */
+.view-details {
+  font-size: 14px;
+  color: purple;
+  text-decoration: none;
+  margin-top: 5px;
+}
+
+.view-details:hover {
+  text-decoration: underline;
+}
+
+.compare-results {
+  max-width: 800px;
+  margin: auto;
+  padding: 30px 0;
+}
+
+/* Chart Container */
+.chart-container {
+  width: 100%;
+  height: 300px;
+  margin-top: 15px;
+}
+
+/* Ranking Text */
+.ranking-text {
+  font-size: 18px;
+  font-weight: bold;
+  color: red;
+  margin-top: 15px;
+}
+
+.keep-learning {
+  max-width: 900px;
+  margin: auto;
+  padding: 30px 0;
+}
+
+/* Subtitle Styling */
+.subtitle {
+  color: #777;
+  font-size: 16px;
+}
+
+/* Navigation Styling */
+.navigation {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.nav-btn {
+  border: none;
+  background: none;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 5px;
+  transition: 0.3s;
+}
+
+.nav-btn:hover {
+  color: #007bff;
+}
+
+.nav-title {
+  background: #2dd9f3;
+  color: white;
+  padding: 5px 15px;
+  border-radius: 5px;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+/* Course Card Styling */
+.course-cardd {
+  text-align: center;
+  background: #f8f9fa;
+  border-radius: 10px;
+  height: 300px;
+  width: 250px;
+  overflow: hidden;
+  border: none;
+  margin-top: 15px;
+}
+
+.course-text {
+  color: #999;
+  font-size: 15px;
+}
+
+.course-title {
+  color: white;
+  font-weight: bold;
+}
+
+.check-btn {
+  width: 100%;
+  border-radius: 0;
+  font-weight: bold;
+}
