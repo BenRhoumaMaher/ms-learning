@@ -16,6 +16,7 @@ import InsctructorDashboard from './pages/insctructor-dashboard/InstructorDashbo
 import CourseCatalog from './pages/coursecatalog/CourseCatalog'
 import AccoyntSettings from './pages/accountsettingsstudent/AccountSettings'
 import BecomeInstructor from './pages/becomeinsctructor/BeComeInstructor'
+import LessonPlayer from './pages/lessonplayer/LessonPlayer'
 function App () {
   return (
     <div className='App'>
@@ -38,6 +39,7 @@ function App () {
           <Route path='/course-catalog' element={<CourseCatalog />} />
           <Route path='/account-settings' element={<AccoyntSettings />} />
           <Route path='/become-instructor' element={<BecomeInstructor />} />
+          <Route path='/lesson-player' element={<LessonPlayer />} />
         </Routes>
       </Router>
     </div>
