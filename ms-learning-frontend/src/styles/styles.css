@@ -3685,3 +3685,397 @@
   color: white;
   border-color: #007bff;
 }
+
+/* Hero Section */
+.livecou-hero {
+  padding: 40px 0;
+}
+
+/* Live Status */
+.livecou-live-status {
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+}
+
+.livecou-live-dot {
+  width: 10px;
+  height: 10px;
+  background-color: red;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 8px;
+}
+
+/* Title & Session */
+.livecou-title {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.livecou-session {
+  font-size: 16px;
+  color: #666;
+}
+
+/* Buttons */
+.livecou-buttons {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.livecou-btn {
+  border: none;
+  padding: 8px 12px;
+  font-size: 14px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.livecou-join {
+  background-color: #007bff;
+  color: white;
+}
+
+.livecou-materials {
+  background-color: #ffcc00;
+  color: black;
+}
+
+.livecou-next-session {
+  margin-top: 15px;
+}
+
+.livecou-remind {
+  background: none;
+  border: 1px solid red;
+  color: red;
+  padding: 5px 8px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+/* Hero Image */
+.livecou-hero-image {
+  width: 100%;
+  height: 200px;
+  background-color: #3498db;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+}
+
+/* Instructor Card */
+.livecou-instructor-card {
+  text-align: center;
+  background: #f5f5f5;
+  padding: 15px;
+  border-radius: 10px;
+}
+
+.livecou-instructor-image {
+  width: 50px;
+  height: 50px;
+  background-color: #3498db;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  margin: 0 auto;
+}
+
+.livecou-instructor-name {
+  margin: 10px 0;
+}
+
+.livecou-profile {
+  background-color: #007bff;
+  color: white;
+  padding: 5px 10px;
+}
+
+/* Live Session Section */
+.livecou-sessionn {
+  padding: 40px 0;
+}
+
+/* Section Title */
+.livecou-title {
+  font-size: 22px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.livecou-subtitle {
+  font-size: 16px;
+  color: #666;
+  text-align: center;
+}
+
+/* Video Placeholder */
+.livecou-video {
+  width: 100%;
+  height: 300px;
+  background-color: #3498db;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+}
+
+/* Chat Bubble */
+.livecou-chat {
+  width: 100%;
+  height: 200px;
+  background-color: #76c7c0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 15px;
+}
+
+.livecou-chat-text {
+  text-align: center;
+  font-size: 14px;
+  font-weight: bold;
+  margin-top: 8px;
+}
+
+.video-text {
+  margin-top: -200px;
+}
+
+/* Bottom Controls (Left Side) */
+.livecou-btn {
+  display: inline-block;
+  padding: 10px 20px;
+  font-size: 14px;
+  border-radius: 20px;
+  border: none;
+  cursor: pointer;
+}
+
+.livecou-download {
+  background-color: #0abf53;
+  color: white;
+}
+
+.livecou-hand {
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.livecou-feature {
+  display: inline-block;
+  color: red;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+/* Global container */
+.liveeng-container {
+  background-color: #fff;
+  width: 100%;
+}
+
+/* Box styling */
+.liveeng-box {
+  width: 480px;
+  height: 280px;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  padding: 20px;
+}
+
+/* Icon Styling */
+.liveeng-icon {
+  background: #20c5a5;
+  border-radius: 12px;
+  padding: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.liveeng-code-icon {
+  font-size: 80px;
+  color: white;
+  font-weight: bold;
+}
+
+/* Trophy Styling */
+.liveeng-trophy {
+  font-size: 90px;
+}
+
+/* Text Styling */
+.liveeng-text {
+  font-size: 22px;
+  font-weight: bold;
+  color: red;
+  text-align: center;
+}
+
+.liveeng-points {
+  font-size: 20px;
+  font-weight: bold;
+  color: red;
+}
+
+/* Container */
+.liveeng-classes-container {
+  width: 100%;
+  padding: 40px 0;
+  overflow: hidden;
+}
+
+/* Card Styling */
+.liveeng-class-card {
+  width: 80%;
+  height: 180px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  padding: 20px;
+  position: relative;
+  overflow-y: hidden;
+  margin: 0 auto;
+}
+
+/* Arrow Shape */
+.liveeng-arrow {
+  background: white;
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%) skewX(-20deg);
+  width: 35%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.liveeng-name {
+  font-size: 18px;
+  font-weight: bold;
+  color: #217693;
+  transform: skewX(20deg);
+}
+
+/* Class Content */
+.liveeng-class-content {
+  margin-left: 40%;
+  color: white;
+}
+
+/* Container */
+.liveeng-related {
+  width: 100%;
+  padding: 40px 0;
+}
+
+/* Card Styling */
+.liveeng-course-card {
+  width: 100%;
+  height: 240px;
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 30px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Circle Number */
+.liveeng-circle {
+  background: white;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+  position: absolute;
+  top: -30px;
+}
+
+/* Course Content */
+.liveeng-course-content {
+  margin-top: 40px;
+  text-align: center;
+  color: white;
+}
+
+/* Main Section */
+.liveeng-community {
+  background: #f8f9fa; /* Light background */
+  padding: 40px 0;
+}
+
+/* Box Styling */
+.liveeng-community-box {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+/* Left Side - Image Placeholder */
+.liveeng-image-box {
+  background: #3498DB;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+}
+
+.liveeng-placeholder {
+  width: 80px;
+  height: 80px;
+  border: 2px dashed white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30px;
+  color: white;
+}
+
+/* Right Side - Text Section */
+.liveeng-text-box {
+  padding: 30px;
+  background: #ECECEC;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.liveeng-highlight {
+  color: red;
+  font-weight: bold;
+}
+
+.liveeng-join-btn {
+  background: #3498DB;
+  color: white;
+  border-radius: 8px;
+  padding: 8px 20px;
+  font-size: 16px;
+  border: none;
+  transition: 0.3s ease;
+}
+
+.liveeng-join-btn:hover {
+  background: #217693;
+}
