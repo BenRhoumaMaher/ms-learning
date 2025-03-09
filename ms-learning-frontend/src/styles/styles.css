@@ -3078,3 +3078,373 @@
   margin-top: 15px;
   font-size: 16px;
 }
+
+/* Become Instructor Section */
+.becoinstr-hero {
+  padding: 60px 0;
+}
+
+.becoinstr-title {
+  font-size: 32px;
+  color: #000;
+}
+
+.becoinstr-subtitle {
+  font-size: 18px;
+  color: #555;
+}
+
+.becoinstr-details {
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.becoinstr-btn {
+  background: #8dc63f;
+  color: white;
+  padding: 12px 20px;
+  border-radius: 5px;
+  font-size: 16px;
+  border: none;
+}
+
+.becoinstr-btn:hover {
+  background: #7db32d;
+}
+
+.becoinstr-video {
+  width: 100%;
+  max-width: 600px;
+  border-radius: 10px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Why Teach With Us Section */
+.becoinstr-why-teach {
+  padding: 60px 0;
+}
+
+.becoinstr-feature {
+  width: 180px;
+  height: 200px;
+  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+  text-align: center;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 10px;
+  padding: 10px;
+  font-size: 14px;
+  position: relative;
+}
+
+.becoinstr-number {
+  position: absolute;
+  bottom: -30px;
+  background: white;
+  color: black;
+  font-size: 20px;
+  font-weight: bold;
+  padding: 5px 15px;
+  clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
+}
+
+/* Join Button */
+.becoinstr-btn {
+  background: #8dc63f;
+  color: white;
+  padding: 12px 20px;
+  border-radius: 5px;
+  font-size: 16px;
+  border: none;
+}
+
+.becoinstr-btn:hover {
+  background: #7db32d;
+}
+
+/* Parent container for each step */
+.becoinstr-step {
+  text-align: center;
+  position: relative;
+}
+
+/* Timeline Circles */
+.becoinstr-circle {
+  width: 15px;
+  height: 15px;
+  background-color: white;
+  border: 3px solid #279FD9;
+  border-radius: 50%;
+  position: absolute;
+  top: -25px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* Different Colors for Circles */
+.becoinstr-circle-green {
+  border-color: #16C0A5;
+}
+
+.becoinstr-circle-orange {
+  border-color: #F07D35;
+}
+
+/* Timeline Connecting Lines */
+.becoinstr-line {
+  height: 6px;
+  width: 100%;
+  position: absolute;
+  top: -18px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: -1;
+}
+
+/* Line Colors */
+.becoinstr-line-blue {
+  background-color: #279FD9;
+}
+
+.becoinstr-line-green {
+  background-color: #16C0A5;
+}
+
+.becoinstr-line-warning {
+  background-color: #fff050;
+}
+
+.becoinstr-line-danger {
+  background-color: #ff5415;
+}
+
+
+/* Titles (Apply, Review, Create, Publish) */
+.becoinstr-title {
+  color: red;
+  margin-top: 20px;
+}
+
+/* Description Text */
+.becoinstr-text {
+  color: #333;
+  font-size: 16px;
+}
+
+/* Center Alignment */
+.testimonial-box {
+  border: 3px solid #16C0A5;
+  padding: 60px 30px;
+  position: relative;
+  border-radius: 5px;
+  width: 300px;  /* Fixed Width */
+  min-height: 200px; /* Ensures Equal Height */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Circle on Top of Testimonial Box */
+.testimonial-circle {
+  width: 60px;
+  height: 60px;
+  background-color: #16C0A5;
+  border-radius: 50%;
+  position: absolute;
+  top: -30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Testimonial Content */
+.testimonial-title {
+  color: #16C0A5;
+  font-weight: bold;
+  margin-top: 20px;
+}
+
+.testimonial-text {
+  color: #555;
+  font-size: 16px;
+  text-align: center;
+}
+
+/* Overlapping Boxes */
+.overlapping-box {
+  width: 220px;
+  height: 220px;
+  border: 5px solid #E89B7A;
+  position: absolute;
+}
+
+.second-box {
+  width: 200px;
+  height: 200px;
+  top: -30px;
+  left: 40px;
+}
+
+/* Ensure Both Sides Have Same Height */
+.row {
+  min-height: 250px;
+  display: flex;
+  align-items: center;
+}
+
+/* FAQ Section */
+.faq-section {
+  padding: 50px 80px;
+}
+
+/* Title */
+.faq-title {
+  font-weight: bold;
+}
+
+/* Subtitle */
+.faq-subtitle {
+  color: #666;
+  font-size: 14px;
+}
+
+/* FAQ List Container */
+.faq-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* FAQ Item */
+.faq-item {
+  display: flex;
+  align-items: center;
+  border: 3px solid;
+  border-radius: 50px;
+  padding: 15px 30px;
+  position: relative;
+  justify-content: space-between;
+  width: 100%;
+}
+
+/* Left Number Circle */
+.faq-number-circle {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  color: white;
+  font-size: 18px;
+  margin-right: 15px;
+}
+
+/* Question Text */
+.faq-text {
+  flex-grow: 1;
+  color: #555;
+  font-size: 16px;
+}
+
+/* Right View Text */
+.faq-view {
+  color: red;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .faq-section {
+      padding: 30px;
+  }
+
+  .faq-item {
+      flex-direction: row;
+      padding: 15px;
+  }
+
+  .faq-number-circle {
+      width: 40px;
+      height: 40px;
+      font-size: 16px;
+  }
+}
+
+/* JOIN FAMILY SECTION */
+.becinsjoin-container {
+  padding: 50px 0;
+  text-align: center;
+}
+
+/* FORM CONTAINER */
+.becinsjoin-form-container {
+  background-color: #2fa1bd;
+  padding: 40px;
+  max-width: 600px;
+  margin: 20px auto;
+  border-radius: 5px;
+}
+
+/* FORM LABEL */
+.becinsjoin-label {
+  display: block;
+  text-align: left;
+  font-weight: bold;
+  margin-top: 15px;
+  color: white;
+}
+
+/* INPUT FIELDS */
+.becinsjoin-input {
+  width: 100%;
+  padding: 10px;
+  margin-top: 5px;
+  border: none;
+  border-radius: 3px;
+}
+
+/* INPUT GROUP (FOR ICON INSIDE INPUT) */
+.becinsjoin-input-group {
+  display: flex;
+  align-items: center;
+  background: white;
+  padding: 5px;
+  border-radius: 3px;
+}
+
+.becinsjoin-input-group i {
+  font-size: 18px;
+  color: #2fa1bd;
+  padding: 0 10px;
+}
+
+.becinsjoin-input-group input {
+  flex: 1;
+  border: none;
+  padding: 8px;
+  outline: none;
+}
+
+/* BUTTON */
+.becinsjoin-btn {
+  background-color: #1fbf73;
+  color: white;
+  padding: 10px 20px;
+  margin-top: 20px;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  width: 100%;
+  transition: 0.3s;
+}
+
+.becinsjoin-btn:hover {
+  background-color: #17a864;
+}
