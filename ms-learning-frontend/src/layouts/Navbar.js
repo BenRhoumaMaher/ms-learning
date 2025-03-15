@@ -1,10 +1,24 @@
-import React from 'react'
+import React, { useState, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import '../styles/styles.css'
 import logo from '../assets/logo.png'
+import useClickOutside from '../hooks/useClickOutside'
+import { useNavigate } from 'react-router-dom'
 
 const Navbar = () => {
+  const isAuthenticated =
+    localStorage.getItem('token') || sessionStorage.getItem('token')
+  const user = isAuthenticated
+    ? JSON.parse(atob(isAuthenticated.split('.')[1]))
+    : null
+  const userImage = 'http://localhost:8080/profile/avatar.png'
+  const [showProfileMenu, setShowProfileMenu] = useState(false)
+  const dropdownRef = useRef(null)
+  const navigate = useNavigate()
+
+  useClickOutside(dropdownRef, () => setShowProfileMenu(false))
+
   return (
     <nav className='navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-navbar'>
       <div className='container-fluid px-4'>
@@ -26,25 +40,101 @@ const Navbar = () => {
         </div>
 
         <div className='d-flex align-items-center'>
-          <Link to='/' className='nav-link'>
-            <i className='bi bi-house-door'></i>
-          </Link>
-          <div className='nav-separator'></div>
+          {isAuthenticated ? (
+            <>
+              <Link to='/' className='nav-link'>
+                <i className='bi bi-shop'></i>
+              </Link>
+              <div className='nav-separator'></div>
 
-          <Link to='/careers' className='nav-link'>
-            Careers
-          </Link>
-          <div className='nav-separator'></div>
+              <Link to='/become-instructor' className='nav-link'>
+                Careers
+              </Link>
+              <div className='nav-separator'></div>
 
-          <Link to='/login' className='nav-link'>
-            Login
-          </Link>
-          <div className='nav-separator'></div>
+              <Link to='/' className='nav-link'>
+                <i className='bi bi-chat'></i>
+              </Link>
+              <div className='nav-separator'></div>
 
-          <Link to='/signup' className='nav-link'>
-            Signup
-          </Link>
-          <div className='nav-separator'></div>
+              <Link to='/' className='nav-link'>
+                <i className='bi bi-bell'></i>
+              </Link>
+              <div className='nav-separator'></div>
+
+              <div className='nav-profile' ref={dropdownRef}>
+                <button
+                  className='nav-link profile-icon-btn'
+                  onClick={() => setShowProfileMenu(!showProfileMenu)}
+                >
+                  <i className='bi bi-person'></i>
+                </button>
+
+                {showProfileMenu && (
+                  <div className='profile-dropdown'>
+                    <div className='profile-info'>
+                      <img
+                        src={userImage}
+                        alt='User'
+                        className='profile-image'
+                      />
+                      <p className='username'>{user?.username}</p>
+                    </div>
+                    <Link to='/student-dashboard' className='dropdown-item'>
+                      Dashboard
+                    </Link>
+                    <Link to='/student-notifications' className='dropdown-item'>
+                      Notifications
+                    </Link>
+                    <Link to='/student-calendar' className='dropdown-item'>
+                      Calendar
+                    </Link>
+                    <Link to='/registered-courses' className='dropdown-item'>
+                      Registered Courses
+                    </Link>
+                    <Link to='/account-settings' className='dropdown-item'>
+                      Account Settings
+                    </Link>
+                    <button
+                      onClick={() => {
+                        localStorage.removeItem('token')
+                        sessionStorage.removeItem('token')
+                        localStorage.removeItem('username')
+                        navigate('/login')
+                      }}
+                      className='dropdown-item logout'
+                    >
+                      Logout
+                    </button>
+                  </div>
+                )}
+              </div>
+
+              <div className='nav-separator'></div>
+            </>
+          ) : (
+            <>
+              <Link to='/' className='nav-link'>
+                <i className='bi bi-house-door'></i>
+              </Link>
+              <div className='nav-separator'></div>
+
+              <Link to='/become-instructor' className='nav-link'>
+                Careers
+              </Link>
+              <div className='nav-separator'></div>
+
+              <Link to='/login' className='nav-link'>
+                Login
+              </Link>
+              <div className='nav-separator'></div>
+
+              <Link to='/signup' className='nav-link'>
+                Signup
+              </Link>
+              <div className='nav-separator'></div>
+            </>
+          )}
 
           <Link to='#' className='nav-link'>
             <i className='bi bi-globe'></i>

@@ -41,6 +41,10 @@ security:
     - { path: ^/auth/google, roles: PUBLIC_ACCESS }
     - { path: ^/api/doc, roles: IS_AUTHENTICATED_ANONYMOUSLY }
 
+  role-hierarchy:
+      ROLE_INSTRUCTOR: ROLE_STUDENT
+      ROLE_ADMIN: [ROLE_INSTRUCTOR, ROLE_STUDENT]  
+
 when@test:
   security:
     password_hashers:

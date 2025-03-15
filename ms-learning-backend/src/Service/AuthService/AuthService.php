@@ -23,6 +23,7 @@ class AuthService implements AuthServiceInterface
         return [
             'token' => $token,
             'username' => $user->getUsername(),
+            'picture' => $user->getPicture(),
             'user_id' => $user->getId()
         ];
     }

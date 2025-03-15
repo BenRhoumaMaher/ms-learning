@@ -20,3 +20,4 @@ App\Controller\authentification\AuthController:
   resource: routes/oauth.yaml
   prefix: /
   name_prefix: 'auth_'
+

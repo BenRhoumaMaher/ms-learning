@@ -4079,3 +4079,82 @@
 .liveeng-join-btn:hover {
   background: #217693;
 }
+
+/* Profile Dropdown Container */
+.nav-profile {
+  position: relative;
+  display: inline-block;
+}
+
+/* Button to prevent default link behavior */
+.profile-icon-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 20px;
+}
+
+/* Dropdown Menu */
+.profile-dropdown {
+  position: absolute;
+  top: 52px; /* Moves it slightly below the icon */
+  right: -20px; /* Moves it slightly to the right */
+  background: rgba(255, 255, 255, 0.95); /* Slightly transparent */
+  border-radius: 5px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  width: 200px;
+  flex-direction: column;
+  padding: 10px 0;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  z-index: 1000;
+}
+
+/* Dropdown Items */
+.profile-dropdown .dropdown-item {
+  color: #333;
+  padding: 10px 15px;
+  text-decoration: none;
+  font-size: 14px;
+  transition: background 0.3s ease-in-out;
+  display: block;
+}
+
+.profile-dropdown .dropdown-item:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+/* Logout Button */
+.profile-dropdown .logout {
+  color: red;
+  font-weight: bold;
+}
+
+.profile-dropdown .logout:hover {
+  background: rgba(255, 0, 0, 0.1);
+}
+
+/* User Profile Row */
+.profile-info {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+/* User Image */
+.profile-image {
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+/* Username */
+.username {
+  color: #28a745; /* Green color */
+  font-weight: bold;
+  font-size: 14px;
+  margin: 0;
+}
+

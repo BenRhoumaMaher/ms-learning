@@ -132,7 +132,7 @@ class User implements
     public function getRoles(): array
     {
         $roles = $this->roles;
-        $roles[] = 'ROLE_USER';
+        $roles[] = 'ROLE_STUDENT';
         return array_unique($roles);
     }
 

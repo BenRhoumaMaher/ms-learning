@@ -3,7 +3,7 @@ import SignupContainer from './components/containers/auth/SignupContainer'
 import LoginContainer from './components/containers/auth/LoginContainer'
 import ResetPasswordContainer from './components/containers/auth/ResetPasswordContainer' 
 import ForgotPasswordContainer from './components/containers/auth/ForgotPasswordContainer'
-import Navbar from "./layouts/Navbar-student";
+import Navbar from "./layouts/Navbar";
 import Home from './pages/home/Home'
 import StudentDashboard from './pages/student-dashboard/StudentDashboard'
 import StudentNotification from './pages/student-notifications/StudentNotification'
@@ -14,7 +14,7 @@ import Quiz from './pages/quiz/Quiz'
 import InstructorPublic from './pages/insctructor-public/InstructorPublic'
 import InsctructorDashboard from './pages/insctructor-dashboard/InstructorDashboard'
 import CourseCatalog from './pages/coursecatalog/CourseCatalog'
-import AccoyntSettings from './pages/accountsettingsstudent/AccountSettings'
+import AccountSettings from './pages/accountsettingsstudent/AccountSettings'
 import BecomeInstructor from './pages/becomeinsctructor/BeComeInstructor'
 import LessonPlayer from './pages/lessonplayer/LessonPlayer'
 import LiveCourse from './pages/livecourse/LiveCourse'
@@ -38,7 +38,7 @@ function App () {
           <Route path='/instructor-public' element={<InstructorPublic />} />
           <Route path='/instructor-dashboard' element={<InsctructorDashboard />} />
           <Route path='/course-catalog' element={<CourseCatalog />} />
-          <Route path='/account-settings' element={<AccoyntSettings />} />
+          <Route path='/account-settings' element={<AccountSettings />} />
           <Route path='/become-instructor' element={<BecomeInstructor />} />
           <Route path='/lesson-player' element={<LessonPlayer />} />
           <Route path='/live-course' element={<LiveCourse />} />
