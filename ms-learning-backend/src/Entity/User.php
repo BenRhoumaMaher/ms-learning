@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\UserRepository;
@@ -72,9 +74,90 @@ class User implements
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $google_id = null;
 
+    /**
+     * @var Collection<int, Courses>
+     */
+    #[ORM\ManyToMany(targetEntity: Courses::class, mappedBy: 'enrollments')]
+    private Collection $courses;
+
+    /**
+     * @var Collection<int, Review>
+     */
+    #[ORM\OneToMany(targetEntity: Review::class, mappedBy: 'user')]
+    private Collection $reviews;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $X = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $instagram = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $facebook = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $linkedin = null;
+
+    /**
+     * @var Collection<int, Notification>
+     */
+    #[ORM\OneToMany(targetEntity: Notification::class, mappedBy: 'user')]
+    private Collection $notifications;
+
+    /**
+     * @var Collection<int, Testimonial>
+     */
+    #[ORM\OneToMany(targetEntity: Testimonial::class, mappedBy: 'user')]
+    private Collection $testimonials;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $expertise = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $resume = null;
+
+    /**
+     * @var Collection<int, InstructorEarning>
+     */
+    #[ORM\OneToMany(targetEntity: InstructorEarning::class, mappedBy: 'instructor')]
+    private Collection $instructorEarnings;
+
+    /**
+     * @var Collection<int, UserSubscription>
+     */
+    #[ORM\OneToMany(targetEntity: UserSubscription::class, mappedBy: 'user')]
+    private Collection $userSubscriptions;
+
+    /**
+     * @var Collection<int, Payment>
+     */
+    #[ORM\OneToMany(targetEntity: Payment::class, mappedBy: 'user')]
+    private Collection $payments;
+
+    /**
+     * @var Collection<int, StudentCourse>
+     */
+    #[ORM\OneToMany(targetEntity: StudentCourse::class, mappedBy: 'user')]
+    private Collection $studentCourses;
+
+    /**
+     * @var Collection<int, Calendar>
+     */
+    #[ORM\OneToMany(targetEntity: Calendar::class, mappedBy: 'user')]
+    private Collection $calendars;
+
     public function __construct()
     {
         $this->createdAt = new \DateTime();
+        $this->courses = new ArrayCollection();
+        $this->reviews = new ArrayCollection();
+        $this->notifications = new ArrayCollection();
+        $this->testimonials = new ArrayCollection();
+        $this->instructorEarnings = new ArrayCollection();
+        $this->userSubscriptions = new ArrayCollection();
+        $this->payments = new ArrayCollection();
+        $this->studentCourses = new ArrayCollection();
+        $this->calendars = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -196,6 +279,345 @@ class User implements
     public function setGoogleId(?string $google_id): static
     {
         $this->google_id = $google_id;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Courses>
+     */
+    public function getCourses(): Collection
+    {
+        return $this->courses;
+    }
+
+    public function addCourse(Courses $course): static
+    {
+        if (!$this->courses->contains($course)) {
+            $this->courses->add($course);
+            $course->addEnrollment($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCourse(Courses $course): static
+    {
+        if ($this->courses->removeElement($course)) {
+            $course->removeEnrollment($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Review>
+     */
+    public function getReviews(): Collection
+    {
+        return $this->reviews;
+    }
+
+    public function addReview(Review $review): static
+    {
+        if (!$this->reviews->contains($review)) {
+            $this->reviews->add($review);
+            $review->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeReview(Review $review): static
+    {
+        if ($this->reviews->removeElement($review)) {
+            // set the owning side to null (unless already changed)
+            if ($review->getUser() === $this) {
+                $review->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getX(): ?string
+    {
+        return $this->X;
+    }
+
+    public function setX(?string $X): static
+    {
+        $this->X = $X;
+
+        return $this;
+    }
+
+    public function getInstagram(): ?string
+    {
+        return $this->instagram;
+    }
+
+    public function setInstagram(?string $instagram): static
+    {
+        $this->instagram = $instagram;
+
+        return $this;
+    }
+
+    public function getFacebook(): ?string
+    {
+        return $this->facebook;
+    }
+
+    public function setFacebook(?string $facebook): static
+    {
+        $this->facebook = $facebook;
+
+        return $this;
+    }
+
+    public function getLinkedin(): ?string
+    {
+        return $this->linkedin;
+    }
+
+    public function setLinkedin(?string $linkedin): static
+    {
+        $this->linkedin = $linkedin;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Notification>
+     */
+    public function getNotifications(): Collection
+    {
+        return $this->notifications;
+    }
+
+    public function addNotification(Notification $notification): static
+    {
+        if (!$this->notifications->contains($notification)) {
+            $this->notifications->add($notification);
+            $notification->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeNotification(Notification $notification): static
+    {
+        if ($this->notifications->removeElement($notification)) {
+            // set the owning side to null (unless already changed)
+            if ($notification->getUser() === $this) {
+                $notification->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Testimonial>
+     */
+    public function getTestimonials(): Collection
+    {
+        return $this->testimonials;
+    }
+
+    public function addTestimonial(Testimonial $testimonial): static
+    {
+        if (!$this->testimonials->contains($testimonial)) {
+            $this->testimonials->add($testimonial);
+            $testimonial->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTestimonial(Testimonial $testimonial): static
+    {
+        if ($this->testimonials->removeElement($testimonial)) {
+            // set the owning side to null (unless already changed)
+            if ($testimonial->getUser() === $this) {
+                $testimonial->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getExpertise(): ?string
+    {
+        return $this->expertise;
+    }
+
+    public function setExpertise(?string $expertise): static
+    {
+        $this->expertise = $expertise;
+
+        return $this;
+    }
+
+    public function getResume(): ?string
+    {
+        return $this->resume;
+    }
+
+    public function setResume(?string $resume): static
+    {
+        $this->resume = $resume;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, InstructorEarning>
+     */
+    public function getInstructorEarnings(): Collection
+    {
+        return $this->instructorEarnings;
+    }
+
+    public function addInstructorEarning(InstructorEarning $instructorEarning): static
+    {
+        if (!$this->instructorEarnings->contains($instructorEarning)) {
+            $this->instructorEarnings->add($instructorEarning);
+            $instructorEarning->setInstructor($this);
+        }
+
+        return $this;
+    }
+
+    public function removeInstructorEarning(InstructorEarning $instructorEarning): static
+    {
+        if ($this->instructorEarnings->removeElement($instructorEarning)) {
+            // set the owning side to null (unless already changed)
+            if ($instructorEarning->getInstructor() === $this) {
+                $instructorEarning->setInstructor(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, UserSubscription>
+     */
+    public function getUserSubscriptions(): Collection
+    {
+        return $this->userSubscriptions;
+    }
+
+    public function addUserSubscription(UserSubscription $userSubscription): static
+    {
+        if (!$this->userSubscriptions->contains($userSubscription)) {
+            $this->userSubscriptions->add($userSubscription);
+            $userSubscription->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUserSubscription(UserSubscription $userSubscription): static
+    {
+        if ($this->userSubscriptions->removeElement($userSubscription)) {
+            // set the owning side to null (unless already changed)
+            if ($userSubscription->getUser() === $this) {
+                $userSubscription->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Payment>
+     */
+    public function getPayments(): Collection
+    {
+        return $this->payments;
+    }
+
+    public function addPayment(Payment $payment): static
+    {
+        if (!$this->payments->contains($payment)) {
+            $this->payments->add($payment);
+            $payment->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removePayment(Payment $payment): static
+    {
+        if ($this->payments->removeElement($payment)) {
+            // set the owning side to null (unless already changed)
+            if ($payment->getUser() === $this) {
+                $payment->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, StudentCourse>
+     */
+    public function getStudentCourses(): Collection
+    {
+        return $this->studentCourses;
+    }
+
+    public function addStudentCourse(StudentCourse $studentCourse): static
+    {
+        if (!$this->studentCourses->contains($studentCourse)) {
+            $this->studentCourses->add($studentCourse);
+            $studentCourse->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeStudentCourse(StudentCourse $studentCourse): static
+    {
+        if ($this->studentCourses->removeElement($studentCourse)) {
+            // set the owning side to null (unless already changed)
+            if ($studentCourse->getUser() === $this) {
+                $studentCourse->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Calendar>
+     */
+    public function getCalendars(): Collection
+    {
+        return $this->calendars;
+    }
+
+    public function addCalendar(Calendar $calendar): static
+    {
+        if (!$this->calendars->contains($calendar)) {
+            $this->calendars->add($calendar);
+            $calendar->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCalendar(Calendar $calendar): static
+    {
+        if ($this->calendars->removeElement($calendar)) {
+            // set the owning side to null (unless already changed)
+            if ($calendar->getUser() === $this) {
+                $calendar->setUser(null);
+            }
+        }
 
         return $this;
     }
