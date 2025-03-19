@@ -1,0 +1,53 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Courses index{% endblock %}
+
+{% block body %}
+    <h1>Courses index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Price</th>
+                <th>Duration</th>
+                <th>Level</th>
+                <th>CreatedAt</th>
+                <th>UpdatedAt</th>
+                <th>Image</th>
+                <th>Promotion</th>
+                <th>Discount</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for course in courses %}
+            <tr>
+                <td>{{ course.id }}</td>
+                <td>{{ course.title }}</td>
+                <td>{{ course.description }}</td>
+                <td>{{ course.price }}</td>
+                <td>{{ course.duration }}</td>
+                <td>{{ course.level }}</td>
+                <td>{{ course.createdAt ? course.createdAt|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ course.updatedAt ? course.updatedAt|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ course.image }}</td>
+                <td>{{ course.promotion }}</td>
+                <td>{{ course.discount }}</td>
+                <td>
+                    <a href="{{ path('app_courses_show', {'id': course.id}) }}">show</a>
+                    <a href="{{ path('app_courses_edit', {'id': course.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="12">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_courses_new') }}">Create new</a>
+{% endblock %}

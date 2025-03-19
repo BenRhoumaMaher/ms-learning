@@ -1,0 +1,62 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Courses{% endblock %}
+
+{% block body %}
+    <h1>Courses</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ course.id }}</td>
+            </tr>
+            <tr>
+                <th>Title</th>
+                <td>{{ course.title }}</td>
+            </tr>
+            <tr>
+                <th>Description</th>
+                <td>{{ course.description }}</td>
+            </tr>
+            <tr>
+                <th>Price</th>
+                <td>{{ course.price }}</td>
+            </tr>
+            <tr>
+                <th>Duration</th>
+                <td>{{ course.duration }}</td>
+            </tr>
+            <tr>
+                <th>Level</th>
+                <td>{{ course.level }}</td>
+            </tr>
+            <tr>
+                <th>CreatedAt</th>
+                <td>{{ course.createdAt ? course.createdAt|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>UpdatedAt</th>
+                <td>{{ course.updatedAt ? course.updatedAt|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>Image</th>
+                <td>{{ course.image }}</td>
+            </tr>
+            <tr>
+                <th>Promotion</th>
+                <td>{{ course.promotion }}</td>
+            </tr>
+            <tr>
+                <th>Discount</th>
+                <td>{{ course.discount }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_courses_index') }}">back to list</a>
+
+    <a href="{{ path('app_courses_edit', {'id': course.id}) }}">edit</a>
+
+    {{ include('courses/_delete_form.html.twig') }}
+{% endblock %}

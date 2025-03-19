@@ -1,0 +1,24 @@
+index:
+  path: /courses
+  controller: App\Controller\Course\CoursesController::index
+  methods: GET
+
+show:
+  path: /course/{id}
+  controller: App\Controller\Course\CoursesController::show
+  methods: GET
+
+create:
+  path: /courses
+  controller: App\Controller\Course\CoursesController::create
+  methods: POST
+
+update:
+  path: /course/{id}
+  controller: App\Controller\Course\CoursesController::update
+  methods: PUT
+
+delete:
+  path: /course/{id}
+  controller: App\Controller\Course\CoursesController::delete
+  methods: DELETE

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useRef } from 'react'
 import '../../styles/styles.css'
 import BecomeInstructorHero from './sections/BecomeInstructorHero'
 import WhyTeachWithUs from './sections/WhyTeachWithUs'
@@ -9,13 +9,21 @@ import JoinFamily from './sections/JoinFamily'
 import Footer from '../../layouts/Footer'
 
 const BecomeInstructor = () => {
+  const joinFamilyRef = useRef(null);
+
+  const scrollToJoinFamily = () => {
+    if (joinFamilyRef.current) {
+      joinFamilyRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
     <section>
       <section className='section-container'>
-        <BecomeInstructorHero />
+        <BecomeInstructorHero scrollToJoinFamily={scrollToJoinFamily} />
       </section>
       <section className='section-container'>
-        <WhyTeachWithUs />
+        <WhyTeachWithUs scrollToJoinFamily={scrollToJoinFamily} />
       </section>
       <section className='section-container'>
         <HowToBecomeInstructor />
@@ -26,7 +34,7 @@ const BecomeInstructor = () => {
       <section className='section-container'>
         <FaqSection />
       </section>
-      <section className='section-container'>
+      <section className='section-container' ref={joinFamilyRef}>
         <JoinFamily />
       </section>
       <Footer />

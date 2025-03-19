@@ -21,3 +21,12 @@ App\Controller\authentification\AuthController:
   prefix: /
   name_prefix: 'auth_'
 
+App\Controller\Category\CategoryController:
+  resource: routes/categories.yaml
+  prefix: /
+  name_prefix: 'api_category_'
+
+App\Controller\\Course\CoursesController:
+  resource: routes/courses.yaml
+  prefix: /
+  name_prefix: 'api_courses_'  

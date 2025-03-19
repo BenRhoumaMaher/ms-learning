@@ -1,7 +1,7 @@
 import React from "react";
 
 
-const WhyTeachWithUs = () => {
+const WhyTeachWithUs = ({ scrollToJoinFamily }) => {
   return (
     <section className="container becoinstr-why-teach text-center">
       <h2 className="fw-bold">Why Teach with Us</h2>
@@ -26,7 +26,7 @@ const WhyTeachWithUs = () => {
         ))}
       </div>
 
-      <button className="becoinstr-btn mt-4">Join Now</button>
+      <button className="becoinstr-btn mt-4" onClick={scrollToJoinFamily}>Join Now</button>
     </section>
   );
 };

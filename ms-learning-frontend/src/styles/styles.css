@@ -207,7 +207,6 @@
 }
 
 .course-image {
-  background-color: #20c997;
   height: 150px;
   display: flex;
   align-items: center;
@@ -218,7 +217,7 @@
 
 .course-image i {
   font-size: 50px;
-  color: white;
+  color: black;
 }
 
 .course-info h5 {
@@ -3385,7 +3384,7 @@
 
 /* FORM CONTAINER */
 .becinsjoin-form-container {
-  background-color: #2fa1bd;
+  background-color: #3cfaf1;
   padding: 40px;
   max-width: 600px;
   margin: 20px auto;
@@ -3434,14 +3433,14 @@
 
 /* BUTTON */
 .becinsjoin-btn {
-  background-color: #1fbf73;
+  background-color: #89c4ff;
   color: white;
   padding: 10px 20px;
   margin-top: 20px;
   border: none;
   border-radius: 3px;
   cursor: pointer;
-  width: 100%;
+  width: 50%;
   transition: 0.3s;
 }
 

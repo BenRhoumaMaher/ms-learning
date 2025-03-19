@@ -2,11 +2,12 @@
 
 namespace App\Entity;
 
-use App\Repository\CoursesRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\CoursesRepository;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: CoursesRepository::class)]
 class Courses
@@ -14,19 +15,23 @@ class Courses
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['category:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['category:read'])]
     private ?string $title = null;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Groups(['category:read'])]
     private ?string $description = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 5, scale: 2, nullable: true)]
+    #[Groups(['category:read'])]
     private ?string $price = null;
 
-    #[ORM\Column]
-    private ?int $duration = null;
+    #[ORM\Column(type: 'string', length: 50)]
+    private ?string $duration = null;
 
     #[ORM\Column(length: 50)]
     private ?string $level = null;
@@ -41,6 +46,7 @@ class Courses
     private ?\DateTimeInterface $updatedAt = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['category:read'])]
     private ?string $image = null;
 
     /**
@@ -139,12 +145,12 @@ class Courses
         return $this;
     }
 
-    public function getDuration(): ?int
+    public function getDuration(): ?string
     {
         return $this->duration;
     }
 
-    public function setDuration(int $duration): static
+    public function setDuration(string $duration): static
     {
         $this->duration = $duration;
 

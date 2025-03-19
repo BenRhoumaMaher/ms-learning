@@ -1,6 +1,6 @@
 import React from "react";
 
-const BecomeInstructorHero = () => {
+const BecomeInstructorHero = ({ scrollToJoinFamily }) => {
   return (
     <section className="container-fluid becoinstr-hero">
       <div className="container">
@@ -13,7 +13,7 @@ const BecomeInstructorHero = () => {
             <p className="becoinstr-details text-primary">
               Join 10,000+ instructors | Earn up to $5,000/month | Teach 1000+ students
             </p>
-            <button className="btn becoinstr-btn">Start Teaching Today</button>
+            <button className="btn becoinstr-btn" onClick={scrollToJoinFamily}>Start Teaching Today</button>
           </div>
 
           <div className="col-md-6 text-end">

@@ -7,7 +7,7 @@ const api = axios.create({
   }
 })
 
-const forgot = axios.create({
+const bc = axios.create({
   baseURL: 'http://localhost:8080/',
   headers: {
     'Content-Type': 'application/json'
@@ -43,7 +43,7 @@ export const login = async (credentials, rememberme) => {
 
 export const forgotPassword = async email => {
   try {
-    const response = await forgot.post('forgot-password', { email })
+    const response = await bc.post('forgot-password', { email })
     return response.data
   } catch (error) {
     throw error
@@ -52,7 +52,7 @@ export const forgotPassword = async email => {
 
 export const resetPassword = async (token, password) => {
   try {
-    const response = await forgot.post('reset-password', { token, password })
+    const response = await bc.post('reset-password', { token, password })
     return response.data
   } catch (error) {
     throw error
@@ -85,4 +85,25 @@ export const googleLogin = async (googleToken, rememberMe) => {
     throw error
   }
 }
+
+export const getCategories = async () => {
+  try {
+    const response = await bc.get('/categories')
+    return response.data
+  } catch (error) {
+    console.error('Error fetching categories:', error)
+    throw error
+  }
+}
+
+export const getCourses = async () => {
+  try {
+    const response = await bc.get('/courses')
+    return response.data
+  } catch (error) {
+    console.error('Error fetching courses:', error)
+    throw error
+  }
+}
+
 
