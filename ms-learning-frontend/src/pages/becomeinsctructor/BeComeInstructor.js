@@ -5,8 +5,8 @@ import WhyTeachWithUs from './sections/WhyTeachWithUs'
 import HowToBecomeInstructor from './sections/HowToBecomeInstructor'
 import InstructorSuccessStories from './sections/InstructorSuccessStories'
 import FaqSection from './sections/FaqSection'
-import JoinFamily from './sections/JoinFamily'
 import Footer from '../../layouts/Footer'
+import JoinFamilyContainer from '../../components/containers/becomeInstructor/JoinFamilyContainer'
 
 const BecomeInstructor = () => {
   const joinFamilyRef = useRef(null);
@@ -35,7 +35,7 @@ const BecomeInstructor = () => {
         <FaqSection />
       </section>
       <section className='section-container' ref={joinFamilyRef}>
-        <JoinFamily />
+        <JoinFamilyContainer />
       </section>
       <Footer />
     </section>

@@ -3,6 +3,7 @@
 namespace App\Controller\authentification;
 
 use OpenApi\Attributes as OA;
+use App\Service\UserService\UserService;
 use Symfony\Component\HttpFoundation\Request;
 use App\Service\MailService\MailServiceInterface;
 use App\Service\UserService\UserServiceInterface;
@@ -13,7 +14,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 final class RegisterController extends AbstractController
 {
     public function __construct(
-        private UserServiceInterface $userService,
+        private UserService          $userService,
         private MailServiceInterface $mailService
     ) {
     }
@@ -136,7 +137,9 @@ final class RegisterController extends AbstractController
             firstname: $data['firstname'],
             lastname: $data['lastname'],
             googleId: null,
-            plainPassword: $data['password']
+            plainPassword: $data['password'],
+            expertise: null,
+            resume: null
         );
 
         $this->mailService->sendEmail(

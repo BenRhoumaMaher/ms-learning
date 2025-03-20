@@ -8,7 +8,7 @@ const api = axios.create({
 })
 
 const bc = axios.create({
-  baseURL: 'http://localhost:8080/',
+  baseURL: 'http://localhost:8080',
   headers: {
     'Content-Type': 'application/json'
   }
@@ -73,7 +73,7 @@ export const googleLogin = async (googleToken, rememberMe) => {
       }
     )
 
-    console.log("Backend Response:", response.data)
+    console.log('Backend Response:', response.data)
     if (rememberMe) {
       localStorage.setItem('token', response.data.token)
     } else {
@@ -106,4 +106,62 @@ export const getCourses = async () => {
   }
 }
 
+export const becomeInstructor = async newuserdata => {
+  try {
+    const response = await bc.post('/become-instructor', newuserdata, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    })
+    return response.data
+  } catch (error) {
+    console.error('Signup Error Response:', error.response?.data)
+    throw error
+  }
+}
 
+export const getUsers = async () => {
+  try {
+    const response = await bc.get('/users')
+    return response.data
+  } catch (error) {
+    console.error('Error fetching users:', error)
+    throw error
+  }
+}
+
+export const getINstructorDemands = async () => {
+  try {
+    const response = await bc.get('/instructor-demands')
+    return response.data
+  } catch (error) {
+    console.error('Error fetching users:', error)
+    throw error
+  }
+}
+
+export const DeleteINstructorDemands = async id => {
+  try {
+    const response = await bc.delete(`/demande/${id}`)
+    return response.data
+  } catch (error) {
+    console.error('Error deleting user:', error)
+    throw error
+  }
+}
+
+export const handleAccept = async id => {
+  try {
+    const response = await bc.post(`/accept-instructor/${id}`, {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+
+    if (!response.ok) {
+      throw new Error('Failed to accept instructor')
+    }
+  } catch (error) {
+    console.error('Error:', error)
+  }
+}

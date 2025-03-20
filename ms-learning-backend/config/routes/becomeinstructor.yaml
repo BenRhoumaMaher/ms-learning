@@ -1,0 +1,4 @@
+becomeinstructor:
+    path: become-instructor
+    controller: App\Controller\BecomeInstructor\BecomeInstructor::register
+    methods: POST

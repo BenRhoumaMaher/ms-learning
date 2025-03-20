@@ -3,6 +3,7 @@
 namespace App\Service\UserService;
 
 use App\Entity\User;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 interface UserServiceInterface
 {
@@ -17,6 +18,9 @@ interface UserServiceInterface
         string $firstname,
         string $lastname,
         ?string $googleId,
-        ?string $plainPassword
+        ?string $plainPassword,
+        ?string $expertise,
+        ?UploadedFile $resume,
     ): User;
+    public function getAllUsers(): array;
 }

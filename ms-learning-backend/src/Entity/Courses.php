@@ -15,19 +15,19 @@ class Courses
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['category:read'])]
+    #[Groups(['category:read', 'course:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['category:read'])]
+    #[Groups(['category:read', 'course:read'])]
     private ?string $title = null;
 
     #[ORM\Column(type: Types::TEXT)]
-    #[Groups(['category:read'])]
+    #[Groups(['category:read', 'course:read'])]
     private ?string $description = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 5, scale: 2, nullable: true)]
-    #[Groups(['category:read'])]
+    #[Groups(['category:read', 'course:read'])]
     private ?string $price = null;
 
     #[ORM\Column(type: 'string', length: 50)]
@@ -46,7 +46,7 @@ class Courses
     private ?\DateTimeInterface $updatedAt = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['category:read'])]
+    #[Groups(['category:read', 'course:read'])]
     private ?string $image = null;
 
     /**

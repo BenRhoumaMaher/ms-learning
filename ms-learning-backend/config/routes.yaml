@@ -26,7 +26,23 @@ App\Controller\Category\CategoryController:
   prefix: /
   name_prefix: 'api_category_'
 
-App\Controller\\Course\CoursesController:
+App\Controller\Course\CoursesController:
   resource: routes/courses.yaml
   prefix: /
   name_prefix: 'api_courses_'  
+
+
+App\Controller\BecomeInstructor\BecomeInstructor:
+    resource: routes/becomeinstructor.yaml
+    prefix: /
+    name_prefix: 'becomeinstructor_' 
+
+App\Controller\User\UserController:
+    resource: routes/user.yaml
+    prefix: /
+    name_prefix: 'users_'  
+
+App\Controller\User\InstructorDemands:
+    resource: routes/instructorDemands.yaml
+    prefix: /
+    name_prefix: 'instructordemands_'          

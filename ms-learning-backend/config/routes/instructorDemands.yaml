@@ -1,0 +1,14 @@
+index:
+  path: instructor-demands
+  controller: App\Controller\User\InstructorDemands::index
+  methods: GET
+
+delete:
+  path: demande/{id}
+  controller: App\Controller\User\InstructorDemands::delete
+  methods: DELETE
+
+becomeinstructor:
+    path: accept-instructor/{id}
+    controller: App\Controller\User\InstructorDemands::acceptInstructor
+    methods: POST

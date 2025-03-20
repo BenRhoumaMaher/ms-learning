@@ -18,6 +18,10 @@ import AccountSettings from './pages/accountsettingsstudent/AccountSettings'
 import BecomeInstructor from './pages/becomeinsctructor/BeComeInstructor'
 import LessonPlayer from './pages/lessonplayer/LessonPlayer'
 import LiveCourse from './pages/livecourse/LiveCourse'
+import Dashboard from './pages/admin/Dashboard'
+import Users from './pages/admin/Users'
+import UsersList from './pages/admin/UsersList'
+import InstructorDemands from './pages/admin/InstructorDemands'
 function App () {
   return (
     <div className='App'>
@@ -42,6 +46,10 @@ function App () {
           <Route path='/become-instructor' element={<BecomeInstructor />} />
           <Route path='/lesson-player' element={<LessonPlayer />} />
           <Route path='/live-course' element={<LiveCourse />} />
+          <Route path='/admin' element={<Dashboard />} />
+          <Route path='/admin/users' element={<Users />} />
+          <Route path='/admin/users-list' element={<UsersList />} />
+          <Route path='/admin/instructor-demands' element={<InstructorDemands />} />
         </Routes>
       </Router>
     </div>

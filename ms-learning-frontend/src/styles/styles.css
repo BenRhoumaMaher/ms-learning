@@ -215,6 +215,15 @@
   margin-bottom: 15px;
 }
 
+.user-image {
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 5px;
+  margin-bottom: 15px;
+}
+
 .course-image i {
   font-size: 50px;
   color: black;

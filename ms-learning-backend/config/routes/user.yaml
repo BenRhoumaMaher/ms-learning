@@ -1,0 +1,6 @@
+index:
+  path: users
+  controller: App\Controller\User\UserController::index
+  methods: GET
+
+  

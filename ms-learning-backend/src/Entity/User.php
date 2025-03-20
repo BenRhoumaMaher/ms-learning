@@ -2,11 +2,12 @@
 
 namespace App\Entity;
 
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -19,25 +20,31 @@ class User implements
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups('user:read')]
     private ?int $id = null;
 
     #[ORM\Column(length: 50, type: 'string')]
     #[Assert\NotBlank(message: "Firstname is required")]
+    #[Groups('user:read')]
     private ?string $firstname = null;
 
     #[ORM\Column(length: 50, type: 'string')]
     #[Assert\NotBlank(message: "Lastname is required")]
+    #[Groups('user:read')]
     private ?string $lastname = null;
 
     #[ORM\Column(length: 50, type: 'string', unique: true)]
     #[Assert\NotBlank(message: "Email is required")]
     #[Assert\Email(message: "Invalid email format")]
+    #[Groups('user:read')]
     private ?string $email = null;
 
     #[ORM\Column]
+    #[Groups('user:read')]
     private array $roles = [];
 
     #[ORM\Column(type: 'string')]
+    #[Groups('user:read')]
     private ?string $picture = null;
 
     #[ORM\Column(length: 255)]
@@ -69,6 +76,7 @@ class User implements
     private ?\DateTimeInterface $createdAt = null;
 
     #[ORM\Column(length: 100)]
+    #[Groups('user:read')]
     private ?string $username = null;
 
     #[ORM\Column(length: 255, nullable: true)]

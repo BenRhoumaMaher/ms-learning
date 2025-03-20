@@ -5,6 +5,7 @@ namespace App\Service\UserService;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Service\UserService\UserServiceInterface;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
@@ -15,6 +16,12 @@ class UserService implements UserServiceInterface
         private EntityManagerInterface $em,
         private ValidatorInterface $validator
     ) {
+    }
+    public function getAllUsers(): array
+    {
+        return $this->em->getRepository(
+            User::class
+        )->findAll();
     }
 
     public function validateUserData(
@@ -58,6 +65,8 @@ class UserService implements UserServiceInterface
         string $lastname,
         ?string $googleId = null,
         ?string $plainPassword = null,
+        ?string $expertise = null,
+        ?UploadedFile $resume = null,
         ?string $profilePicture = '/profile/avatar.png'
     ): User {
         $user = new User();
