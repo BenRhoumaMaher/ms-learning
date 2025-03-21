@@ -10,44 +10,21 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
-class UserService implements UserServiceInterface
+class BecomeInstructorService implements UserServiceInterface
 {
     public function __construct(
         private UserPasswordHasherInterface $passwordHasher,
         private EntityManagerInterface $em,
-        private ValidatorInterface $validator
+        private ValidatorInterface $validator,
+        private string $resumeDirectory,
+        private string $baseUrl
     ) {
-    }
-    public function getAllUsers(): array
-    {
-        return $this->em->getRepository(
-            User::class
-        )->findAll();
     }
 
     public function validateUserData(
         array $data
     ): array {
-        $errors = [];
-
-        if ($data['password'] !== ($data['confirmPassword'] ?? null)) {
-            $errors['confirmPassword'] = 'Passwords do not match';
-        }
-
-        $user = new User();
-        $user->setFirstname($data['firstname'] ?? null);
-        $user->setLastname($data['lastname'] ?? null);
-        $user->setEmail($data['email'] ?? null);
-        $user->setPassword($data['password'] ?? null);
-
-        $violations = $this->validator->validate($user);
-        if (count($violations) > 0) {
-            foreach ($violations as $violation) {
-                $errors[$violation->getPropertyPath()] = $violation->getMessage();
-            }
-        }
-
-        return $errors;
+        return [];
     }
 
     public function userExists(
@@ -76,28 +53,50 @@ class UserService implements UserServiceInterface
         $user->setFirstname($firstname);
         $user->setLastname($lastname);
         $user->setUsername($firstname . ' ' . $lastname);
-        $user->setRoles(['ROLE_USER']);
+        $user->setRoles(['ROLE_USER', 'ROLE_INSTRUCTOR']);
+        $user->setExpertise($expertise);
         $user->setPicture($profilePicture);
 
-        if ($googleId) {
-            $user->setGoogleId($googleId);
-            $plainPassword = bin2hex(
-                random_bytes(8)
-            );
+        if (empty($plainPassword)) {
+            $plainPassword = bin2hex(random_bytes(8));
         }
 
-        if ($plainPassword) {
-            $user->setPassword(
-                $this->passwordHasher->hashPassword(
-                    $user,
-                    $plainPassword
-                )
-            );
+        $user->setPassword(
+            $this->passwordHasher->hashPassword(
+                $user,
+                $plainPassword
+            )
+        );
+
+        if ($resume) {
+            $resumeFilename = uniqid() . '.' . $resume->guessExtension();
+            $resume->move($this->resumeDirectory, $resumeFilename);
+
+            $resumeUrl = $this->baseUrl . '/images/resumes/' . $resumeFilename;
+
+            $user->setResume($resumeUrl);
+        }
+
+        if (!empty($courses)) {
+            $courseRepository = $this->em->getRepository(Courses::class);
+            foreach ($courses as $courseId) {
+                $course = $courseRepository->find($courseId);
+                if ($course) {
+                    $user->addCourse($course);
+                }
+            }
         }
 
         $this->em->persist($user);
         $this->em->flush();
 
         return $user;
+    }
+
+    public function getAllUsers(): array
+    {
+        return $this->em->getRepository(
+            User::class
+        )->findAll();
     }
 }

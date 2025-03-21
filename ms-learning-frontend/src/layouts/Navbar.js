@@ -12,6 +12,7 @@ const Navbar = () => {
   const user = isAuthenticated
     ? JSON.parse(atob(isAuthenticated.split('.')[1]))
     : null
+  const userRoles = user?.roles || []
   const userImage = 'http://localhost:8080/profile/avatar.png'
   const [showProfileMenu, setShowProfileMenu] = useState(false)
   const dropdownRef = useRef(null)
@@ -27,7 +28,9 @@ const Navbar = () => {
             <img src={logo} alt='Logo' height='40' />
           </Link>
 
-          <span className='nav-text me-3'>Explore</span>
+          <Link to='/course-catalog' className='nav-link'>
+            <span className='nav-text me-3'>Explore</span>
+          </Link>
 
           <form className='d-none d-md-flex'>
             <input
@@ -47,11 +50,14 @@ const Navbar = () => {
               </Link>
               <div className='nav-separator'></div>
 
-              <Link to='/become-instructor' className='nav-link'>
-                Careers
-              </Link>
-              <div className='nav-separator'></div>
-
+              {!userRoles.includes('ROLE_INSTRUCTOR') && (
+                <>
+                  <Link to='/become-instructor' className='nav-link'>
+                    Careers
+                  </Link>
+                  <div className='nav-separator'></div>
+                </>
+              )}
               <Link to='/' className='nav-link'>
                 <i className='bi bi-chat'></i>
               </Link>
@@ -80,18 +86,48 @@ const Navbar = () => {
                       />
                       <p className='username'>{user?.username}</p>
                     </div>
-                    <Link to='/student-dashboard' className='dropdown-item'>
-                      Dashboard
-                    </Link>
-                    <Link to='/student-notifications' className='dropdown-item'>
-                      Notifications
-                    </Link>
-                    <Link to='/student-calendar' className='dropdown-item'>
-                      Calendar
-                    </Link>
-                    <Link to='/registered-courses' className='dropdown-item'>
-                      Registered Courses
-                    </Link>
+                    {userRoles.includes('ROLE_INSTRUCTOR') ? (
+                      <Link
+                        to='/instructor-dashboard'
+                        className='dropdown-item'
+                      >
+                        Dashboard
+                      </Link>
+                    ) : (
+                      <Link to='/student-dashboard' className='dropdown-item'>
+                        Dashboard
+                      </Link>
+                    )}
+                    {userRoles.includes('ROLE_INSTRUCTOR') ? (
+                      <Link to='/' className='dropdown-item'>
+                        Notifications
+                      </Link>
+                    ) : (
+                      <Link
+                        to='/student-notifications'
+                        className='dropdown-item'
+                      >
+                        Notifications
+                      </Link>
+                    )}
+                    {userRoles.includes('ROLE_INSTRUCTOR') ? (
+                      <Link to='/' className='dropdown-item'>
+                        Calendar
+                      </Link>
+                    ) : (
+                      <Link to='/student-calendar' className='dropdown-item'>
+                        Calendar
+                      </Link>
+                    )}
+                    {userRoles.includes('ROLE_INSTRUCTOR') ? (
+                      <Link to='/' className='dropdown-item'>
+                        Create Course
+                      </Link>
+                    ) : (
+                      <Link to='/registered-courses' className='dropdown-item'>
+                        Registered Courses
+                      </Link>
+                    )}
                     <Link to='/account-settings' className='dropdown-item'>
                       Account Settings
                     </Link>

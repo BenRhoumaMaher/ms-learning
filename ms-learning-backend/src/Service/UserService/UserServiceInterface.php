@@ -21,6 +21,8 @@ interface UserServiceInterface
         ?string $plainPassword,
         ?string $expertise,
         ?UploadedFile $resume,
+        ?string $profilePicture,
+        array $courses = []
     ): User;
     public function getAllUsers(): array;
 }

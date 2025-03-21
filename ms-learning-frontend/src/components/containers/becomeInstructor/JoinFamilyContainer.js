@@ -40,7 +40,10 @@ export default function JoinFamilyContainer () {
       formData.append('lastname', data.lastname)
       formData.append('email', data.email)
       formData.append('expertise', data.expertise)
-      formData.append('course', data.course)
+
+      data.courses.forEach((courseId, index) => {
+        formData.append(`courses[${index}]`, courseId)
+      })
 
       if (data.resume instanceof File) {
         formData.append('resume', data.resume)

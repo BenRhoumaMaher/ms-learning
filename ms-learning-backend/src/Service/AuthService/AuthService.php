@@ -17,14 +17,18 @@ class AuthService implements AuthServiceInterface
     ): array {
         $token = $this->jwtManager->createFromPayload(
             $user,
-            ['user_id' => $user->getId()]
+            [
+                'user_id' => $user->getId(),
+                'roles' => $user->getRoles(), 
+            ]
         );
 
         return [
             'token' => $token,
             'username' => $user->getUsername(),
             'picture' => $user->getPicture(),
-            'user_id' => $user->getId()
+            'user_id' => $user->getId(),
+            'user_role' => $user->getRoles(),
         ];
     }
 }

@@ -42,7 +42,7 @@ const InstructorDemands = () => {
 
     try {
       await DeleteINstructorDemands(userToDelete)
-      setUsers(users.filter(user => user.id !== userToDelete)) // Remove from UI
+      setUsers(users.filter(user => user.id !== userToDelete))
     } catch (error) {
       console.error('Failed to delete user:', error)
     }
@@ -74,6 +74,7 @@ const InstructorDemands = () => {
               <th>LastName</th>
               <th>UserName</th>
               <th>Email</th>
+              <th>Courses</th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -95,6 +96,16 @@ const InstructorDemands = () => {
                 <td>{user.lastname}</td>
                 <td>{user.username}</td>
                 <td>{user.email}</td>
+                {user.courses && user.courses.length > 0 ? (
+                  user.courses.map((course, index) => (
+                    <span key={index}>
+                      {course.title}
+                      {index !== user.courses.length - 1 && ', '}
+                    </span>
+                  ))
+                ) : (
+                  <span>No courses</span>
+                )}
                 <td>
                   <button
                     className='btn btn-warning btn-sm me-2'

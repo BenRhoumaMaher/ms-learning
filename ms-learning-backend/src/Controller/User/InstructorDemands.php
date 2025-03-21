@@ -5,6 +5,7 @@ namespace App\Controller\User;
 use App\Entity\User;
 use App\Form\UserType;
 use App\Repository\UserRepository;
+use App\Service\UserService\BecomeInstructorService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
@@ -18,7 +19,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 final class InstructorDemands extends AbstractController
 {
     public function __construct(
-        private UserServiceInterface $userService,
+        private BecomeInstructorService $userService,
         private MailServiceInterface $mailService
     ) {
     }

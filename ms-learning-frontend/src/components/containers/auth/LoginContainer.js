@@ -16,13 +16,25 @@ export default function LoginContainer () {
         {
           email: data.email,
           password: data.password,
-          username: data.username
+          username: data.username,
+          role: data.role
         },
         remember
       )
+
       localStorage.setItem('username', response.username)
+      localStorage.setItem('token', response.token)
+
+      const decodedToken = JSON.parse(atob(response.token.split('.')[1]))
+      const userRoles = decodedToken.roles || []
+
       formMethods.reset()
-      navigate('/')
+
+      if (userRoles.includes('ROLE_INSTRUCTOR')) {
+        navigate('/instructor-dashboard')
+      } else {
+        navigate('/')
+      }
     } catch (err) {
       if (err.response && err.response.data.error) {
         setGlobalError(err.response.data.error)
@@ -36,8 +48,17 @@ export default function LoginContainer () {
 
   const handleGoogleLogin = async response => {
     try {
-      await googleLogin(response.credential, remember)
-      navigate('/')
+      const res = await googleLogin(response.credential, remember)
+      localStorage.setItem('token', res.token)
+
+      const decodedToken = JSON.parse(atob(res.token.split('.')[1]))
+      const userRoles = decodedToken.roles || []
+
+      if (userRoles.includes('ROLE_INSTRUCTOR')) {
+        navigate('/instructor-dashboard')
+      } else {
+        navigate('/')
+      }
     } catch (err) {
       setGlobalError('Google login failed')
     }

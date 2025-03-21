@@ -86,6 +86,7 @@ class User implements
      * @var Collection<int, Courses>
      */
     #[ORM\ManyToMany(targetEntity: Courses::class, mappedBy: 'enrollments')]
+    #[Groups('user:read')]
     private Collection $courses;
 
     /**
