@@ -22,6 +22,7 @@ import Dashboard from './pages/admin/Dashboard'
 import Users from './pages/admin/Users'
 import UsersList from './pages/admin/UsersList'
 import InstructorDemands from './pages/admin/InstructorDemands'
+import CreateCourse from './pages/createCourseInstructor/CreateCourse'
 function App () {
   return (
     <div className='App'>
@@ -50,6 +51,7 @@ function App () {
           <Route path='/admin/users' element={<Users />} />
           <Route path='/admin/users-list' element={<UsersList />} />
           <Route path='/admin/instructor-demands' element={<InstructorDemands />} />
+          <Route path='/create-course' element={<CreateCourse />} />
         </Routes>
       </Router>
     </div>

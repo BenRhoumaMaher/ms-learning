@@ -120,7 +120,7 @@ const Navbar = () => {
                       </Link>
                     )}
                     {userRoles.includes('ROLE_INSTRUCTOR') ? (
-                      <Link to='/' className='dropdown-item'>
+                      <Link to='/create-course' className='dropdown-item'>
                         Create Course
                       </Link>
                     ) : (
