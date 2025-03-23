@@ -47,14 +47,18 @@ class Lesson
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $updatedAt = null;
 
-    #[ORM\Column(nullable: true)]
-    private ?array $ressources = null;
+    #[ORM\Column(type: 'string', nullable: true)]
+    private ?string $ressources = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $liveMeetingLink = null;
 
     #[ORM\ManyToOne(inversedBy: 'lessons')]
     private ?Module $module = null;
+
+    #[ORM\ManyToOne(inversedBy: 'lessons')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $user = null;
 
     public function getId(): ?int
     {
@@ -193,12 +197,12 @@ class Lesson
         return $this;
     }
 
-    public function getRessources(): ?array
+    public function getRessources(): ?string
     {
         return $this->ressources;
     }
 
-    public function setRessources(?array $ressources): static
+    public function setRessources(?string $ressources): self
     {
         $this->ressources = $ressources;
 
@@ -225,6 +229,18 @@ class Lesson
     public function setModule(?Module $module): static
     {
         $this->module = $module;
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): static
+    {
+        $this->user = $user;
 
         return $this;
     }

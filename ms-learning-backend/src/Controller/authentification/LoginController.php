@@ -6,6 +6,7 @@ use OpenApi\Attributes as OA;
 use Symfony\Component\HttpFoundation\Request;
 use App\Service\AuthService\AuthServiceInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 final class LoginController extends AbstractController

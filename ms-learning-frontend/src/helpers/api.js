@@ -165,3 +165,54 @@ export const handleAccept = async id => {
     console.error('Error:', error)
   }
 }
+
+export const getUserCourses = async () => {
+  try {
+    const token =
+      localStorage.getItem('token') || sessionStorage.getItem('token')
+    if (!token) {
+      throw new Error('No authentication token found')
+    }
+
+    const user = JSON.parse(atob(token.split('.')[1]))
+    const userId = user?.user_id
+    if (!userId) {
+      throw new Error('User ID not found in token')
+    }
+
+    const response = await bc.get(`/courses/user/${userId}`)
+    return response.data
+  } catch (error) {
+    console.error('Error fetching user courses:', error)
+    throw error
+  }
+}
+
+export const createCourse = async (courseData, files) => {
+  try {
+    const formData = new FormData()
+
+    formData.append('data', JSON.stringify(courseData))
+
+    files.forEach(({ moduleIndex, lessonIndex, file }) => {
+      formData.append(
+        `modules[${moduleIndex}][lessons][${lessonIndex}][resource]`,
+        file
+      )
+    })
+
+    const response = await bc.post('/instructor/course/create', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    })
+
+    return response.data
+  } catch (error) {
+    console.error(
+      'Error creating course:',
+      error.response?.data || error.message
+    )
+    throw error
+  }
+}

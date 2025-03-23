@@ -28,11 +28,12 @@ class UserRepository extends ServiceEntityRepository
     public function findInstructors(): array
     {
         return $this->createQueryBuilder('u')
-        ->where("u.roles LIKE :role")
-        ->setParameter('role', '%"ROLE_INSTRUCTOR"%')
-        ->getQuery()
-        ->getResult();
+            ->where("u.roles LIKE :role")
+            ->setParameter('role', '%"ROLE_INSTRUCTOR"%')
+            ->getQuery()
+            ->getResult();
     }
+
 
     //    /**
     //     * @return User[] Returns an array of User objects

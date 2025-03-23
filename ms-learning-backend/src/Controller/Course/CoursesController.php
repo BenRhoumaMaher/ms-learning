@@ -2,9 +2,17 @@
 
 namespace App\Controller\Course;
 
+use DateTime;
+use App\Entity\Lesson;
+use App\Entity\Module;
+use DateTimeImmutable;
+use App\Entity\Courses;
+use App\Repository\UserRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use App\Service\Course\CourseServiceInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
@@ -25,6 +33,27 @@ class CoursesController extends AbstractController
             ['groups' => 'course:read']
         );
     }
+
+    public function createCourse(Request $request): JsonResponse
+    {
+        $result = $this->courseService->createFullCourse(
+            $request
+        );
+
+        if (isset($result['error'])) {
+            return new JsonResponse(
+                ['message' => $result['error']],
+                $result['status']
+            );
+        }
+
+        return new JsonResponse(
+            ['message' => $result['message']],
+            $result['status']
+        );
+    }
+
+
 
     public function show(int $id): JsonResponse
     {

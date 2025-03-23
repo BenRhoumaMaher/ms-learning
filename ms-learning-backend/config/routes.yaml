@@ -29,7 +29,7 @@ App\Controller\Category\CategoryController:
 App\Controller\Course\CoursesController:
   resource: routes/courses.yaml
   prefix: /
-  name_prefix: 'api_courses_'  
+  name_prefix: 'courses_'  
 
 
 App\Controller\BecomeInstructor\BecomeInstructor:

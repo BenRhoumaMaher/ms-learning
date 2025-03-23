@@ -37,6 +37,10 @@ class Module
     #[ORM\OneToMany(targetEntity: Lesson::class, mappedBy: 'module')]
     private Collection $lessons;
 
+    #[ORM\ManyToOne(inversedBy: 'modules')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $user = null;
+
     public function __construct()
     {
         $this->lessons = new ArrayCollection();
@@ -133,6 +137,18 @@ class Module
                 $lesson->setModule(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): static
+    {
+        $this->user = $user;
 
         return $this;
     }

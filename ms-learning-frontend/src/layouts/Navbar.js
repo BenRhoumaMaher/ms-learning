@@ -1,10 +1,11 @@
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import '../styles/styles.css'
 import logo from '../assets/logo.png'
 import useClickOutside from '../hooks/useClickOutside'
 import { useNavigate } from 'react-router-dom'
+import { getUserCourses } from '../helpers/api'
 
 const Navbar = () => {
   const isAuthenticated =
@@ -12,11 +13,25 @@ const Navbar = () => {
   const user = isAuthenticated
     ? JSON.parse(atob(isAuthenticated.split('.')[1]))
     : null
+  const userId = user?.user_id || null
   const userRoles = user?.roles || []
   const userImage = 'http://localhost:8080/profile/avatar.png'
   const [showProfileMenu, setShowProfileMenu] = useState(false)
   const dropdownRef = useRef(null)
   const navigate = useNavigate()
+  const [username, setUsername] = useState('')
+
+  useEffect(() => {
+    if (userId) {
+      getUserCourses()
+        .then(data => {
+          setUsername(data.username || 'Guest')
+        })
+        .catch(error => {
+          console.error('Error fetching user info:', error)
+        })
+    }
+  }, [userId])
 
   useClickOutside(dropdownRef, () => setShowProfileMenu(false))
 
@@ -84,7 +99,7 @@ const Navbar = () => {
                         alt='User'
                         className='profile-image'
                       />
-                      <p className='username'>{user?.username}</p>
+                      <p className='username'>{username}</p>
                     </div>
                     {userRoles.includes('ROLE_INSTRUCTOR') ? (
                       <Link

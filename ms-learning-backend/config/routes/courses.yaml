@@ -13,6 +13,11 @@ create:
   controller: App\Controller\Course\CoursesController::create
   methods: POST
 
+create_Instructor:
+  path: instructor/course/create
+  controller: App\Controller\Course\CoursesController::createCourse
+  methods: POST
+
 update:
   path: /course/{id}
   controller: App\Controller\Course\CoursesController::update

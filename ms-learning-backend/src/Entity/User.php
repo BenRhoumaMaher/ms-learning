@@ -86,7 +86,7 @@ class User implements
      * @var Collection<int, Courses>
      */
     #[ORM\ManyToMany(targetEntity: Courses::class, mappedBy: 'enrollments')]
-    #[Groups('user:read')]
+    #[Groups('user:read', 'course:read')]
     private Collection $courses;
 
     /**
@@ -155,6 +155,18 @@ class User implements
     #[ORM\OneToMany(targetEntity: Calendar::class, mappedBy: 'user')]
     private Collection $calendars;
 
+    /**
+     * @var Collection<int, Module>
+     */
+    #[ORM\OneToMany(targetEntity: Module::class, mappedBy: 'user')]
+    private Collection $modules;
+
+    /**
+     * @var Collection<int, Lesson>
+     */
+    #[ORM\OneToMany(targetEntity: Lesson::class, mappedBy: 'user')]
+    private Collection $lessons;
+
     public function __construct()
     {
         $this->createdAt = new \DateTime();
@@ -167,6 +179,8 @@ class User implements
         $this->payments = new ArrayCollection();
         $this->studentCourses = new ArrayCollection();
         $this->calendars = new ArrayCollection();
+        $this->modules = new ArrayCollection();
+        $this->lessons = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -625,6 +639,66 @@ class User implements
             // set the owning side to null (unless already changed)
             if ($calendar->getUser() === $this) {
                 $calendar->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Module>
+     */
+    public function getModules(): Collection
+    {
+        return $this->modules;
+    }
+
+    public function addModule(Module $module): static
+    {
+        if (!$this->modules->contains($module)) {
+            $this->modules->add($module);
+            $module->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeModule(Module $module): static
+    {
+        if ($this->modules->removeElement($module)) {
+            // set the owning side to null (unless already changed)
+            if ($module->getUser() === $this) {
+                $module->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Lesson>
+     */
+    public function getLessons(): Collection
+    {
+        return $this->lessons;
+    }
+
+    public function addLesson(Lesson $lesson): static
+    {
+        if (!$this->lessons->contains($lesson)) {
+            $this->lessons->add($lesson);
+            $lesson->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeLesson(Lesson $lesson): static
+    {
+        if ($this->lessons->removeElement($lesson)) {
+            // set the owning side to null (unless already changed)
+            if ($lesson->getUser() === $this) {
+                $lesson->setUser(null);
             }
         }
 

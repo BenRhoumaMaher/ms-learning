@@ -34,6 +34,36 @@ final class UserController extends AbstractController
         );
     }
 
+    public function getUserCourses(
+        int $id,
+        UserRepository $userRepository
+    ): JsonResponse {
+        $user = $userRepository->find($id);
+
+        if (!$user) {
+            return $this->json(
+                ['error' => 'User not found'],
+                404
+            );
+        }
+
+        $courses = $user->getCourses();
+        $userName = $user->getFirstname() . ' ' . $user->getLastName();
+
+        $userData = [
+            'username' => $userName,
+            'courses' => $courses,
+        ];
+
+        return $this->json(
+            $userData,
+            200,
+            [],
+            ['groups' => 'course:read']
+        );
+    }
+
+
     #[Route('', name: 'new', methods: ['POST'])]
     public function new(
         Request $request,
