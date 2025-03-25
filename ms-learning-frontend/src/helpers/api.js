@@ -170,15 +170,8 @@ export const getUserCourses = async () => {
   try {
     const token =
       localStorage.getItem('token') || sessionStorage.getItem('token')
-    if (!token) {
-      throw new Error('No authentication token found')
-    }
-
     const user = JSON.parse(atob(token.split('.')[1]))
     const userId = user?.user_id
-    if (!userId) {
-      throw new Error('User ID not found in token')
-    }
 
     const response = await bc.get(`/courses/user/${userId}`)
     return response.data
@@ -213,6 +206,78 @@ export const createCourse = async (courseData, files) => {
       'Error creating course:',
       error.response?.data || error.message
     )
+    throw error
+  }
+}
+
+export const getUserInfos = async () => {
+  try {
+    const token =
+      localStorage.getItem('token') || sessionStorage.getItem('token')
+    const user = JSON.parse(atob(token.split('.')[1]))
+    const userId = user?.user_id
+
+    const response = await bc.get(`/user/infos/${userId}`)
+    return response.data
+  } catch (error) {
+    console.error('Error fetching user courses:', error)
+    throw error
+  }
+}
+
+export const updateUserInfos = async (userId, formData) => {
+  try {
+    const token =
+      localStorage.getItem('token') || sessionStorage.getItem('token')
+
+    const response = await bc.put(`/user/${userId}`, formData, {
+      headers: {
+        Authorization: `Bearer ${token}`
+        // 'Content-Type': 'multipart/form-data'
+      }
+    })
+
+    return response.data
+  } catch (error) {
+    console.error('Detailed error:', {
+      message: error.message,
+      response: error.response?.data,
+      config: error.config
+    })
+    throw error
+  }
+}
+
+export const updateUserPassword = async (userId, passwordData) => {
+  try {
+    const token =
+      localStorage.getItem('token') || sessionStorage.getItem('token')
+    const response = await bc.put(`/user/${userId}/password`, passwordData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      }
+    })
+    return response.data
+  } catch (error) {
+    console.error('Password update error:', error)
+    throw error
+  }
+}
+
+export const deleteAccount = async userId => {
+  try {
+    const token =
+      localStorage.getItem('token') || sessionStorage.getItem('token')
+    const response = await bc.delete(`/user/${userId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      }
+    })
+    return response.data
+  } catch (error) {
+    console.error('Account deletion error:', error)
     throw error
   }
 }

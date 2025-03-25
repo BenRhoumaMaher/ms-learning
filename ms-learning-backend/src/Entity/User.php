@@ -43,31 +43,36 @@ class User implements
     #[Groups('user:read')]
     private array $roles = [];
 
-    #[ORM\Column(type: 'string')]
+    #[ORM\Column(length: 255)]
     #[Groups('user:read')]
     private ?string $picture = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\NotBlank(message: "Password is required")]
+    #[Assert\NotBlank(message: "Password is required", groups: ['password_update'])]
     #[Assert\Length(
         min: 8,
-        minMessage: "Password must be at least 8 characters long"
+        minMessage: "Password must be at least 8 characters long",
+        groups: ['password_update']
     )]
     #[Assert\Regex(
         pattern: "/(?=.*[a-z])/",
-        message: "Password must contain at least one lowercase letter"
+        message: "Password must contain at least one lowercase letter",
+        groups: ['password_update']
     )]
     #[Assert\Regex(
         pattern: "/(?=.*[A-Z])/",
-        message: "Password must contain at least one uppercase letter"
+        message: "Password must contain at least one uppercase letter",
+        groups: ['password_update']
     )]
     #[Assert\Regex(
         pattern: "/(?=.*\d)/",
-        message: "Password must contain at least one number"
+        message: "Password must contain at least one number",
+        groups: ['password_update']
     )]
     #[Assert\Regex(
         pattern: "/(?=.*[@$!%*?&])/",
-        message: "Password must contain at least one special character (@$!%*?&)"
+        message: "Password must contain at least one special character (@$!%*?&)",
+        groups: ['password_update']
     )]
 
     private ?string $password = null;
@@ -96,15 +101,19 @@ class User implements
     private Collection $reviews;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups('user:read')]
     private ?string $X = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups('user:read')]
     private ?string $instagram = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups('user:read')]
     private ?string $facebook = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups('user:read')]
     private ?string $linkedin = null;
 
     /**
@@ -166,6 +175,14 @@ class User implements
      */
     #[ORM\OneToMany(targetEntity: Lesson::class, mappedBy: 'user')]
     private Collection $lessons;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    #[Groups('user:read')]
+    private ?string $phone = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    #[Groups('user:read')]
+    private ?string $address = null;
 
     public function __construct()
     {
@@ -701,6 +718,30 @@ class User implements
                 $lesson->setUser(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getPhone(): ?string
+    {
+        return $this->phone;
+    }
+
+    public function setPhone(?string $phone): static
+    {
+        $this->phone = $phone;
+
+        return $this;
+    }
+
+    public function getAddress(): ?string
+    {
+        return $this->address;
+    }
+
+    public function setAddress(?string $address): static
+    {
+        $this->address = $address;
 
         return $this;
     }

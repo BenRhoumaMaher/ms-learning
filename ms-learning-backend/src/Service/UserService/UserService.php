@@ -100,4 +100,33 @@ class UserService implements UserServiceInterface
 
         return $user;
     }
+
+    public function verifyPassword(User $user, string $password): bool
+    {
+        return $this->passwordHasher->isPasswordValid($user, $password);
+    }
+
+    public function validatePassword(string $password): array
+    {
+        $user = new User();
+        $user->setPassword($password);
+
+        $errors = [];
+        $violations = $this->validator->validate($user, null, ['password_update']);
+
+        foreach ($violations as $violation) {
+            $errors[$violation->getPropertyPath()] = $violation->getMessage();
+        }
+
+        return $errors;
+    }
+
+    public function updatePassword(User $user, string $newPassword): void
+    {
+        $user->setPassword(
+            $this->passwordHasher->hashPassword($user, $newPassword)
+        );
+        $this->em->flush();
+    }
+
 }

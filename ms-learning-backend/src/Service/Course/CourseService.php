@@ -51,7 +51,7 @@ class CourseService implements CourseServiceInterface
         $course->setDescription($data['description']);
         $course->setDuration($data['duration']);
         $course->setLevel($data['level']);
-        $course->setCreatedAt(new \DateTimeImmutable());
+        $course->setCreatedAt(new DateTimeImmutable());
 
         if (isset($data['price'])) {
             $course->setPrice($data['price']);
@@ -62,7 +62,7 @@ class CourseService implements CourseServiceInterface
         }
 
         if (isset($data['category'])) {
-            $course->setCategory($data['category']); // Make sure to fetch the actual Category entity before setting
+            $course->setCategory($data['category']);
         }
 
         if (isset($data['promotion'])) {
@@ -85,7 +85,7 @@ class CourseService implements CourseServiceInterface
         $course->setDescription($data['description']);
         $course->setDuration($data['duration']);
         $course->setLevel($data['level']);
-        $course->setUpdatedAt(new \DateTime());
+        $course->setUpdatedAt(new DateTime());
 
         if (isset($data['price'])) {
             $course->setPrice($data['price']);
@@ -96,7 +96,7 @@ class CourseService implements CourseServiceInterface
         }
 
         if (isset($data['category'])) {
-            $course->setCategory($data['category']); // Ensure it's an actual Category entity
+            $course->setCategory($data['category']);
         }
 
         if (isset($data['promotion'])) {

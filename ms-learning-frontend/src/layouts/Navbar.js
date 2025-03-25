@@ -5,7 +5,7 @@ import '../styles/styles.css'
 import logo from '../assets/logo.png'
 import useClickOutside from '../hooks/useClickOutside'
 import { useNavigate } from 'react-router-dom'
-import { getUserCourses } from '../helpers/api'
+import { getUserInfos } from '../helpers/api'
 
 const Navbar = () => {
   const isAuthenticated =
@@ -23,7 +23,7 @@ const Navbar = () => {
 
   useEffect(() => {
     if (userId) {
-      getUserCourses()
+      getUserInfos()
         .then(data => {
           setUsername(data.username || 'Guest')
         })
@@ -143,9 +143,18 @@ const Navbar = () => {
                         Registered Courses
                       </Link>
                     )}
-                    <Link to='/account-settings' className='dropdown-item'>
-                      Account Settings
-                    </Link>
+                    {userRoles.includes('ROLE_INSTRUCTOR') ? (
+                      <Link
+                        to='/account-settings-instructor'
+                        className='dropdown-item'
+                      >
+                        Account Settings
+                      </Link>
+                    ) : (
+                      <Link to='/account-settings' className='dropdown-item'>
+                        Account Settings
+                      </Link>
+                    )}
                     <button
                       onClick={() => {
                         localStorage.removeItem('token')

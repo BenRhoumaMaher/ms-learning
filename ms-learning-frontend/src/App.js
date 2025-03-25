@@ -23,6 +23,7 @@ import Users from './pages/admin/Users'
 import UsersList from './pages/admin/UsersList'
 import InstructorDemands from './pages/admin/InstructorDemands'
 import CreateCourse from './pages/createCourseInstructor/CreateCourse'
+import AccoyntSettingsInstructor from './pages/accountsettingsinstructor/AccountSettingsInstructor'
 function App () {
   return (
     <div className='App'>
@@ -52,6 +53,7 @@ function App () {
           <Route path='/admin/users-list' element={<UsersList />} />
           <Route path='/admin/instructor-demands' element={<InstructorDemands />} />
           <Route path='/create-course' element={<CreateCourse />} />
+          <Route path='/account-settings-instructor' element={<AccoyntSettingsInstructor />} />
         </Routes>
       </Router>
     </div>

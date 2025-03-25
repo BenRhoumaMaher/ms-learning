@@ -6,6 +6,7 @@
 parameters:
   resume_directory: "%kernel.project_dir%/public/images/resumes"
   lesson_resource_directory: "%kernel.project_dir%/public/images/courseressources"
+  upload_directory: "%kernel.project_dir%/public/images/profiles"
   base_url: "localhost:8080"
 
 services:
@@ -34,6 +35,11 @@ services:
   App\Service\Course\CourseService:
     arguments:
       $lessonResourceDirectory: "%lesson_resource_directory%"
+      $baseUrl: "%base_url%"
+
+  App\Controller\User\UserController:
+    arguments:
+      $upload_directory: "%upload_directory%"
       $baseUrl: "%base_url%"
 
   # add more service definitions when explicit configuration is needed

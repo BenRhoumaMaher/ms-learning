@@ -7,3 +7,23 @@ courses:
   path: /courses/user/{id}
   controller: App\Controller\User\UserController::getUserCourses
   methods: GET
+
+infos:
+  path: /user/infos/{id}
+  controller: App\Controller\User\UserController::getUserInfos
+  methods: GET
+
+update:
+  path: /user/{id}
+  controller: App\Controller\User\UserController::edit
+  methods: [PUT, POST]
+
+update_password:
+  path: /user/{id}/password
+  controller: App\Controller\User\UserController::updatePassword
+  methods: PUT
+
+delete_user:
+  path: /user/{id}
+  controller: App\Controller\User\UserController::delete
+  methods: DELETE  
