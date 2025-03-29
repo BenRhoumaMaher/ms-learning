@@ -2,9 +2,10 @@
 
 namespace App\Entity;
 
-use App\Repository\LessonRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\LessonRepository;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: LessonRepository::class)]
 class Lesson
@@ -12,12 +13,15 @@ class Lesson
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['lesson:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['lesson:read'])]
     private ?string $title = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['lesson:read'])]
     private ?string $content = null;
 
     #[ORM\Column(length: 50)]
@@ -27,18 +31,22 @@ class Lesson
     private ?string $videoUrl = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[Groups(['lesson:read'])]
     private ?\DateTimeInterface $liveStartTime = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[Groups(['lesson:read'])]
     private ?\DateTimeInterface $liveEndTime = null;
 
     #[ORM\Column]
+    #[Groups(['lesson:read'])]
     private ?int $duration = null;
 
     #[ORM\ManyToOne(inversedBy: 'lessons')]
     private ?Courses $course = null;
 
     #[ORM\Column]
+    #[Groups(['lesson:read'])]
     private ?int $position = null;
 
     #[ORM\Column]
@@ -48,9 +56,11 @@ class Lesson
     private ?\DateTimeInterface $updatedAt = null;
 
     #[ORM\Column(type: 'string', nullable: true)]
+    #[Groups(['lesson:read'])]
     private ?string $ressources = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['lesson:read'])]
     private ?string $liveMeetingLink = null;
 
     #[ORM\ManyToOne(inversedBy: 'lessons')]

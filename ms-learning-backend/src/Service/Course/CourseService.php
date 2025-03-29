@@ -79,8 +79,10 @@ class CourseService implements CourseServiceInterface
         return $course;
     }
 
-    public function updateCourse(Courses $course, array $data): Courses
-    {
+    public function updateCourse(
+        Courses $course,
+        array $data
+    ): Courses {
         $course->setTitle($data['title']);
         $course->setDescription($data['description']);
         $course->setDuration($data['duration']);
@@ -206,7 +208,7 @@ class CourseService implements CourseServiceInterface
         return ['message' => 'Course created successfully', 'status' => 201];
     }
 
-    private function uploadFile(?UploadedFile $file): ?string
+    public function uploadFile(?UploadedFile $file): ?string
     {
         if (!$file) {
             return null;

@@ -27,3 +27,13 @@ delete:
   path: /course/{id}
   controller: App\Controller\Course\CoursesController::delete
   methods: DELETE
+
+courses:
+  path: /coursesmodules/user/{id}
+  controller: App\Controller\Course\CoursesController::getUserCoursesModules
+  methods: GET
+
+courses_modules_lessons:
+  path: /coursesmoduleslessons/user/{id}
+  controller: App\Controller\Course\CoursesController::getCoursesModulesLessonsWithoutResources
+  methods: GET  

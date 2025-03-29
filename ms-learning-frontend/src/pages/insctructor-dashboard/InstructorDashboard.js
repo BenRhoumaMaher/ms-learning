@@ -8,30 +8,30 @@ import InsctructorCourses from './sections/InsctructorCourses'
 import InsctructorCommunity from './sections/InstructorCommunity'
 import Footer from '../../layouts/Footer'
 
-const Quiz = () => {
+const InstructorDashboard= () => {
   return (
     <section>
-        <section className='section-container'>
-            <DashboardHero />
-        </section>
-        <section className='section-container'>
-            <InstructorPerformance />
-        </section>
-        <section className='section-container'>
-            <UpcomingLiveSessions />
-        </section>
-        <section className='section-container'>
-            <EarningsDashboard />
-        </section>
-        <section className='section-container'>
-            <InsctructorCourses />
-        </section>
-        <section className='section-container'>
-            <InsctructorCommunity />
-        </section>
-        <Footer />
+      <section className='section-container'>
+        <DashboardHero />
+      </section>
+      <section className='section-container'>
+        <InstructorPerformance />
+      </section>
+      <section className='section-container'>
+        <UpcomingLiveSessions />
+      </section>
+      <section className='section-container'>
+        <EarningsDashboard />
+      </section>
+      <section className='section-container'>
+        <InsctructorCourses />
+      </section>
+      <section className='section-container'>
+        <InsctructorCommunity />
+      </section>
+      <Footer />
     </section>
   )
 }
 
-export default Quiz
+export default InstructorDashboard

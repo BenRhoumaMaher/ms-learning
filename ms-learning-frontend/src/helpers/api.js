@@ -140,6 +140,18 @@ export const getINstructorDemands = async () => {
   }
 }
 
+export const deleteCourse = async courseId => {
+  try {
+    await bc.delete(`/course/${courseId}`)
+    return { success: true, message: 'Course deleted successfully' }
+  } catch (error) {
+    return {
+      success: false,
+      message: error.response?.data?.message || 'Failed to delete course'
+    }
+  }
+}
+
 export const DeleteINstructorDemands = async id => {
   try {
     const response = await bc.delete(`/demande/${id}`)
@@ -177,6 +189,53 @@ export const getUserCourses = async () => {
     return response.data
   } catch (error) {
     console.error('Error fetching user courses:', error)
+    throw error
+  }
+}
+
+export const getUserCoursesModules = async () => {
+  try {
+    const token =
+      localStorage.getItem('token') || sessionStorage.getItem('token')
+    const user = JSON.parse(atob(token.split('.')[1]))
+    const userId = user?.user_id
+
+    const response = await bc.get(`/coursesmodules/user/${userId}`)
+    return response.data
+  } catch (error) {
+    console.error('Error fetching user courses modules:', error)
+    throw error
+  }
+}
+
+export const getUserCoursesModulesLessonsNoResource = async () => {
+  try {
+    const token =
+      localStorage.getItem('token') || sessionStorage.getItem('token')
+    const user = JSON.parse(atob(token.split('.')[1]))
+    const userId = user?.user_id
+
+    const response = await bc.get(`/coursesmoduleslessons/user/${userId}`)
+    return response.data
+  } catch (error) {
+    console.error('Error fetching user courses modules:', error)
+    throw error
+  }
+}
+
+export const addResourceToLesson = async (id, resourceFile) => {
+  try {
+    const formData = new FormData()
+    formData.append('resource', resourceFile)
+
+    const response = await bc.post(`/lessons/${id}/resources`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    })
+    return response.data
+  } catch (error) {
+    console.error('Error adding resource:', error)
     throw error
   }
 }
@@ -278,6 +337,150 @@ export const deleteAccount = async userId => {
     return response.data
   } catch (error) {
     console.error('Account deletion error:', error)
+    throw error
+  }
+}
+
+export const createLesson = async formData => {
+  try {
+    const token =
+      localStorage.getItem('token') || sessionStorage.getItem('token')
+    const response = await bc.post('/lesson/create', formData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'multipart/form-data'
+      }
+    })
+    return response.data
+  } catch (error) {
+    console.error('Error creating lesson:', error)
+    throw error
+  }
+}
+
+export const getLatestUserLiveLesson = async userId => {
+  try {
+    const token =
+      localStorage.getItem('token') || sessionStorage.getItem('token')
+    const response = await bc.get(`/lessons/latest-live/${userId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
+    return response.data
+  } catch (error) {
+    console.error('Error fetching latest live lesson:', error)
+    throw error
+  }
+}
+
+export const updateLesson = async (lessonId, payload) => {
+  try {
+    const token =
+      localStorage.getItem('token') || sessionStorage.getItem('token')
+
+    const response = await bc.put(`/lessons/${lessonId}`, payload, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
+
+    return response.data
+  } catch (error) {
+    console.error('Error updating lesson:', error)
+    throw error
+  }
+}
+
+export const getCourseById = async courseId => {
+  try {
+    const response = await bc.get(`/course/${courseId}`)
+    return response.data
+  } catch (error) {
+    console.error('Error fetching course details:', error)
+    throw error
+  }
+}
+
+export const convertLessonToRegistered = async (lessonId, videoUrl) => {
+  try {
+    const token =
+      localStorage.getItem('token') || sessionStorage.getItem('token')
+    const response = await bc.put(
+      `/lessons/${lessonId}/convert-to-registered`,
+      { videoUrl },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      }
+    )
+    return response.data
+  } catch (error) {
+    console.error('Error converting lesson:', error)
+    throw error
+  }
+}
+
+export const deleteLesson = async lessonId => {
+  try {
+    const token =
+      localStorage.getItem('token') || sessionStorage.getItem('token')
+    const response = await bc.delete(`/lessons/${lessonId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
+    return response.data
+  } catch (error) {
+    console.error('Error deleting lesson:', error)
+    throw error
+  }
+}
+
+export const getUserLiveSessions = async userId => {
+  try {
+    const token =
+      localStorage.getItem('token') || sessionStorage.getItem('token')
+    const response = await bc.get(`/user/${userId}/live-sessions`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
+    return response.data
+  } catch (error) {
+    console.error('Error fetching live sessions:', error)
+    throw error
+  }
+}
+
+export const getLessonInfo = async lessonId => {
+  try {
+    const token =
+      localStorage.getItem('token') || sessionStorage.getItem('token')
+    const response = await bc.get(`/lesson-info/${lessonId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
+    return response.data
+  } catch (error) {
+    console.error('Error fetching lesson info:', error)
+    throw error
+  }
+}
+
+export const updateCourse = async (courseId, courseData) => {
+  try {
+    const response = await bc.put(`/course/${courseId}`, courseData, {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    return response.data
+  } catch (error) {
+    console.error('Error updating course:', error)
     throw error
   }
 }

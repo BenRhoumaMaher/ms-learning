@@ -3,7 +3,7 @@
 namespace App\Service\UserService;
 
 use App\Entity\User;
-use App\Entity\Courses;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Service\UserService\UserServiceInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -15,8 +15,33 @@ class UserService implements UserServiceInterface
     public function __construct(
         private UserPasswordHasherInterface $passwordHasher,
         private EntityManagerInterface $em,
-        private ValidatorInterface $validator
+        private ValidatorInterface $validator,
+        private string $uploaddirectory,
+        private string $baseUrl,
+        private UserRepository $userRepository,
     ) {
+    }
+
+    public function getUserById(int $id): ?User
+    {
+        return $this->userRepository->find($id);
+    }
+
+    public function getUserData(User $user): array
+    {
+        return [
+            'username' => $user->getFirstname() . ' ' . $user->getLastName(),
+            'firstname' => $user->getFirstname(),
+            'lastname' => $user->getLastName(),
+            'email' => $user->getEmail(),
+            'address' => $user->getAddress(),
+            'phone' => $user->getPhone(),
+            'facebook' => $user->getFacebook(),
+            'x' => $user->getX(),
+            'instagram' => $user->getInstagram(),
+            'linkedin' => $user->getLinkedin(),
+            'expertise' => $user->getExpertise(),
+        ];
     }
     public function getAllUsers(): array
     {
@@ -127,6 +152,17 @@ class UserService implements UserServiceInterface
             $this->passwordHasher->hashPassword($user, $newPassword)
         );
         $this->em->flush();
+    }
+
+    public function uploadFile(?UploadedFile $file): ?string
+    {
+        if (!$file) {
+            return null;
+        }
+
+        $filename = uniqid() . '.' . $file->guessExtension();
+        $file->move($this->uploaddirectory, $filename);
+        return $this->baseUrl . '/images/profiles/' . $filename;
     }
 
 }

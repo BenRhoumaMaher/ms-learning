@@ -1,0 +1,39 @@
+latest_live_session:
+  path: /lessons/latest-live/{id}
+  controller: App\Controller\Lesson\LessonController::getLatestUserLiveLesson
+  methods: GET
+
+lesson_info:
+  path: /lesson-info/{id}
+  controller: App\Controller\Lesson\LessonController::getLiveLessonInfo
+  methods: GET
+
+add_lesson_resource:
+  path: /lessons/{id}/resources
+  controller: App\Controller\Lesson\LessonController::addResourceToLesson
+  methods: POST
+
+create_lesson:
+  path: lesson/create
+  controller: App\Controller\Lesson\LessonController::createLesson
+  methods: POST
+
+update_lesson:
+  path: /lessons/{id}
+  controller: App\Controller\Lesson\LessonController::editLesson
+  methods: PUT
+
+delete_lesson:
+  path: /lessons/{id}
+  controller: App\Controller\Lesson\LessonController::deleteLesson
+  methods: DELETE
+
+update_lesson_type:
+  path: /lessons/{id}/convert-to-registered
+  controller: App\Controller\Lesson\LessonController::convertToRegistered
+  methods: PUT
+
+user_live_sessions:
+  path: /user/{id}/live-sessions
+  controller: App\Controller\Lesson\LessonController::getUserLiveSessions
+  methods: GET

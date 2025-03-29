@@ -31,9 +31,11 @@ class Courses
     private ?string $price = null;
 
     #[ORM\Column(type: 'string', length: 50)]
+    #[Groups(['course:read'])]
     private ?string $duration = null;
 
     #[ORM\Column(length: 50)]
+    #[Groups(['course:read'])]
     private ?string $level = null;
 
     #[ORM\ManyToOne(inversedBy: 'courses')]

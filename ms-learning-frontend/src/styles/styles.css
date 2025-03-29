@@ -1103,8 +1103,6 @@
 
 /* Join Button */
 .hero-btn {
-  background-color: #4b9cd3;
-  color: white;
   border: none;
   padding: 8px 20px;
   font-size: 14px;
@@ -1113,9 +1111,6 @@
   margin-top: 10px;
 }
 
-.hero-btn:hover {
-  background-color: #3581c4;
-}
 
 .calendar-container {
   text-align: center;
@@ -2081,34 +2076,37 @@
 
 /* Carousel Wrapper */
 .instructlive-carousel {
-  display: flex;
-  align-items: center;
-  justify-content: center;
   position: relative;
+  padding: 0 20px;
 }
 
-/* Navigation Arrows */
 .instructlive-arrow {
   background: none;
   border: none;
-  font-size: 24px;
+  color: #2D8CFF;
   cursor: pointer;
-  color: gray;
+  transition: all 0.3s ease;
 }
 
-.instructlive-left {
-  margin-right: 10px;
+.instructlive-arrow:hover {
+  color: #1a6bb3;
+  transform: scale(1.1);
 }
 
-.instructlive-right {
-  margin-left: 10px;
+.instructlive-arrow:disabled {
+  color: #B0B0B0;
+  cursor: not-allowed;
+  transform: none;
 }
+
+
 
 /* Cards Layout */
 .instructlive-cards {
   display: flex;
+  justify-content: center;
   gap: 20px;
-  overflow: hidden;
+  padding: 20px 0;
 }
 
 /* Individual Card */
@@ -3871,7 +3869,6 @@
   margin-top: -200px;
 }
 
-/* Bottom Controls (Left Side) */
 .livecou-btn {
   display: inline-block;
   padding: 10px 20px;
@@ -3898,13 +3895,11 @@
   font-weight: bold;
 }
 
-/* Global container */
 .liveeng-container {
   background-color: #fff;
   width: 100%;
 }
 
-/* Box styling */
 .liveeng-box {
   width: 480px;
   height: 280px;
@@ -3918,7 +3913,6 @@
   padding: 20px;
 }
 
-/* Icon Styling */
 .liveeng-icon {
   background: #20c5a5;
   border-radius: 12px;
@@ -3934,12 +3928,10 @@
   font-weight: bold;
 }
 
-/* Trophy Styling */
 .liveeng-trophy {
   font-size: 90px;
 }
 
-/* Text Styling */
 .liveeng-text {
   font-size: 22px;
   font-weight: bold;
@@ -3953,14 +3945,12 @@
   color: red;
 }
 
-/* Container */
 .liveeng-classes-container {
   width: 100%;
   padding: 40px 0;
   overflow: hidden;
 }
 
-/* Card Styling */
 .liveeng-class-card {
   width: 80%;
   height: 180px;
@@ -3973,7 +3963,6 @@
   margin: 0 auto;
 }
 
-/* Arrow Shape */
 .liveeng-arrow {
   background: white;
   position: absolute;
@@ -3994,19 +3983,16 @@
   transform: skewX(20deg);
 }
 
-/* Class Content */
 .liveeng-class-content {
   margin-left: 40%;
   color: white;
 }
 
-/* Container */
 .liveeng-related {
   width: 100%;
   padding: 40px 0;
 }
 
-/* Card Styling */
 .liveeng-course-card {
   width: 100%;
   height: 240px;
@@ -4019,7 +4005,6 @@
   overflow: hidden;
 }
 
-/* Circle Number */
 .liveeng-circle {
   background: white;
   width: 80px;
@@ -4035,20 +4020,17 @@
   top: -30px;
 }
 
-/* Course Content */
 .liveeng-course-content {
   margin-top: 40px;
   text-align: center;
   color: white;
 }
 
-/* Main Section */
 .liveeng-community {
-  background: #f8f9fa; /* Light background */
+  background: #f8f9fa; 
   padding: 40px 0;
 }
 
-/* Box Styling */
 .liveeng-community-box {
   background: white;
   border-radius: 16px;
@@ -4056,7 +4038,6 @@
   overflow: hidden;
 }
 
-/* Left Side - Image Placeholder */
 .liveeng-image-box {
   background: #3498db;
   display: flex;
@@ -4076,7 +4057,6 @@
   color: white;
 }
 
-/* Right Side - Text Section */
 .liveeng-text-box {
   padding: 30px;
   background: #ececec;
@@ -4104,13 +4084,11 @@
   background: #217693;
 }
 
-/* Profile Dropdown Container */
 .nav-profile {
   position: relative;
   display: inline-block;
 }
 
-/* Button to prevent default link behavior */
 .profile-icon-btn {
   background: none;
   border: none;
@@ -4118,12 +4096,11 @@
   font-size: 20px;
 }
 
-/* Dropdown Menu */
 .profile-dropdown {
   position: absolute;
-  top: 52px; /* Moves it slightly below the icon */
-  right: -20px; /* Moves it slightly to the right */
-  background: rgba(255, 255, 255, 0.95); /* Slightly transparent */
+  top: 52px;
+  right: -20px; 
+  background: rgba(255, 255, 255, 0.95);
   border-radius: 5px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
   width: 200px;
@@ -4134,7 +4111,6 @@
   z-index: 1000;
 }
 
-/* Dropdown Items */
 .profile-dropdown .dropdown-item {
   color: #333;
   padding: 10px 15px;
@@ -4148,7 +4124,6 @@
   background: rgba(0, 0, 0, 0.05);
 }
 
-/* Logout Button */
 .profile-dropdown .logout {
   color: red;
   font-weight: bold;
@@ -4158,7 +4133,6 @@
   background: rgba(255, 0, 0, 0.1);
 }
 
-/* User Profile Row */
 .profile-info {
   display: flex;
   align-items: center;
@@ -4166,7 +4140,6 @@
   border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 }
 
-/* User Image */
 .profile-image {
   width: 35px;
   height: 35px;
@@ -4174,9 +4147,8 @@
   margin-right: 10px;
 }
 
-/* Username */
 .username {
-  color: #28a745; /* Green color */
+  color: #28a745;
   font-weight: bold;
   font-size: 14px;
   margin: 0;
@@ -4225,7 +4197,6 @@
   background: #fff;
 }
 
-/* ProfileHero.css */
 .profile-hero-container {
   display: flex;
   justify-content: space-between;
@@ -4259,4 +4230,67 @@
   justify-content: start;
   gap: 15px;
   margin-top: 20px;
+}
+
+.calendar-day.has-live-session {
+  background-color: #2bff00;
+  color: white;
+  font-weight: bold;
+  position: relative;
+}
+
+.calendar-day.has-live-session:hover {
+  background-color: #08ffe6;
+  cursor: pointer;
+}
+
+.live-session-details {
+  position: absolute;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  padding: 15px;
+  z-index: 1000;
+  min-width: 250px;
+  border: 1px solid #e0e0e0;
+}
+
+.session-header {
+  font-weight: bold;
+  font-size: 1.1rem;
+  margin-bottom: 10px;
+  color: #333;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 8px;
+}
+
+.session-item {
+  padding: 8px 0;
+  border-bottom: 1px solid #f5f5f5;
+}
+
+.session-item:last-child {
+  border-bottom: none;
+}
+
+.session-title {
+  font-weight: 600;
+  color: #2c3e50;
+  margin-bottom: 4px;
+}
+
+.session-time {
+  color: #7f8c8d;
+  font-size: 0.9rem;
+  margin-bottom: 6px;
+}
+
+.session-link a {
+  color: #3498db;
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+.session-link a:hover {
+  text-decoration: underline;
 }

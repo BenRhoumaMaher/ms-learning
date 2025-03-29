@@ -4,18 +4,18 @@ import HeroSection from './sections/HeroSection'
 import Calendar from './sections/Calendar'
 import Footer from '../../layouts/Footer'
 
-const StudentDashboard = () => {
+const StudentCalendar = () => {
   return (
     <section>
-        <section className='section-container'>
-            <HeroSection />
-        </section>
-        <section className='section-container'>
-            <Calendar />
-        </section>
-        <Footer />
+      <section className='section-container'>
+        <HeroSection />
+      </section>
+      <section className='section-container'>
+        <Calendar />
+      </section>
+      <Footer />
     </section>
   )
 }
 
-export default StudentDashboard
+export default StudentCalendar

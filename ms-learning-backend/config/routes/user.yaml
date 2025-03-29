@@ -25,5 +25,5 @@ update_password:
 
 delete_user:
   path: /user/{id}
-  controller: App\Controller\User\UserController::delete
-  methods: DELETE  
+  controller: App\Controller\User\UserController::deleteAccount
+  methods: DELETE
