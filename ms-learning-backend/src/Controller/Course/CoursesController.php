@@ -2,6 +2,7 @@
 
 namespace App\Controller\Course;
 
+use App\Service\Course\CourseService;
 use App\Query\Course\GetAllCoursesQuery;
 use App\Query\Course\GetCourseByIdQuery;
 use App\Command\Course\DeleteCourseCommand;
@@ -46,41 +47,40 @@ class CoursesController extends AbstractController
         );
     }
 
-    public function createCourse(
-        Request $request,
-        MessageBusInterface $commandBus
-    ): JsonResponse {
+    public function createCourse(Request $request, MessageBusInterface $commandBus, CourseService $courseService): JsonResponse
+    {
         $jsonData = $request->request->get('data');
         if (!$jsonData) {
-            return new JsonResponse(
-                ['error' => 'Invalid request, missing data'],
-                400
-            );
+            return new JsonResponse(['error' => 'Invalid request, missing data'], 400);
         }
 
-        $data = json_decode(
-            $jsonData,
-            true
-        );
+        $data = json_decode($jsonData, true);
         if (!$data || !isset($data['user_id'], $data['course'], $data['modules'])) {
             return new JsonResponse(['error' => 'Missing required fields'], 400);
         }
 
         $files = $request->files->all();
+        $processedFiles = [];
+
+        foreach ($files['modules'] ?? [] as $moduleIndex => $moduleFiles) {
+            foreach ($moduleFiles['lessons'] ?? [] as $lessonIndex => $lessonFiles) {
+                if (isset($lessonFiles['resource'])) {
+                    $processedFiles['modules'][$moduleIndex]['lessons'][$lessonIndex]['resource'] =
+                        $courseService->uploadFile($lessonFiles['resource']);
+                }
+            }
+        }
 
         $command = new CreateFullCourseCommand(
             $data['user_id'],
             $data['course'],
             $data['modules'],
-            $files
+            $processedFiles
         );
 
-        $this->commandBusService->handle($command);
+        $commandBus->dispatch($command);
 
-        return new JsonResponse(
-            ['message' => 'Course creation started'],
-            202
-        );
+        return new JsonResponse(['message' => 'Course creation started'], 202);
     }
 
     public function getUserCoursesModules(

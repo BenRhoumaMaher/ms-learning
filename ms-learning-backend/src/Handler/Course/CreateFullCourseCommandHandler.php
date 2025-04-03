@@ -72,8 +72,9 @@ class CreateFullCourseCommandHandler
                 if ($lessonData['type'] === 'live') {
                     if (isset($lessonData['livestarttime'])) {
                         $lesson->setLiveStartTime(
-                                new DateTime($lessonData['livestarttime']
-                                )
+                            new DateTime(
+                                $lessonData['livestarttime']
+                            )
                         );
                     }
                     if (isset($lessonData['liveendtime'])) {
