@@ -2,146 +2,99 @@
 
 namespace App\Controller\Lesson;
 
-use App\Repository\UserRepository;
-use App\Repository\LessonRepository;
-use App\Service\Course\CourseService;
 use App\Service\UserService\UserService;
-use Doctrine\ORM\EntityManagerInterface;
-use App\Service\LessonService\LessonService;
+use App\Command\Lesson\EditLessonCommand;
+use App\Command\Lesson\CreateLessonCommand;
+use App\Command\Lesson\DeleteLessonCommand;
+use App\Query\Lesson\GetLiveLessonInfoQuery;
 use Symfony\Component\HttpFoundation\Request;
+use App\Query\Lesson\GetUserLiveSessionsQuery;
+use App\Service\QueryBusService\QueryBusService;
+use App\Command\Lesson\AddResourceToLessonCommand;
+use App\Query\Lesson\GetLatestUserLiveLessonQuery;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use App\Service\CommandBusService\CommandBusService;
+use App\Command\Lesson\ConvertLessonToRegisteredCommand;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 final class LessonController extends AbstractController
 {
     public function __construct(
-        private UserService $userService
+        private UserService $userService,
+        private QueryBusService $queryBusService,
+        private CommandBusService $commandBusService
     ) {
     }
 
-    public function getLatestUserLiveLesson(
-        int $id,
-        LessonRepository $lessonRepository,
-        UserRepository $userRepository
-    ): JsonResponse {
-        $user = $userRepository->find($id);
-        if (!$user) {
-            return $this->json(
-                ['error' => 'User not found'],
-                404
-            );
-        }
-
-        $lesson = $lessonRepository->findLatestLiveLessonForUser($id);
-
-        if (!$lesson) {
-            return $this->json(
-                ['message' => 'No upcoming live lessons for this user'],
-                404
-            );
-        }
-
-        return $this->json(
-            $lesson,
-            200,
-            [],
-            ['groups' => 'lesson:read']
-        );
-    }
-
-    public function getUserLiveSessions(
-        int $id,
-        LessonRepository $lessonRepository
-    ): JsonResponse {
-        $liveSessions = $lessonRepository->findUserLiveSessions($id);
-
-        $formattedSessions = array_map(
-            function ($session) {
-                return [
-                    'id' => $session->getId(),
-                    'title' => $session->getTitle(),
-                    'date' => $session->getLiveStartTime()->format('Y-m-d'),
-                    'startTime' => $session->getLiveStartTime()->format('H:i'),
-                    'endTime' => $session->getLiveEndTime()->format('H:i')
-                ];
-            },
-            $liveSessions
-        );
-
-        return $this->json($formattedSessions);
-    }
-
-    public function getLiveLessonInfo(
-        int $id,
-        LessonRepository $lessonRepository
-    ): JsonResponse {
-        $lesson = $lessonRepository->find($id);
-
-        if (!$lesson) {
-            return $this->json(
-                ['error' => 'Lesson not found'],
-                404
-            );
-        }
-
-        $formattedLesson = [
-            'id' => $lesson->getId(),
-            'title' => $lesson->getTitle(),
-            'content' => $lesson->getContent(),
-            'liveStartTime' => $lesson->getLiveStartTime(),
-            'liveEndTime' => $lesson->getLiveEndTime(),
-            'position' => $lesson->getPosition(),
-            'liveMeetingLink' => $lesson->getLiveMeetingLink(),
-        ];
-
-        return $this->json(
-            $formattedLesson,
-            200,
-            [],
-            ['groups' => 'lesson:read']
-        );
-    }
-
-    public function editLesson(
-        int $id,
-        Request $request,
-        LessonService $lessonService
-    ): JsonResponse {
-        $lesson = $lessonService->getLessonById($id);
-
-        if (!$lesson) {
-            return $this->json(['error' => 'Lesson not found'], 404);
-        }
-
-        $data = json_decode($request->getContent(), true);
-
+    public function getLatestUserLiveLesson(int $id): JsonResponse
+    {
         try {
-            $lessonService->updateLessonData($lesson, $data);
-            $errors = $lessonService->validateLesson($lesson);
+            $query = new GetLatestUserLiveLessonQuery($id);
+            $lesson = $this->queryBusService->handle($query);
 
-            if (!empty($errors)) {
-                return $this->json(['errors' => $errors], 400);
-            }
+            return $this->json(
+                $lesson,
+                200,
+                [],
+                ['groups' => 'lesson:read']
+            );
+        } catch (\Exception $e) {
+            return $this->json(['error' => $e->getMessage()], 404);
+        }
+    }
 
-            $lessonService->saveLesson($lesson);
+    public function getUserLiveSessions(int $id): JsonResponse
+    {
+        try {
+            $query = new GetUserLiveSessionsQuery($id);
+            $sessions = $this->queryBusService->handle($query);
 
-            return $this->json($lesson, 200, [], ['groups' => 'lesson:read']);
+            return $this->json($sessions);
         } catch (\Exception $e) {
             return $this->json(['error' => $e->getMessage()], 400);
         }
     }
 
-    public function convertToRegistered(
-        int $id,
-        Request $request,
-        LessonService $lessonService
-    ): JsonResponse {
-        $lesson = $lessonService->getLessonById($id);
+    public function getLiveLessonInfo(int $id): JsonResponse
+    {
+        try {
+            $query = new GetLiveLessonInfoQuery($id);
+            $lesson = $this->queryBusService->handle($query);
 
-        if (!$lesson) {
-            return $this->json(['error' => 'Lesson not found'], 404);
+            return $this->json(
+                $lesson,
+                200,
+                [],
+                ['groups' => 'lesson:read']
+            );
+        } catch (\Exception $e) {
+            return $this->json(['error' => $e->getMessage()], 404);
         }
+    }
 
+    public function editLesson(int $id, Request $request): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true);
+
+        try {
+            $command = new EditLessonCommand($id, $data);
+            $result = $this->commandBusService->handle($command);
+
+            if (isset($result['errors'])) {
+                return $this->json(
+                    ['errors' => $result['errors']],
+                    400
+                );
+            }
+
+            return $this->json($result, 200, [], ['groups' => 'lesson:read']);
+        } catch (\Exception $e) {
+            return $this->json(['error' => $e->getMessage()], 400);
+        }
+    }
+
+    public function convertToRegistered(int $id, Request $request): JsonResponse
+    {
         $data = json_decode($request->getContent(), true);
 
         if (!isset($data['videoUrl'])) {
@@ -149,122 +102,69 @@ final class LessonController extends AbstractController
         }
 
         try {
-            $lessonService->convertLessonToRegistered($lesson, $data['videoUrl']);
-            $errors = $lessonService->validateLesson($lesson);
+            $command = new ConvertLessonToRegisteredCommand($id, $data['videoUrl']);
+            $result = $this->commandBusService->handle($command);
 
-            if (!empty($errors)) {
-                return $this->json(['errors' => $errors], 400);
+            if (isset($result['errors'])) {
+                return $this->json(['errors' => $result['errors']], 400);
             }
 
-            $lessonService->saveLesson($lesson);
-
-            return $this->json(
-                ['message' => 'Lesson converted to registered successfully'],
-                200
-            );
+            return $this->json($result, 200);
         } catch (\Exception $e) {
             return $this->json(['error' => $e->getMessage()], 400);
         }
     }
 
 
-    public function addResourceToLesson(
-        int $id,
-        Request $request,
-        LessonRepository $lessonRepository,
-        CourseService $courseService,
-        EntityManagerInterface $entityManager
-    ): JsonResponse {
+    public function addResourceToLesson(int $id, Request $request): JsonResponse
+    {
         $resourceFile = $request->files->get('resource');
 
         if (!$resourceFile) {
             return $this->json(['error' => 'No resource file provided'], 400);
         }
 
-        $lesson = $lessonRepository->find($id);
-        if (!$lesson) {
-            return $this->json(['error' => 'Lesson not found'], 404);
-        }
-
         try {
-            $resourcePath = $courseService->uploadFile($resourceFile);
-            $lesson->setRessources($resourcePath);
+            $command = new AddResourceToLessonCommand($id, $resourceFile);
+            $result = $this->commandBusService->handle($command);
 
-            $entityManager->persist($lesson);
-            $entityManager->flush();
-
-            return $this->json(
-                [
-                'message' => 'Resource added successfully',
-                'resource_path' => $resourcePath
-                ],
-                200
-            );
-        } catch (\Exception $e) {
-            return $this->json(
-                [
-                'error' => 'Failed to upload resource: ' . $e->getMessage()
-                ],
-                500
-            );
-        }
-    }
-
-    public function createLesson(
-        Request $request,
-        LessonService $lessonService
-    ): JsonResponse {
-        $data = $request->request->all();
-        $resourcesFile = $request->files->get('resources');
-
-        $validationError = $lessonService->validateLessonData($data);
-        if ($validationError) {
-            return $this->json(['error' => $validationError], 400);
-        }
-
-        $entities = $lessonService->getEntitiesForLesson($data);
-        if (isset($entities['error'])) {
-            return $this->json(['error' => $entities['error']], 404);
-        }
-
-        try {
-            $lesson = $lessonService->createLessonEntity($data, $entities);
-
-            if ($resourcesFile) {
-                $lessonService->handleLessonResources($lesson, $resourcesFile);
-            }
-
-            $lessonService->saveTheLesson($lesson);
-
-            return $this->json(
-                [
-                'message' => 'Lesson created successfully',
-                'lesson_id' => $lesson->getId(),
-                'resources_path' => $lesson->getRessources()
-                ], 201
-            );
+            return $this->json($result, 200);
         } catch (\Exception $e) {
             return $this->json(['error' => $e->getMessage()], 500);
         }
     }
 
-    public function deleteLesson(
-        int $id,
-        LessonRepository $lessonRepository,
-        EntityManagerInterface $entityManager
-    ): JsonResponse {
-        $lesson = $lessonRepository->find($id);
+    public function createLesson(Request $request): JsonResponse
+    {
+        $data = $request->request->all();
+        $resourcesFile = $request->files->get('resources');
 
-        if (!$lesson) {
-            return $this->json(['error' => 'Lesson not found'], 404);
+        try {
+            $command = new CreateLessonCommand($data, $resourcesFile);
+            $result = $this->commandBusService->handle($command);
+
+            if (isset($result['error'])) {
+                return $this->json(
+                    ['error' => $result['error']],
+                    400
+                );
+            }
+
+            return $this->json($result, 201);
+        } catch (\Exception $e) {
+            return $this->json(['error' => $e->getMessage()], 500);
         }
+    }
 
-        $entityManager->remove($lesson);
-        $entityManager->flush();
+    public function deleteLesson(int $id): JsonResponse
+    {
+        try {
+            $command = new DeleteLessonCommand($id);
+            $result = $this->commandBusService->handle($command);
 
-        return $this->json(
-            ['message' => 'Lesson deleted successfully'],
-            200
-        );
+            return $this->json($result, 200);
+        } catch (\Exception $e) {
+            return $this->json(['error' => $e->getMessage()], 404);
+        }
     }
 }

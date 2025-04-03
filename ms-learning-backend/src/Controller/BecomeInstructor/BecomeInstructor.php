@@ -2,56 +2,48 @@
 
 namespace App\Controller\BecomeInstructor;
 
-use App\Service\UserService\BecomeInstructorService;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
+use App\Service\CommandBusService\CommandBusService;
+use App\Service\UserService\BecomeInstructorService;
+use App\Command\Instructor\RegisterInstructorCommand;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class BecomeInstructor extends AbstractController
 {
     public function __construct(
-        private BecomeInstructorService $userService
+        private BecomeInstructorService $userService,
+        private CommandBusService $commandBusService
     ) {
     }
     public function register(
-        Request $request,
-        ValidatorInterface $validator
+        Request $request
     ): JsonResponse {
-
         $data = $request->request->all();
         $resumeFile = $request->files->get('resume');
 
-        $errors = $this->userService->validateUserData($data);
-        if (!empty($errors)) {
+        if (!isset($data['email'], $data['firstname'], $data['lastname'], $data['expertise'])) {
             return $this->json(
-                ['errors' => $errors],
+                ['error' => 'Missing required fields'],
                 400
             );
         }
 
-        if ($this->userService->userExists($data['email'])) {
-            return $this->json(
-                ['errors' => ['email' => 'User already exists']],
-                400
-            );
-        }
-
-        $user = $this->userService->createUser(
-            email: $data['email'],
-            firstname: $data['firstname'],
-            lastname: $data['lastname'],
-            resume: $resumeFile,
-            expertise: $data['expertise'],
-            googleId: null,
-            plainPassword: $data['password'] ?? null,
-            courses : $data['courses'] ?? []
+        $command = new RegisterInstructorCommand(
+            $data['email'],
+            $data['firstname'],
+            $data['lastname'],
+            $resumeFile,
+            $data['expertise'],
+            $data['password'] ?? null,
+            $data['courses'] ?? []
         );
 
+        $this->commandBusService->handle($command);
+
         return $this->json(
-            [
-                'message' => 'User registered successfully'],
-            201
+            ['message' => 'Instructor registration started'],
+            202
         );
     }
 }

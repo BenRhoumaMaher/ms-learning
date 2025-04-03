@@ -3,24 +3,31 @@
 namespace App\Controller\User;
 
 use App\Entity\User;
-use App\Repository\UserRepository;
+use App\Query\User\GetAllUsersQuery;
+use App\Command\User\EditUserCommand;
+use App\Query\User\GetUserInfosQuery;
+use App\Query\User\GetUserCoursesQuery;
 use App\Service\UserService\UserService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
+use App\Command\User\UpdateUserPasswordCommand;
+use App\Service\QueryBusService\QueryBusService;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
+use App\Service\CommandBusService\CommandBusService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 final class UserController extends AbstractController
 {
     public function __construct(
-        private UserService $userService
+        private UserService $userService,
+        private QueryBusService $queryBusService,
+        private CommandBusService $commandBusService
     ) {
     }
     public function index(
     ): JsonResponse {
-        $courses = $this->userService->getAllUsers();
+        $courses = $this->queryBusService->handle(new GetAllUsersQuery());
+
         return $this->json(
             $courses,
             200,
@@ -28,237 +35,80 @@ final class UserController extends AbstractController
             ['groups' => 'user:read']
         );
     }
-    public function getUserCourses(
-        int $id,
-        UserRepository $userRepository
-    ): JsonResponse {
-        $user = $userRepository->find($id);
+    public function getUserCourses(int $id): JsonResponse
+    {
+        try {
+            $userCourses = $this->queryBusService->handle(
+                new GetUserCoursesQuery($id)
+            );
 
-        if (!$user) {
             return $this->json(
-                ['error' => 'User not found'],
+                $userCourses,
+                200,
+                [],
+                ['groups' => 'course:read']
+            );
+        } catch (\Exception $e) {
+            return $this->json(
+                ['error' => $e->getMessage()],
                 404
             );
         }
-
-        $courses = $user->getCourses();
-        $userName = $user->getFirstname() . ' ' . $user->getLastName();
-
-        $userData = [
-            'username' => $userName,
-            'courses' => $courses,
-        ];
-
-        return $this->json(
-            $userData,
-            200,
-            [],
-            ['groups' => 'course:read']
-        );
     }
 
     public function getUserInfos(int $id): JsonResponse
     {
-        $user = $this->userService->getUserById($id);
-
-        if (!$user) {
+        try {
+            $userData = $this->queryBusService->handle(new GetUserInfosQuery($id));
+            // dd($userData);
             return $this->json(
-                ['error' => 'User not found'],
+                $userData,
+                200,
+                [],
+                ['groups' => 'user:read']
+            );
+        } catch (\Exception $e) {
+            return $this->json(
+                ['error' => $e->getMessage()],
                 404
             );
         }
-
-        $userData = $this->userService->getUserData($user);
-
-        return $this->json(
-            $userData,
-            200,
-            [],
-            ['groups' => 'user:read']
-        );
     }
 
-    public function edit(
-        Request $request,
-        User $user,
-        EntityManagerInterface $entityManager,
-        ValidatorInterface $validator
-    ): JsonResponse {
-        $data = $this->extractRequestData(
-            $request
-        );
-
-        $this->handleProfileImageUpload(
-            $request,
-            $user
-        );
-
-        $this->updateUserData(
-            $user,
-            $data
-        );
-
-        $errors = $this->validateUser(
-            $user,
-            $validator
-        );
-        if ($errors) {
-            return $this->json(
-                $errors,
-                400
-            );
-        }
-
-        $entityManager->flush();
-
-        return $this->json(
-            $user,
-            200,
-            [],
-            ['groups' => 'user:read']
-        );
-    }
-
-    private function extractRequestData(
-        Request $request
-    ): array {
-        return json_decode(
-            $request->getContent(),
-            true
-        ) ?? [];
-    }
-
-    private function handleProfileImageUpload(
-        Request $request,
-        User $user
-    ): void {
-        $file = $request->files->get('profileImage');
-        if ($file instanceof UploadedFile) {
-            if ($user->getPicture()) {
-                $this->deleteOldImage($user->getPicture());
-            }
-
-            $imagePath = $this->uploadFile($file);
-            $user->setPicture($imagePath);
-        }
-    }
-
-    private function updateUserData(
-        User $user,
-        array $data
-    ): void {
-        $mapping = [
-            'firstName' => 'setFirstname',
-            'lastName' => 'setLastName',
-            'username' => 'setUsername',
-            'email' => 'setEmail',
-            'phone' => 'setPhone',
-            'address' => 'setAddress',
-            'expertise' => 'setExpertise',
-            'x' => 'setX',
-            'facebook' => 'setFacebook',
-            'linkedin' => 'setLinkedin',
-            'instagram' => 'setInstagram',
-        ];
-
-        foreach ($mapping as $key => $method) {
-            if (isset($data[$key])) {
-                $user->$method($data[$key]);
-            }
-        }
-    }
-
-    private function validateUser(
-        User $user,
-        ValidatorInterface $validator
-    ): ?array {
-        $errors = $validator->validate($user);
-        if (count($errors) > 0) {
-            $errorsArray = [];
-            foreach ($errors as $error) {
-                $errorsArray[$error->getPropertyPath()] = $error->getMessage();
-            }
-            return $errorsArray;
-        }
-        return null;
-    }
-
-    private function uploadFile(UploadedFile $file): string
+    public function edit(Request $request, int $id): JsonResponse
     {
-        $filename = uniqid() . '.' . $file->guessExtension();
-        $file->move($this->getParameter('upload_directory'), $filename);
+        $data = json_decode($request->getContent(), true) ?? [];
 
-        return $filename;
-    }
+        try {
+            $command = new EditUserCommand(
+                $id,
+                $data,
+                $request
+            );
+            $this->commandBusService->handle($command);
 
-    private function deleteOldImage(string $imagePath): void
-    {
-        $filePath = $this->getParameter('upload_directory') . '/' . $imagePath;
-        if (file_exists($filePath)) {
-            unlink($filePath);
-        }
-    }
-
-    public function updatePassword(
-        User $user,
-        Request $request,
-        UserService $userService
-    ): JsonResponse {
-        $data = $this->extractRequestData($request);
-
-        $errors = $this->validatePasswordUpdateData(
-            $data,
-            $userService
-        );
-        if (!empty($errors)) {
             return $this->json(
-                ['errors' => $errors],
-                400
+                ['message' => 'User updated successfully'],
+                200
             );
+        } catch (\Exception $e) {
+            return $this->json(['error' => $e->getMessage()], 400);
         }
-
-        $userService->updatePassword(
-            $user,
-            $data['newPassword']
-        );
-
-        return $this->json(
-            ['message' => 'Password updated successfully']
-        );
     }
 
-    private function validatePasswordUpdateData(
-        array $data,
-        UserService $userService
-    ): array {
-        $errors = [];
+    public function updatePassword(Request $request, int $id): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true) ?? [];
 
-        if (!isset($data['newPassword'])) {
-            $errors['newPassword'] = 'New password is required';
+        try {
+            $command = new UpdateUserPasswordCommand($id, $data);
+            $this->commandBusService->handle($command);
+
+            return $this->json(['message' => 'Password updated successfully']);
+        } catch (\Exception $e) {
+            return $this->json(['error' => $e->getMessage()], 400);
         }
-
-        if (!isset($data['confirmPassword'])) {
-            $errors['confirmPassword'] = 'Confirm password is required';
-        }
-
-        if (isset($data['newPassword'], $data['confirmPassword'])
-            && $data['newPassword'] !== $data['confirmPassword']
-        ) {
-            $errors['confirmPassword'] = 'New passwords do not match';
-        }
-
-        if (empty($errors)) {
-            $passwordErrors = $userService->validatePassword(
-                $data['newPassword']
-            );
-            if (!empty($passwordErrors)) {
-                $errors = array_merge($errors, $passwordErrors);
-            }
-        }
-
-        return $errors;
     }
-
 
 
     public function deleteAccount(

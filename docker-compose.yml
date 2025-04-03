@@ -58,6 +58,18 @@ services:
     environment:
       - WATCHPACK_POLLING=true
 
+  messenger:
+    build:
+      context: ./ms-learning-backend
+      dockerfile: Dockerfile
+    container_name: mslearning_messenger
+    depends_on:
+      - php
+      - db
+    networks:
+      - mslearning
+    command: [ "php", "bin/console", "messenger:consume", "async", "--time-limit=3600", "--memory-limit=128M", "--no-interaction" ]
+
 networks:
   mslearning:
     driver: bridge

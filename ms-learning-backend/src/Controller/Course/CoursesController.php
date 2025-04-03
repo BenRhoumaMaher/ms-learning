@@ -2,25 +2,31 @@
 
 namespace App\Controller\Course;
 
-use App\Entity\User;
-use App\Service\UserService\UserService;
-use App\Service\LessonService\LessonService;
+use App\Query\Course\GetAllCoursesQuery;
+use App\Query\Course\GetCourseByIdQuery;
+use App\Command\Course\DeleteCourseCommand;
+use App\Command\Course\UpdateCourseCommand;
 use Symfony\Component\HttpFoundation\Request;
-use App\Service\Course\CourseServiceInterface;
+use App\Query\User\GetUserCoursesModulesQuery;
+use App\Command\Course\CreateFullCourseCommand;
+use App\Service\QueryBusService\QueryBusService;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
+use App\Service\CommandBusService\CommandBusService;
+use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Query\Course\GetCoursesModulesLessonsWithoutResourcesQuery;
 
 class CoursesController extends AbstractController
 {
     public function __construct(
-        private CourseServiceInterface $courseService
+        private QueryBusService $queryBusService,
+        private CommandBusService $commandBusService
     ) {
     }
 
     public function index(): JsonResponse
     {
-        $courses = $this->courseService->getAllCourses();
+        $courses = $this->queryBusService->handle(new GetAllCoursesQuery());
         return $this->json(
             $courses,
             200,
@@ -29,136 +35,9 @@ class CoursesController extends AbstractController
         );
     }
 
-    public function createCourse(Request $request): JsonResponse
-    {
-        $result = $this->courseService->createFullCourse(
-            $request
-        );
-
-        if (isset($result['error'])) {
-            return new JsonResponse(
-                ['message' => $result['error']],
-                $result['status']
-            );
-        }
-
-        return new JsonResponse(
-            ['message' => $result['message']],
-            $result['status']
-        );
-    }
-
-    public function getUserCoursesModules(
-        int $id,
-        UserService $userService
-    ): JsonResponse {
-        $user = $userService->getUserById($id);
-
-        if (!$user) {
-            return $this->json(
-                ['error' => 'User not found'],
-                404
-            );
-        }
-
-        $userData = $this->formatUserCourses($user);
-
-        return $this->json($userData);
-    }
-
-    private function formatUserCourses(
-        User $user
-    ): array {
-        $courses = [];
-
-        foreach ($user->getCourses() as $course) {
-            $modules = array_map(
-                fn ($module) => [
-                    'id' => $module->getId(),
-                    'title' => $module->getTitle(),
-                ],
-                $course->getModules()->toArray()
-            );
-
-            $courses[] = [
-                'id' => $course->getId(),
-                'title' => $course->getTitle(),
-                'modules' => $modules,
-            ];
-        }
-
-        return [
-            'username' => $user->getFirstname() . ' ' . $user->getLastName(),
-            'courses' => $courses,
-        ];
-    }
-
-    public function getCoursesModulesLessonsWithoutResources(
-        int $id,
-        UserService $userService,
-        LessonService $lessonService
-    ): JsonResponse {
-        $user = $userService->getUserById($id);
-
-        if (!$user) {
-            return $this->json(
-                ['error' => 'User not found'], 404
-            );
-        }
-
-        $lessonsWithoutResources = $lessonService->getLessonsWithoutResources($user);
-
-        $coursesData = $this->formatCoursesWithLessonsWithoutResources(
-            $user, $lessonsWithoutResources
-        );
-
-        return $this->json(['courses' => $coursesData]);
-    }
-
-    private function formatCoursesWithLessonsWithoutResources(
-        User $user, array $lessonIdsWithoutResources
-    ): array {
-        $result = [];
-
-        foreach ($user->getCourses() as $course) {
-            $courseData = [
-                'id' => $course->getId(),
-                'title' => $course->getTitle(),
-                'modules' => []
-            ];
-
-            foreach ($course->getModules() as $module) {
-                $moduleData = [
-                    'id' => $module->getId(),
-                    'title' => $module->getTitle(),
-                    'lessons' => []
-                ];
-
-                foreach ($module->getLessons() as $lesson) {
-                    if (in_array($lesson->getId(), $lessonIdsWithoutResources)) {
-                        $moduleData['lessons'][] = [
-                            'id' => $lesson->getId(),
-                            'title' => $lesson->getTitle(),
-                        ];
-                    }
-                }
-
-                if (!empty($moduleData['lessons'])) {
-                    $courseData['modules'][] = $moduleData;
-                }
-            }
-
-            if (!empty($courseData['modules'])) {
-                $result[] = $courseData;
-            }
-        }
-
-        return $result;
-    }
-
     public function show(int $id): JsonResponse
     {
-        $course = $this->courseService->getCourseById($id);
+        $course = $this->queryBusService->handle(new GetCourseByIdQuery($id));
         return $this->json(
             $course,
             200,
@@ -167,60 +46,145 @@ class CoursesController extends AbstractController
         );
     }
 
-    public function create(
+    public function createCourse(
         Request $request,
-        ValidatorInterface $validator
+        MessageBusInterface $commandBus
     ): JsonResponse {
-        $data = json_decode($request->getContent(), true);
-
-        if (!isset($data['title'], $data['description'], $data['duration'], $data['level'])) {
+        $jsonData = $request->request->get('data');
+        if (!$jsonData) {
             return new JsonResponse(
-                ['error' => 'Missing required fields (title, description, duration, level)'],
+                ['error' => 'Invalid request, missing data'],
                 400
             );
         }
 
-        $course = $this->courseService->createCourse($data);
-
-        return $this->json(
-            $course,
-            201
+        $data = json_decode(
+            $jsonData,
+            true
         );
+        if (!$data || !isset($data['user_id'], $data['course'], $data['modules'])) {
+            return new JsonResponse(['error' => 'Missing required fields'], 400);
+        }
+
+        $files = $request->files->all();
+
+        $command = new CreateFullCourseCommand(
+            $data['user_id'],
+            $data['course'],
+            $data['modules'],
+            $files
+        );
+
+        $this->commandBusService->handle($command);
+
+        return new JsonResponse(
+            ['message' => 'Course creation started'],
+            202
+        );
+    }
+
+    public function getUserCoursesModules(
+        int $id,
+        MessageBusInterface $queryBus
+    ): JsonResponse {
+        try {
+            $userData = $this->queryBusService->handle(
+                new GetUserCoursesModulesQuery($id)
+            );
+
+            return $this->json($userData);
+        } catch (\Exception $e) {
+            return $this->json(['error' => $e->getMessage()], 404);
+        }
+    }
+
+    public function getCoursesModulesLessonsWithoutResources(
+        int $id,
+        MessageBusInterface $queryBus
+    ): JsonResponse {
+        try {
+            $coursesData = $this->queryBusService->handle(
+                new GetCoursesModulesLessonsWithoutResourcesQuery($id)
+            );
+
+            return $this->json(
+                ['courses' => $coursesData]
+            );
+        } catch (\Exception $e) {
+            return $this->json(
+                ['error' => $e->getMessage()],
+                404
+            );
+        }
     }
 
     public function update(
         int $id,
         Request $request
     ): JsonResponse {
-        $data = json_decode($request->getContent(), true);
+        $data = json_decode(
+            $request->getContent(),
+            true
+        );
 
         if (!isset($data['title'], $data['description'], $data['duration'], $data['level'])) {
             return new JsonResponse(
-                ['error' => 'Missing required fields (title, description, duration, level)'],
+                ['error' => 'Missing required fields'],
                 400
             );
         }
 
-        $course = $this->courseService->getCourseById($id);
-        $updatedCourse = $this->courseService->updateCourse(
-            $course,
-            $data
+        $command = new UpdateCourseCommand(
+            id: $id,
+            title: $data['title'],
+            description: $data['description'],
+            duration: $data['duration'],
+            level: $data['level'],
+            price: $data['price'] ?? null,
+            image: $data['image'] ?? null,
+            category: $data['category'] ?? null,
+            promotion: $data['promotion'] ?? null,
+            discount: $data['discount'] ?? null
         );
 
+        $this->commandBusService->handle($command);
+
         return $this->json(
-            $updatedCourse,
+            ['message' => 'Course updated successfully'],
             200
         );
     }
 
+
     public function delete(int $id): JsonResponse
     {
-        $course = $this->courseService->getCourseById($id);
-        $this->courseService->deleteCourse($course);
+        $command = new DeleteCourseCommand($id);
+        $this->commandBusService->handle($command);
 
         return new JsonResponse(
             ['message' => 'Course deleted successfully'],
             204
         );
     }
+
+    // public function create(
+    //     Request $request,
+    //     ValidatorInterface $validator
+    // ): JsonResponse {
+    //     $data = json_decode($request->getContent(), true);
+
+    //     if (!isset($data['title'], $data['description'], $data['duration'], $data['level'])) {
+    //         return new JsonResponse(
+    //             ['error' => 'Missing required fields (title, description, duration, level)'],
+    //             400
+    //         );
+    //     }
+
+    //     $course = $this->courseService->createCourse($data);
+
+    //     return $this->json(
+    //         $course,
+    //         201
+    //     );
+    // }
 }
