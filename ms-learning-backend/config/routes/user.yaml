@@ -13,6 +13,11 @@ infos:
   controller: App\Controller\User\UserController::getUserInfos
   methods: GET
 
+instructors:
+  path: /users/instructors
+  controller: App\Controller\User\UserController::getInstructors
+  methods: GET
+
 update:
   path: /user/{id}
   controller: App\Controller\User\UserController::edit
@@ -27,3 +32,8 @@ delete_user:
   path: /user/{id}
   controller: App\Controller\User\UserController::deleteAccount
   methods: DELETE
+
+add_interests:
+  path: /user/interests
+  controller: App\Controller\User\UserController::addInterests
+  methods: POST

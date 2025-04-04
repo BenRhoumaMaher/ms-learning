@@ -184,6 +184,12 @@ class User implements
     #[Groups('user:read')]
     private ?string $address = null;
 
+    /**
+     * @var Collection<int, Category>
+     */
+    #[ORM\ManyToMany(targetEntity: Category::class, inversedBy: 'users')]
+    private Collection $interests;
+
     public function __construct()
     {
         $this->createdAt = new \DateTime();
@@ -198,6 +204,7 @@ class User implements
         $this->calendars = new ArrayCollection();
         $this->modules = new ArrayCollection();
         $this->lessons = new ArrayCollection();
+        $this->interests = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -742,6 +749,30 @@ class User implements
     public function setAddress(?string $address): static
     {
         $this->address = $address;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Category>
+     */
+    public function getInterests(): Collection
+    {
+        return $this->interests;
+    }
+
+    public function addInterest(Category $interest): static
+    {
+        if (!$this->interests->contains($interest)) {
+            $this->interests->add($interest);
+        }
+
+        return $this;
+    }
+
+    public function removeInterest(Category $interest): static
+    {
+        $this->interests->removeElement($interest);
 
         return $this;
     }

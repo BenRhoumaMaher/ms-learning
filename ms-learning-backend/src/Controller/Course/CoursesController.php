@@ -2,19 +2,26 @@
 
 namespace App\Controller\Course;
 
+use App\Repository\UserRepository;
+use App\Repository\CoursesRepository;
 use App\Service\Course\CourseService;
+use App\Repository\CategoryRepository;
 use App\Query\Course\GetAllCoursesQuery;
 use App\Query\Course\GetCourseByIdQuery;
+use App\Query\Course\GetFreeCoursesQuery;
 use App\Command\Course\DeleteCourseCommand;
 use App\Command\Course\UpdateCourseCommand;
+use App\Query\Course\GetLatestCoursesQuery;
 use Symfony\Component\HttpFoundation\Request;
 use App\Query\User\GetUserCoursesModulesQuery;
 use App\Command\Course\CreateFullCourseCommand;
+use App\Query\Course\GetRecommendedCoursesQuery;
 use App\Service\QueryBusService\QueryBusService;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use App\Service\CommandBusService\CommandBusService;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use App\Query\Course\GetCoursesModulesLessonsWithoutResourcesQuery;
 
 class CoursesController extends AbstractController
@@ -164,6 +171,59 @@ class CoursesController extends AbstractController
         return new JsonResponse(
             ['message' => 'Course deleted successfully'],
             204
+        );
+    }
+
+    public function getLatestCourses(): JsonResponse
+    {
+        $courses = $this->queryBusService->handle(
+            new GetLatestCoursesQuery()
+        );
+
+        return $this->json(
+            $courses,
+            200,
+            [],
+            ['groups' => 'course:read']
+        );
+    }
+
+    public function getFreeCourses(): JsonResponse
+    {
+        $courses = $this->queryBusService->handle(
+            new GetFreeCoursesQuery()
+        );
+
+        return $this->json(
+            $courses,
+            200,
+            [],
+            ['groups' => 'course:read']
+        );
+    }
+
+    public function getRecommendedCourses(int $id): JsonResponse
+    {
+        try {
+            $courses = $this->queryBusService->handle(
+                new GetRecommendedCoursesQuery($id)
+            );
+        } catch (NotFoundHttpException $e) {
+            return $this->json(['error' => $e->getMessage()], 404);
+        }
+
+        if (empty($courses)) {
+            return $this->json(
+                ['message' => 'No courses found matching your interests'],
+                200
+            );
+        }
+
+        return $this->json(
+            $courses,
+            200,
+            [],
+            ['groups' => 'course:read']
         );
     }
 

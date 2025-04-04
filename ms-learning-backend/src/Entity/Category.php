@@ -28,9 +28,16 @@ class Category
     #[Groups(['category:read'])]
     private Collection $courses;
 
+    /**
+     * @var Collection<int, User>
+     */
+    #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'interests')]
+    private Collection $users;
+
     public function __construct()
     {
         $this->courses = new ArrayCollection();
+        $this->users = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -75,6 +82,33 @@ class Category
             if ($course->getCategory() === $this) {
                 $course->setCategory(null);
             }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, User>
+     */
+    public function getUsers(): Collection
+    {
+        return $this->users;
+    }
+
+    public function addUser(User $user): static
+    {
+        if (!$this->users->contains($user)) {
+            $this->users->add($user);
+            $user->addInterest($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUser(User $user): static
+    {
+        if ($this->users->removeElement($user)) {
+            $user->removeInterest($this);
         }
 
         return $this;

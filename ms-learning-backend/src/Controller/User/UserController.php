@@ -3,12 +3,17 @@
 namespace App\Controller\User;
 
 use App\Entity\User;
+use App\Repository\UserRepository;
 use App\Query\User\GetAllUsersQuery;
 use App\Command\User\EditUserCommand;
 use App\Query\User\GetUserInfosQuery;
+use App\Repository\CoursesRepository;
+use App\Repository\CategoryRepository;
+use App\Query\User\GetInstructorsQuery;
 use App\Query\User\GetUserCoursesQuery;
 use App\Service\UserService\UserService;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Command\User\AddUserInterestsCommand;
 use Symfony\Component\HttpFoundation\Request;
 use App\Command\User\UpdateUserPasswordCommand;
 use App\Service\QueryBusService\QueryBusService;
@@ -77,6 +82,7 @@ final class UserController extends AbstractController
 
     public function edit(Request $request, int $id): JsonResponse
     {
+        $id = (int) $id;
         $data = json_decode($request->getContent(), true) ?? [];
 
         try {
@@ -131,5 +137,50 @@ final class UserController extends AbstractController
             $errors[$error->getOrigin()->getName()] = $error->getMessage();
         }
         return $errors;
+    }
+
+    public function addInterests(
+        Request $request
+    ): JsonResponse {
+        $user = $this->getUser();
+        if (!$user) {
+            return new JsonResponse(
+                ['error' => 'Unauthorized'],
+                401
+            );
+        }
+
+        $data = json_decode($request->getContent(), true);
+        $categoryIds = $data['categories'] ?? [];
+
+        if (empty($categoryIds)) {
+            return new JsonResponse(
+                ['error' => 'No categories provided'],
+                400
+            );
+        }
+
+        $command = new AddUserInterestsCommand($user->getId(), $categoryIds);
+        $this->commandBusService->handle($command);
+
+        return new JsonResponse(
+            ['message' => 'Interest update request received'],
+            202
+        );
+    }
+
+    public function getInstructors(): JsonResponse
+    {
+        $query = new GetInstructorsQuery();
+        $instructors = $this->queryBusService->handle(
+            $query
+        );
+
+        return $this->json(
+            $instructors,
+            200,
+            [],
+            ['groups' => 'user:read']
+        );
     }
 }

@@ -68,7 +68,7 @@ services:
       - db
     networks:
       - mslearning
-    command: [ "php", "bin/console", "messenger:consume", "async", "--time-limit=3600", "--memory-limit=128M", "--no-interaction" ]
+    command: [ "php", "bin/console", "messenger:consume", "async", "-vv" ]
 
 networks:
   mslearning:

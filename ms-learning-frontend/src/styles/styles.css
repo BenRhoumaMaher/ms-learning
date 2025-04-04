@@ -1111,7 +1111,6 @@
   margin-top: 10px;
 }
 
-
 .calendar-container {
   text-align: center;
   font-family: Arial, sans-serif;
@@ -2083,7 +2082,7 @@
 .instructlive-arrow {
   background: none;
   border: none;
-  color: #2D8CFF;
+  color: #2d8cff;
   cursor: pointer;
   transition: all 0.3s ease;
 }
@@ -2094,12 +2093,10 @@
 }
 
 .instructlive-arrow:disabled {
-  color: #B0B0B0;
+  color: #b0b0b0;
   cursor: not-allowed;
   transform: none;
 }
-
-
 
 /* Cards Layout */
 .instructlive-cards {
@@ -2650,6 +2647,34 @@
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.freshdrops-showless-btn {
+  background-color: #6c757d;
+  color: white;
+  padding: 8px 20px;
+  border-radius: 20px;
+  border: none;
+  transition: all 0.3s ease;
+}
+
+.freshdrops-showless-btn:hover {
+  background-color: #5a6268;
+  transform: scale(1.05);
+}
+
+.budgetfriendly-showless-btn {
+  background-color: #6c757d;
+  color: white;
+  padding: 8px 20px;
+  border-radius: 20px;
+  border: none;
+  transition: all 0.3s ease;
+}
+
+.budgetfriendly-showless-btn:hover {
+  background-color: #5a6268;
+  transform: scale(1.05);
 }
 
 .freshdrops-image-placeholder::before,
@@ -4027,7 +4052,7 @@
 }
 
 .liveeng-community {
-  background: #f8f9fa; 
+  background: #f8f9fa;
   padding: 40px 0;
 }
 
@@ -4099,7 +4124,7 @@
 .profile-dropdown {
   position: absolute;
   top: 52px;
-  right: -20px; 
+  right: -20px;
   background: rgba(255, 255, 255, 0.95);
   border-radius: 5px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);

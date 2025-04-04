@@ -130,6 +130,35 @@ export const getUsers = async () => {
   }
 }
 
+export const getInstructors = async () => {
+  try {
+    const response = await bc.get('/users/instructors')
+    return response.data
+  } catch (error) {
+    console.error('Error fetching instructors:', error)
+    throw error
+  }
+}
+
+export const getRecommendedCourses = async userId => {
+  try {
+    const token =
+      localStorage.getItem('token') || sessionStorage.getItem('token')
+    const response = await bc.get(`/courses/recommended/${userId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
+
+    return Array.isArray(response.data)
+      ? response.data
+      : response.data.courses || []
+  } catch (error) {
+    console.error('Error fetching recommended courses:', error)
+    throw error
+  }
+}
+
 export const getINstructorDemands = async () => {
   try {
     const response = await bc.get('/instructor-demands')
@@ -455,6 +484,21 @@ export const getUserLiveSessions = async userId => {
   }
 }
 
+export const updateUserInterests = async categories => {
+  const response = await bc.post(
+    '/user/interests',
+    {
+      categories
+    },
+    {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }
+  )
+  return response.data
+}
+
 export const getLessonInfo = async lessonId => {
   try {
     const token =
@@ -467,6 +511,26 @@ export const getLessonInfo = async lessonId => {
     return response.data
   } catch (error) {
     console.error('Error fetching lesson info:', error)
+    throw error
+  }
+}
+
+export const getLatestCourses = async () => {
+  try {
+    const response = await bc.get('/courses/latest')
+    return response.data
+  } catch (error) {
+    console.error('Error fetching latest courses:', error)
+    throw error
+  }
+}
+
+export const getFreeCourses = async () => {
+  try {
+    const response = await bc.get('/courses/free')
+    return response.data
+  } catch (error) {
+    console.error('Error fetching free courses:', error)
     throw error
   }
 }

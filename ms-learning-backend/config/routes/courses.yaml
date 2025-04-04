@@ -3,6 +3,21 @@ index:
   controller: App\Controller\Course\CoursesController::index
   methods: GET
 
+latestCourses:
+  path: /courses/latest
+  controller: App\Controller\Course\CoursesController::getLatestCourses
+  methods: GET  
+
+FreeCourses:
+  path: /courses/free
+  controller: App\Controller\Course\CoursesController::getFreeCourses
+  methods: GET 
+
+RecommendedCourses:
+  path: /courses/recommended/{id}
+  controller: App\Controller\Course\CoursesController::getRecommendedCourses
+  methods: GET        
+
 show:
   path: /course/{id}
   controller: App\Controller\Course\CoursesController::show

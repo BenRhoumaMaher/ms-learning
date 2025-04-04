@@ -37,6 +37,7 @@ framework:
       App\Command\Lesson\EditLessonCommand: async
       App\Command\User\EditUserCommand: async
       App\Command\User\UpdateUserPasswordCommand: async
+      App\Command\User\AddUserInterestsCommand: async
 
       # Route your messages to the transports
       # 'App\Message\YourMessage': async
