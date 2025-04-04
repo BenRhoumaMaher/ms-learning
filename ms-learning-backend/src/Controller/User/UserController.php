@@ -11,6 +11,7 @@ use App\Repository\CoursesRepository;
 use App\Repository\CategoryRepository;
 use App\Query\User\GetInstructorsQuery;
 use App\Query\User\GetUserCoursesQuery;
+use App\Query\User\ShowInstructorQuery;
 use App\Service\UserService\UserService;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Command\User\AddUserInterestsCommand;
@@ -182,5 +183,16 @@ final class UserController extends AbstractController
             [],
             ['groups' => 'user:read']
         );
+    }
+
+    public function showInstructor(int $id): JsonResponse
+    {
+        try {
+            $data = $this->queryBusService->handle(new ShowInstructorQuery($id));
+        } catch (\Throwable $e) {
+            return $this->json(['error' => $e->getMessage()], 404);
+        }
+
+        return $this->json($data);
     }
 }

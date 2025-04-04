@@ -23,9 +23,20 @@ class GetUserCoursesQueryHandler
             throw new \Exception('User not found');
         }
 
+        $courses = [];
+
+        foreach ($user->getCourses() as $course) {
+            $courses[] = [
+                'id' => $course->getId(),
+                'title' => $course->getTitle(),
+                'description' => $course->getDescription(),
+                'category' => $course->getCategory()?->getName(),
+            ];
+        }
+
         return [
             'username' => $user->getFirstname() . ' ' . $user->getLastName(),
-            'courses' => $user->getCourses(),
+            'courses' => $courses,
         ];
     }
 }

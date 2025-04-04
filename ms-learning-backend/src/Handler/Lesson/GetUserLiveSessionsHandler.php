@@ -29,6 +29,10 @@ class GetUserLiveSessionsHandler
                 'date' => $session->getLiveStartTime()->format('Y-m-d'),
                 'startTime' => $session->getLiveStartTime()->format('H:i'),
                 'endTime' => $session->getLiveEndTime()->format('H:i'),
+                'duration' => $session->getDuration(),
+                'course' => $session->getCourse()->getTitle(),
+                'instructor' => $session->getUser()->getUserName(),
+                'image'  => $session->getCourse()->getImage(),
             ],
             $liveSessions
         );

@@ -39,6 +39,7 @@ class Courses
     private ?string $level = null;
 
     #[ORM\ManyToOne(inversedBy: 'courses')]
+    #[Groups(['course:read'])]
     private ?Category $category = null;
 
     #[ORM\Column]

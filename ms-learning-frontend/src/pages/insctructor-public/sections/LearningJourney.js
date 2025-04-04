@@ -1,49 +1,58 @@
-import React, { useState } from "react";
-import { Container, Row, Col, Button, Card } from "react-bootstrap";
-
+import React, { useState, useEffect } from 'react'
+import { Container, Row, Col, Button, Card } from 'react-bootstrap'
+import { useParams } from 'react-router-dom'
+import { getInstructorCourses } from '../../../helpers/api'
 
 const LearningJourney = () => {
-  const categories = ["All", "Web Development", "Design", "Marketing"];
+  const { id } = useParams()
+  const [courses, setCourses] = useState([])
+  const [username, setUsername] = useState('')
+  const [selectedCategory, setSelectedCategory] = useState('All')
+  const [categories, setCategories] = useState(['All'])
 
-  const courses = [
-    {
-      title: "Web Dev Basics",
-      category: "Web Development",
-      rating: 4.9,
-      enrollments: 350,
-    },
-    {
-      title: "UI/UX Design",
-      category: "Design",
-      rating: 4.7,
-      enrollments: 275,
-    },
-    {
-      title: "Social Media Marketing",
-      category: "Marketing",
-      rating: 4.8,
-      enrollments: 300,
-    },
-  ];
+  useEffect(() => {
+    const fetchCourses = async () => {
+      try {
+        const data = await getInstructorCourses(id)
+        setCourses(data.courses || [])
+        setUsername(data.username || '')
 
-  const [selectedCategory, setSelectedCategory] = useState("All");
+        const dynamicCategories = [
+          'All',
+          ...new Set(
+            data.courses.map(course => course.category).filter(Boolean)
+          )
+        ]
+        setCategories(dynamicCategories)
+      } catch (error) {
+        console.error('Failed to fetch instructor courses:', error)
+      }
+    }
+
+    if (id) {
+      fetchCourses()
+    }
+  }, [id])
 
   return (
-    <Container className="learning-section">
-      <h4 className="fw-bold text-center">
-        Explore the <span className="learning-title">Learning Journey</span>
+    <Container className='learning-section'>
+      <h4 className='fw-bold text-center'>
+        Explore the <span className='learning-title'>Learning Journey</span>
       </h4>
-      <p className="text-success text-center">
-        Get into a world of knowledge with courses taught by <strong>Teacher Name</strong>
+      <p className='text-success text-center'>
+        Get into a world of knowledge with courses taught by{' '}
+        <strong>{username}</strong>
       </p>
 
-      <div className="text-center my-3">
-        <span className="category-label">Jump To</span>
+      <div className='text-center my-3'>
+        <span className='category-label'>Jump To</span>
         {categories.map((category, index) => (
           <Button
             key={index}
-            variant={selectedCategory === category ? "primary" : "outline-primary"}
-            className="mx-2 category-btn"
+            variant={
+              selectedCategory === category ? 'primary' : 'outline-primary'
+            }
+            className='mx-2 category-btn'
             onClick={() => setSelectedCategory(category)}
           >
             {category}
@@ -51,33 +60,42 @@ const LearningJourney = () => {
         ))}
       </div>
 
-      <Row className="mt-4">
+      <Row className='mt-4'>
         {courses
-          .filter(course => selectedCategory === "All" || course.category === selectedCategory)
+          .filter(
+            course =>
+              selectedCategory === 'All' || course.category === selectedCategory
+          )
           .map((course, index) => (
             <Col md={3} key={index}>
-              <Card className="course-card">
+              <Card className='course-card'>
                 <Card.Body>
-                  <Card.Title className="course-title">{course.title}</Card.Title>
-                  <Card.Text className="course-description">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.
+                  <Card.Title className='course-title'>
+                    {course.title}
+                  </Card.Title>
+                  <Card.Text className='course-description'>
+                    {course.description}
                   </Card.Text>
-                  <div className="rating">
-                    <span className="stars">⭐⭐⭐⭐⭐</span> {course.rating}/5
+                  <div className='rating'>
+                    <span className='stars'>⭐⭐⭐⭐⭐</span> 4.9/5
                   </div>
-                  <p className="enrollments">+{course.enrollments} enrollments</p>
-                  <Button variant="info" className="enroll-btn">Enroll</Button>
+                  <p className='enrollments'>+350 enrollments</p>
+                  <Button variant='info' className='enroll-btn'>
+                    Enroll
+                  </Button>
                 </Card.Body>
               </Card>
             </Col>
           ))}
       </Row>
 
-      <div className="mt-4">
-        <Button variant="primary" className="lshow-more-btn">Show more</Button>
+      <div className='mt-4'>
+        <Button variant='primary' className='lshow-more-btn'>
+          Show more
+        </Button>
       </div>
     </Container>
-  );
-};
+  )
+}
 
-export default LearningJourney;
+export default LearningJourney

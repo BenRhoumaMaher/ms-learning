@@ -3,6 +3,11 @@ index:
   controller: App\Controller\User\UserController::index
   methods: GET
 
+showInstructor:
+  path: /instructor/{id}
+  controller: App\Controller\User\UserController::showInstructor
+  methods: GET  
+
 courses:
   path: /courses/user/{id}
   controller: App\Controller\User\UserController::getUserCourses

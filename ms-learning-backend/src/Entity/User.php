@@ -190,6 +190,12 @@ class User implements
     #[ORM\ManyToMany(targetEntity: Category::class, inversedBy: 'users')]
     private Collection $interests;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $occupation = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?array $specialization = null;
+
     public function __construct()
     {
         $this->createdAt = new \DateTime();
@@ -773,6 +779,30 @@ class User implements
     public function removeInterest(Category $interest): static
     {
         $this->interests->removeElement($interest);
+
+        return $this;
+    }
+
+    public function getOccupation(): ?string
+    {
+        return $this->occupation;
+    }
+
+    public function setOccupation(?string $occupation): static
+    {
+        $this->occupation = $occupation;
+
+        return $this;
+    }
+
+    public function getSpecialization(): ?array
+    {
+        return $this->specialization;
+    }
+
+    public function setSpecialization(?array $specialization): static
+    {
+        $this->specialization = $specialization;
 
         return $this;
     }

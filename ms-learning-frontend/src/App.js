@@ -42,7 +42,7 @@ function App () {
           <Route path='/student-calendar' element={<StudentCalendar />} />
           <Route path='/registered-courses' element={<RegisteredCourses />} />
           <Route path='/quiz' element={<Quiz />} />
-          <Route path='/instructor-public' element={<InstructorPublic />} />
+          <Route path='/instructor-public/:id' element={<InstructorPublic />} />
           <Route path='/instructor-dashboard' element={<InsctructorDashboard />} />
           <Route path='/course-catalog' element={<CourseCatalog />} />
           <Route path='/account-settings' element={<AccountSettings />} />

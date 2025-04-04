@@ -215,9 +215,20 @@ export const getUserCourses = async () => {
     const userId = user?.user_id
 
     const response = await bc.get(`/courses/user/${userId}`)
+    console.log('Backend response:', response.data)
     return response.data
   } catch (error) {
     console.error('Error fetching user courses:', error)
+    throw error
+  }
+}
+
+export const getInstructorCourses = async instructorId => {
+  try {
+    const response = await bc.get(`/courses/user/${instructorId}`)
+    return response.data
+  } catch (error) {
+    console.error('Error fetching instructor courses:', error)
     throw error
   }
 }
@@ -545,6 +556,16 @@ export const updateCourse = async (courseId, courseData) => {
     return response.data
   } catch (error) {
     console.error('Error updating course:', error)
+    throw error
+  }
+}
+
+export const getInstructorById = async id => {
+  try {
+    const response = await bc.get(`/instructor/${id}`)
+    return response.data
+  } catch (error) {
+    console.error('Error fetching instructor:', error)
     throw error
   }
 }

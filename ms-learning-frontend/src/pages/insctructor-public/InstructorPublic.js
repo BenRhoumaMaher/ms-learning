@@ -1,4 +1,5 @@
 import React from 'react'
+import { useParams } from 'react-router-dom'
 import '../../styles/styles.css'
 import HeroSection from './sections/HeroSection'
 import BehindExpertise from './sections/BehindExpertise'
@@ -6,14 +7,15 @@ import LearningJourney from './sections/LearningJourney'
 import UpcomingCourses from './sections/UpcomingCourses'
 import ConnectSection from './sections/ConnectSection'
 import Footer from '../../layouts/Footer'
-const Quiz = () => {
+const InstructorPublic = () => {
+  const { id } = useParams()
   return (
     <section>
       <section className='section-container'>
-        <HeroSection />
+        <HeroSection id={id} />
       </section>
       <section className='section-container'>
-        <BehindExpertise />
+        <BehindExpertise id={id} />
       </section>
       <section className='section-container'>
         <LearningJourney />
@@ -29,4 +31,4 @@ const Quiz = () => {
   )
 }
 
-export default Quiz
+export default InstructorPublic
