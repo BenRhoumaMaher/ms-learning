@@ -6,6 +6,7 @@ use App\Repository\UserRepository;
 use App\Command\User\EditUserCommand;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
@@ -28,9 +29,8 @@ class EditUserCommandHandler
             throw new \Exception('User not found');
         }
 
-        // Handle profile image upload
-        if ($command->request) {
-            $this->handleProfileImageUpload($command->request, $user);
+        if ($command->profileImage) {
+            $this->handleProfileImageUpload($command->profileImage, $user);
         }
 
         // Update user data
@@ -48,7 +48,7 @@ class EditUserCommandHandler
         return ['user' => $user, 'status' => 200];
     }
 
-    private function handleProfileImageUpload(Request $request, $user): void
+    private function handleProfileImageUpload(UploadedFile $file, $user): void
     {
         $file = $request->files->get('profileImage');
         if ($file) {

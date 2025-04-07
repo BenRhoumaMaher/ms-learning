@@ -85,12 +85,12 @@ final class UserController extends AbstractController
     {
         $id = (int) $id;
         $data = json_decode($request->getContent(), true) ?? [];
-
+        $profileImage = $request->files->get('profileImage');
         try {
             $command = new EditUserCommand(
                 $id,
                 $data,
-                $request
+                $profileImage
             );
             $this->commandBusService->handle($command);
 
