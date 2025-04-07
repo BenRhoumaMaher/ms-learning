@@ -144,6 +144,15 @@ const Navbar = () => {
                       </Link>
                     )}
                     {userRoles.includes('ROLE_INSTRUCTOR') ? (
+                      <Link to='/' className='dropdown-item'>
+                        ---------------
+                      </Link>
+                    ) : (
+                      <Link to='/student-payment' className='dropdown-item'>
+                        Payment Portal
+                      </Link>
+                    )}
+                    {userRoles.includes('ROLE_INSTRUCTOR') ? (
                       <Link
                         to='/account-settings-instructor'
                         className='dropdown-item'

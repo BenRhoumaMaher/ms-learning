@@ -14,6 +14,7 @@ use App\Query\User\GetUserCoursesQuery;
 use App\Query\User\ShowInstructorQuery;
 use App\Service\UserService\UserService;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Command\Course\EnrollInCourseCommand;
 use App\Command\User\AddUserInterestsCommand;
 use Symfony\Component\HttpFoundation\Request;
 use App\Command\User\UpdateUserPasswordCommand;
@@ -195,4 +196,31 @@ final class UserController extends AbstractController
 
         return $this->json($data);
     }
+
+    public function enroll(int $courseId, Request $request): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true);
+        $userId = $data['userId'] ?? null;
+
+        if (!is_int($userId)) {
+            return $this->json(['error' => 'Invalid or missing userId'], 400);
+        }
+
+        try {
+            $command = new EnrollInCourseCommand($userId, $courseId);
+            $result = $this->commandBusService->handle($command);
+
+            return $this->json(
+                [
+                'success' => true,
+                'message' => 'Successfully enrolled in course',
+                'enrollmentId' => $result,
+                ]
+            );
+        } catch (\Exception $e) {
+            return $this->json(['error' => $e->getMessage()], 400);
+        }
+    }
+
+
 }

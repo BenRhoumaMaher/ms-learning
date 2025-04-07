@@ -569,3 +569,8 @@ export const getInstructorById = async id => {
     throw error
   }
 }
+
+export const enrollInCourse = async (courseId, userId) => {
+  const response = await bc.post(`/enroll/${courseId}`, { userId })
+  return response.data
+}

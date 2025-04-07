@@ -1,10 +1,16 @@
 import React, { useState, useEffect } from 'react'
-import { getFreeCourses } from '../../../helpers/api'
+import { getFreeCourses, enrollInCourse } from '../../../helpers/api'
+import { useNavigate } from 'react-router-dom'
 
 const BudgetFriendly = () => {
+  const token = localStorage.getItem('token') || sessionStorage.getItem('token')
+  const user = JSON.parse(atob(token.split('.')[1]))
+  const userId = user?.user_id
   const [courses, setCourses] = useState([])
   const [visibleCount, setVisibleCount] = useState(3)
   const [loading, setLoading] = useState(true)
+  const [enrolling, setEnrolling] = useState(null)
+  const navigate = useNavigate()
 
   useEffect(() => {
     const fetchFreeCourses = async () => {
@@ -20,6 +26,19 @@ const BudgetFriendly = () => {
 
     fetchFreeCourses()
   }, [])
+
+  const handleEnroll = async courseId => {
+    setEnrolling(courseId)
+
+    try {
+      await enrollInCourse(courseId, userId)
+      navigate('/registered-courses')
+    } catch (error) {
+      console.error('Error enrolling in course:', error)
+    } finally {
+      setEnrolling(null)
+    }
+  }
 
   const handleShowMore = () => {
     setVisibleCount(prev => prev + 3)
@@ -74,6 +93,13 @@ const BudgetFriendly = () => {
                   Instructor: {course.instructor?.username || 'Unknown'}
                 </p>
                 <p className='text-primary fw-bold'>FREE</p>
+                <button
+                  className='btn btn-success mt-2'
+                  onClick={() => handleEnroll(course.id)}
+                  disabled={enrolling === course.id}
+                >
+                  {enrolling === course.id ? 'Enrolling...' : 'Enroll Now'}
+                </button>
               </div>
             </div>
           </div>

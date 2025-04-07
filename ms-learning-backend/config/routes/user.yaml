@@ -6,7 +6,7 @@ index:
 showInstructor:
   path: /instructor/{id}
   controller: App\Controller\User\UserController::showInstructor
-  methods: GET  
+  methods: GET
 
 courses:
   path: /courses/user/{id}
@@ -41,4 +41,9 @@ delete_user:
 add_interests:
   path: /user/interests
   controller: App\Controller\User\UserController::addInterests
+  methods: POST
+
+enrollements:
+  path: enroll/{courseId}
+  controller: App\Controller\User\UserController::enroll
   methods: POST

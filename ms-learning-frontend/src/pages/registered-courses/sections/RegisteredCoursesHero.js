@@ -26,7 +26,6 @@ const RegisteredCoursesHero = () => {
           Your browser does not support the video tag.
         </video>
         <div className='session-info-container'>
-          <button className='resume-btn'>Resume</button>
           <p className='session-info'>Upcoming Live Session in 2 days</p>
         </div>
       </div>
