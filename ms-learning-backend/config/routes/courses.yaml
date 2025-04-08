@@ -6,21 +6,31 @@ index:
 latestCourses:
   path: /courses/latest
   controller: App\Controller\Course\CoursesController::getLatestCourses
-  methods: GET  
+  methods: GET
 
 FreeCourses:
   path: /courses/free
   controller: App\Controller\Course\CoursesController::getFreeCourses
-  methods: GET 
+  methods: GET
 
 RecommendedCourses:
   path: /courses/recommended/{id}
   controller: App\Controller\Course\CoursesController::getRecommendedCourses
-  methods: GET        
+  methods: GET
 
 show:
   path: /course/{id}
   controller: App\Controller\Course\CoursesController::show
+  methods: GET
+
+enrolled_course:
+  path: /enrolledCourse/{id}
+  controller: App\Controller\Course\CoursesController::enrolledCourse
+  methods: GET
+
+course_content:
+  path: /coursecontent/{id}
+  controller: App\Controller\Course\CoursesController::getCourseWithModulesAndLessons
   methods: GET
 
 create:
@@ -51,4 +61,4 @@ courses:
 courses_modules_lessons:
   path: /coursesmoduleslessons/user/{id}
   controller: App\Controller\Course\CoursesController::getCoursesModulesLessonsWithoutResources
-  methods: GET  
+  methods: GET

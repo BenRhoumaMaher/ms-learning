@@ -3,8 +3,11 @@
 namespace App\Controller\User;
 
 use App\Entity\User;
+use App\Entity\Review;
+use DateTimeImmutable;
 use App\Repository\UserRepository;
 use App\Query\User\GetAllUsersQuery;
+use App\Repository\ReviewRepository;
 use App\Command\User\EditUserCommand;
 use App\Query\User\GetUserInfosQuery;
 use App\Repository\CoursesRepository;
@@ -14,6 +17,7 @@ use App\Query\User\GetUserCoursesQuery;
 use App\Query\User\ShowInstructorQuery;
 use App\Service\UserService\UserService;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Query\Course\GetEnrolledCourseQuery;
 use App\Command\Course\EnrollInCourseCommand;
 use App\Command\User\AddUserInterestsCommand;
 use Symfony\Component\HttpFoundation\Request;
@@ -222,5 +226,67 @@ final class UserController extends AbstractController
         }
     }
 
+    public function getCourseReviews(
+        int $courseId,
+        ReviewRepository $reviewRepository,
+        CoursesRepository $coursesRepository
+    ): JsonResponse {
+        $course = $this->queryBusService->handle(
+            new GetEnrolledCourseQuery($courseId)
+        );
+        $currentcourseId = $course->getCurse()->getId();
+        $course = $coursesRepository->find($currentcourseId);
+        if (!$course) {
+            return $this->json(['error' => 'Course not found'], 404);
+        }
+
+        $reviews = $reviewRepository->findBy(['course' => $course]);
+
+        return $this->json(
+            $reviews,
+            200,
+            [],
+            ['groups' => ['review:read', 'user:read']]
+        );
+    }
+
+    public function createReviewForCourse(
+        int $courseId,
+        Request $request,
+        CoursesRepository $coursesRepository,
+        EntityManagerInterface $em,
+    ): JsonResponse {
+        $course = $this->queryBusService->handle(
+            new GetEnrolledCourseQuery($courseId)
+        );
+        $currentcourseId = $course->getCurse()->getId();
+        $course = $coursesRepository->find($currentcourseId);
+        if (!$course) {
+            return $this->json(['error' => 'Course not found'], 404);
+        }
+
+        $data = json_decode($request->getContent(), true);
+        $userId = $data['userId'] ?? null;
+        $rating = $data['rating'] ?? null;
+        $comment = $data['comment'] ?? '';
+
+        $user = $em->getRepository(User::class)->find($userId);
+
+        if ($rating === null) {
+            return $this->json(['error' => 'Rating is required'], 400);
+        }
+
+        $review = new Review();
+        $review->setUser($user);
+        $review->setCourse($course);
+        $review->setRating((int) $rating);
+        $review->setComment($comment);
+        $review->setCreatedAt(new DateTimeImmutable());
+
+        $em->persist($review);
+        $em->flush();
+
+        return $this->json(['message' => 'Review added successfully'], 201);
+    }
 
 }

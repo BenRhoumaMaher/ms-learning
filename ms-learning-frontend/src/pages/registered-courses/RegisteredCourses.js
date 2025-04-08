@@ -6,24 +6,26 @@ import InstructorSection from './sections/InstructorSection'
 import StudentReviews from './sections/StudentReviews'
 import CourseDiscussions from './sections/CourseDiscussions'
 import Footer from '../../layouts/Footer'
+import { useParams } from 'react-router-dom'
 
 const RegisteredCourses = () => {
+  const { id } = useParams()
   return (
     <section>
       <section className='section-container'>
-        <RegisteredCoursesHero />
+        <RegisteredCoursesHero courseId={id} />
       </section>
       <section className='section-container'>
-        <CourseContent />
+        <CourseContent courseId={id} />
       </section>
       <section className='section-container'>
-        <InstructorSection />
+        <InstructorSection courseId={id}  />
       </section>
       <section className='section-container'>
-        <StudentReviews />
+        <StudentReviews courseId={id} />
       </section>
       <section className='section-container'>
-        <CourseDiscussions />
+        <CourseDiscussions courseId={id} />
       </section>
       <Footer />
     </section>

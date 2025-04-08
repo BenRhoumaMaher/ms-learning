@@ -1,6 +1,29 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { getEnrolledCourse } from "../../../helpers/api";
 
-const CourseContent = () => {
+const CourseContent = ({ courseId }) => {
+  const [courseData, setCourseData] = useState(null);
+  const [selectedModuleIndex, setSelectedModuleIndex] = useState(0);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await getEnrolledCourse(courseId);
+        setCourseData(data);
+      } catch (err) {
+        console.error("Error loading course:", err);
+      }
+    };
+
+    fetchData();
+  }, [courseId]);
+
+  if (!courseData) return <p>Loading course content...</p>;
+
+  const { course } = courseData;
+  const modules = course.modules || [];
+  const selectedModule = modules[selectedModuleIndex] || { lessons: [] };
+
   return (
     <div className="container mt-5">
       <h2 className="text-center fw-bold">Course Content</h2>
@@ -12,17 +35,23 @@ const CourseContent = () => {
         <div className="col-md-4">
           <div className="card registered-sidebar bg-light">
             <div className="card-header text-center fw-bold">
-              Mastering React.js
+              {course.title}
             </div>
             <ul className="list-group list-group-flush">
-              <li className="list-group-item">Module 1: Introduction</li>
-              <li className="list-group-item bg-light">Module 2</li>
-              <li className="list-group-item">Module 3</li>
-              <li className="list-group-item">Module 4</li>
-              <li className="list-group-item text-danger fw-bold">
-                Special Live Session in 3 days
+              {modules.map((module, index) => (
+                <li
+                  key={module.id}
+                  className={`list-group-item ${index === selectedModuleIndex ? "bg-light" : ""
+                    }`}
+                  onClick={() => setSelectedModuleIndex(index)}
+                  style={{ cursor: "pointer" }}
+                >
+                  {module.title}
+                </li>
+              ))}
+              <li className="list-group-item text-secondary fw-bold" style={{ pointerEvents: "none", opacity: 0.5 }}>
+                Quiz & Certificate
               </li>
-              <li className="list-group-item">Quiz & Certificate</li>
             </ul>
           </div>
         </div>
@@ -31,27 +60,37 @@ const CourseContent = () => {
           <div className="card registered-content">
             <div className="card-body">
               <ul className="list-group">
-                <li className="list-group-item d-flex justify-content-between align-items-center">
-                  Lesson 1: Course Overview (Completed)
-                  <span className="btn btn-success btn-sm">▶</span>
-                </li>
-                <li className="list-group-item d-flex justify-content-between align-items-center">
-                  Lesson 2: React Basics (Completed)
-                  <span className="btn btn-success btn-sm">▶</span>
-                </li>
-                <li className="list-group-item d-flex justify-content-between align-items-center">
-                  Lesson 3: State Management (In Progress)
-                  <span className="btn btn-success btn-sm">▶</span>
-                </li>
-                <li className="list-group-item d-flex justify-content-between align-items-center">
-                  Lesson 4: Advanced Hooks (Locked - Complete previous lesson to unlock)
-                  <span className="btn btn-secondary btn-sm">🔒</span>
-                </li>
-              </ul>
+                {selectedModule.lessons.map((lesson, index) => (
+                  <li
+                    key={lesson.id}
+                    className="list-group-item mb-4"
+                  >
+                    <div className="d-flex justify-content-between align-items-center">
+                      <div>
+                        Lesson {index + 1}: {lesson.title}
+                        {lesson.livestarttime && (
+                          <span className="text-danger ms-2 fw-bold">
+                            Live in {lesson.livestarttime}
+                          </span>
+                        )}
+                      </div>
+                      <span className="btn btn-success btn-sm">▶</span>
+                    </div>
 
-              <div className="text-center mt-3">
-                <button className="btn btn-success">Download Resources</button>
-              </div>
+                    {lesson.ressources && (
+                      <div className="text-end mt-2">
+                        <a
+                          href={`http://localhost:8080/${lesson.ressources}`}
+                          className="btn btn-outline-primary btn-sm list-group-lesson-ressource"
+                          download
+                        >
+                          Download Resources
+                        </a>
+                      </div>
+                    )}
+                  </li>
+                ))}
+              </ul>
             </div>
           </div>
         </div>

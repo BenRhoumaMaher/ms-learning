@@ -25,12 +25,12 @@ class User implements
 
     #[ORM\Column(length: 50, type: 'string')]
     #[Assert\NotBlank(message: "Firstname is required")]
-    #[Groups('user:read')]
+    #[Groups('user:read', 'enrolledCourse:read')]
     private ?string $firstname = null;
 
     #[ORM\Column(length: 50, type: 'string')]
     #[Assert\NotBlank(message: "Lastname is required")]
-    #[Groups('user:read')]
+    #[Groups('user:read', 'enrolledCourse:read')]
     private ?string $lastname = null;
 
     #[ORM\Column(length: 50, type: 'string', unique: true)]
@@ -81,7 +81,7 @@ class User implements
     private ?\DateTimeInterface $createdAt = null;
 
     #[ORM\Column(length: 100)]
-    #[Groups('user:read')]
+    #[Groups('course:read', 'user:read', 'enrolledCourse:read')]
     private ?string $username = null;
 
     #[ORM\Column(length: 255, nullable: true)]

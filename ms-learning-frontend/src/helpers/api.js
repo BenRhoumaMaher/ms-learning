@@ -106,6 +106,7 @@ export const getCourses = async () => {
   }
 }
 
+
 export const becomeInstructor = async newuserdata => {
   try {
     const response = await bc.post('/become-instructor', newuserdata, {
@@ -442,6 +443,16 @@ export const getCourseById = async courseId => {
   }
 }
 
+export const getEnrolledCourse = async courseId => {
+  try {
+    const response = await bc.get(`/enrolledCourse/${courseId}`)
+    return response.data
+  } catch (error) {
+    console.error('Error fetching course details:', error)
+    throw error
+  }
+}
+
 export const convertLessonToRegistered = async (lessonId, videoUrl) => {
   try {
     const token =
@@ -573,4 +584,28 @@ export const getInstructorById = async id => {
 export const enrollInCourse = async (courseId, userId) => {
   const response = await bc.post(`/enroll/${courseId}`, { userId })
   return response.data
+}
+
+export const getCourseReviews = async courseId => {
+  try {
+    const response = await bc.get(`/${courseId}/reviews`)
+    return response.data
+  } catch (error) {
+    console.error('Error fetching course reviews:', error)
+    throw error
+  }
+}
+
+export const createCourseReview = async (courseId, reviewData) => {
+  try {
+    const response = await bc.post(`/courses/${courseId}/reviews`, reviewData, {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    return response.data
+  } catch (error) {
+    console.error('Error creating review:', error)
+    throw error
+  }
 }

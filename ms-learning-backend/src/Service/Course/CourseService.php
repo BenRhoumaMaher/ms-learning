@@ -7,6 +7,7 @@ use App\Entity\Lesson;
 use App\Entity\Module;
 use DateTimeImmutable;
 use App\Entity\Courses;
+use App\Entity\StudentCourse;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -35,6 +36,20 @@ class CourseService implements CourseServiceInterface
     ): ?Courses {
         $course = $this->entityManager->getRepository(
             Courses::class
+        )->find($id);
+
+        if (!$course) {
+            throw new NotFoundHttpException("Course not found");
+        }
+
+        return $course;
+    }
+
+    public function getEnrolledCourseById(
+        int $id
+    ): ?StudentCourse {
+        $course = $this->entityManager->getRepository(
+            StudentCourse::class
         )->find($id);
 
         if (!$course) {

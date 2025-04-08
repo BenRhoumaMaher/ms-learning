@@ -47,3 +47,13 @@ enrollements:
   path: enroll/{courseId}
   controller: App\Controller\User\UserController::enroll
   methods: POST
+
+reviews:
+  path: /{courseId}/reviews
+  controller: App\Controller\User\UserController::getCourseReviews
+  methods: GET
+
+add_review:
+  path: /courses/{courseId}/reviews
+  controller: App\Controller\User\UserController::createReviewForCourse
+  methods: POST

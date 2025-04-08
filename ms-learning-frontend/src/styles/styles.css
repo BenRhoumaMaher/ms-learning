@@ -1286,6 +1286,12 @@
   cursor: pointer;
 }
 
+.list-group-lesson-ressource:hover {
+  background-color: #ff0000 !important;
+  color: white;
+  cursor: pointer;
+}
+
 .registered-content .list-group-item {
   border: none;
   background: #f8f9fa;

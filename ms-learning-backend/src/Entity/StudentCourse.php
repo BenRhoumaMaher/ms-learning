@@ -2,9 +2,10 @@
 
 namespace App\Entity;
 
-use App\Repository\StudentCourseRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\StudentCourseRepository;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: StudentCourseRepository::class)]
 class StudentCourse
@@ -12,24 +13,32 @@ class StudentCourse
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['enrolledCourse:read'])]
     private ?int $id = null;
 
+
     #[ORM\ManyToOne(inversedBy: 'studentCourses')]
+    #[Groups(['enrolledCourse:read'])]
     private ?User $user = null;
 
     #[ORM\ManyToOne(inversedBy: 'studentCourses')]
+    #[Groups(['enrolledCourse:read'])]
     private ?Courses $curse = null;
 
     #[ORM\Column(length: 50)]
+    #[Groups(['enrolledCourse:read'])]
     private ?string $status = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
+    #[Groups(['enrolledCourse:read'])]
     private ?string $progress = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Groups(['enrolledCourse:read'])]
     private ?\DateTimeInterface $startDate = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Groups(['enrolledCourse:read'])]
     private ?\DateTimeInterface $endDate = null;
 
     #[ORM\Column]

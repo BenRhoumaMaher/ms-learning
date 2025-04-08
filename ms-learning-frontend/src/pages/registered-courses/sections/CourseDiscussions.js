@@ -8,7 +8,7 @@ const discussions = [
   { count: 11, text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.", border: "blue" }
 ];
 
-const CourseDiscussions = () => {
+const CourseDiscussions = ({ courseId }) => {
   return (
     <Container className="course-discussions text-center py-5">
       <h2 className="fw-bold">Course Discussions</h2>

@@ -19,7 +19,7 @@ class Courses
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['category:read', 'course:read', 'user:read'])]
+    #[Groups(['category:read', 'course:read', 'user:read','enrolledCourse:read'])]
     private ?string $title = null;
 
     #[ORM\Column(type: Types::TEXT)]

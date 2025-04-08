@@ -12,6 +12,8 @@ use App\Query\Course\GetFreeCoursesQuery;
 use App\Command\Course\DeleteCourseCommand;
 use App\Command\Course\UpdateCourseCommand;
 use App\Query\Course\GetLatestCoursesQuery;
+use App\Query\Course\GetEnrolledCourseQuery;
+use App\Query\Course\GetEnrollzdCourseQuery;
 use Symfony\Component\HttpFoundation\Request;
 use App\Query\User\GetUserCoursesModulesQuery;
 use App\Command\Course\CreateFullCourseCommand;
@@ -20,6 +22,7 @@ use App\Service\QueryBusService\QueryBusService;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use App\Service\CommandBusService\CommandBusService;
 use Symfony\Component\Messenger\MessageBusInterface;
+use App\Query\Course\GetCourseWithModulesAndLessonsQuery;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use App\Query\Course\GetCoursesModulesLessonsWithoutResourcesQuery;
@@ -52,6 +55,36 @@ class CoursesController extends AbstractController
             [],
             ['groups' => 'course:read']
         );
+    }
+
+    public function enrolledCourse(int $id): JsonResponse
+    {
+        $course = $this->queryBusService->handle(new GetEnrolledCourseQuery($id));
+        $courseId = $course->getCurse()->getId();
+        $curse = $course->getCurse();
+        $courseData = $this->queryBusService->handle(
+            new GetCourseWithModulesAndLessonsQuery($courseId)
+        );
+        $data = [
+            'id' => $course->getId(),
+            'user' => [
+                'id' => $curse->getEnrollments()->first()?->getId(),
+                'name' => $curse->getEnrollments()->first()?->getUsername(),
+                'expertise' => $curse->getEnrollments()->first()?->getExpertise(),
+                'x' => $curse->getEnrollments()->first()?->getX(),
+                'linkedin' => $curse->getEnrollments()->first()?->getLinkedin(),
+                'instagram' => $curse->getEnrollments()->first()?->getInstagram(),
+                'facebook' => $curse->getEnrollments()->first()?->getFacebook(),
+                'picture' => $curse->getEnrollments()->first()?->getPicture(),
+            ],
+            'course' => $courseData,
+            'status' => $course->getStatus(),
+            'progress' => $course->getProgress(),
+            'startDate' => $course->getStartDate(),
+            'endDate' => $course->getEndDate()
+        ];
+
+        return $this->json($data);
     }
 
     public function createCourse(Request $request, MessageBusInterface $commandBus, CourseService $courseService): JsonResponse
@@ -124,6 +157,21 @@ class CoursesController extends AbstractController
             );
         }
     }
+
+    public function getCourseWithModulesAndLessons(
+        int $id,
+    ): JsonResponse {
+        try {
+            $courseData = $this->queryBusService->handle(
+                new GetCourseWithModulesAndLessonsQuery($id)
+            );
+
+            return $this->json($courseData);
+        } catch (\Exception $e) {
+            return $this->json(['error' => $e->getMessage()], 404);
+        }
+    }
+
 
     public function update(
         int $id,
