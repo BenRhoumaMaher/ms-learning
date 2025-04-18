@@ -275,6 +275,19 @@ class CoursesController extends AbstractController
         );
     }
 
+    public function getCoursesByCategory(
+        int $id,
+        CoursesRepository $courseRepo
+    ): JsonResponse {
+        $courses = $courseRepo->findBy(['category' => $id]);
+        return $this->json(
+            $courses,
+            200,
+            [],
+            ['groups' => 'course:read']
+        );
+    }
+
     // public function create(
     //     Request $request,
     //     ValidatorInterface $validator

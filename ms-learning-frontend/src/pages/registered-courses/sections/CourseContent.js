@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { getEnrolledCourse } from "../../../helpers/api";
+import { useNavigate } from 'react-router-dom';
 
 const CourseContent = ({ courseId }) => {
+  const navigate = useNavigate();
   const [courseData, setCourseData] = useState(null);
   const [selectedModuleIndex, setSelectedModuleIndex] = useState(0);
 
@@ -17,6 +19,12 @@ const CourseContent = ({ courseId }) => {
 
     fetchData();
   }, [courseId]);
+
+  const handlePlayLesson = (lessonId) => {
+    navigate(`/lesson-player/${lessonId}`, {
+      state: { modules, courseTitle: course.title }
+    });
+  };
 
   if (!courseData) return <p>Loading course content...</p>;
 
@@ -64,6 +72,10 @@ const CourseContent = ({ courseId }) => {
                   <li
                     key={lesson.id}
                     className="list-group-item mb-4"
+                    style={{
+                      backgroundColor: lesson.type === "live" ? "#f0f0f0" : "white",
+                      color: lesson.type === "live" ? "#888" : "inherit"
+                    }}
                   >
                     <div className="d-flex justify-content-between align-items-center">
                       <div>
@@ -74,7 +86,11 @@ const CourseContent = ({ courseId }) => {
                           </span>
                         )}
                       </div>
-                      <span className="btn btn-success btn-sm">▶</span>
+                      <span className="btn btn-success btn-sm"
+                        onClick={() => navigate(`/lesson-player/${lesson.id}`, {
+                          state: { modules, courseTitle: course.title }
+                        })}
+                      >▶</span>
                     </div>
 
                     {lesson.ressources && (

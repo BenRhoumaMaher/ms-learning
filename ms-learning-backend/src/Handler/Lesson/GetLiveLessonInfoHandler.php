@@ -5,7 +5,6 @@ namespace App\Handler\Lesson;
 use App\Repository\LessonRepository;
 use App\Query\Lesson\GetLiveLessonInfoQuery;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
-use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
 
 #[AsMessageHandler]
 class GetLiveLessonInfoHandler
@@ -31,6 +30,8 @@ class GetLiveLessonInfoHandler
             'liveEndTime' => $lesson->getLiveEndTime(),
             'position' => $lesson->getPosition(),
             'liveMeetingLink' => $lesson->getLiveMeetingLink(),
+            'course' => $lesson->getCourse()->getId(),
+            'category' => $lesson->getCourse()->getCategory()->getId(),
         ];
     }
 }

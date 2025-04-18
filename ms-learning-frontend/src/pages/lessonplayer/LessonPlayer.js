@@ -5,11 +5,13 @@ import AssignmentsSection from './sections/AssignmentsSection'
 import YourProgress from './sections/YourProgress'
 import KeepLearning from './sections/KeepLearning'
 import Footer from '../../layouts/Footer'
+import { useParams } from 'react-router-dom'
 const LessonPlayer = () => {
+  const { id } = useParams()
   return (
     <section>
       <section className='section-container'>
-        <HeroSection />
+        <HeroSection lessonId={id} />
       </section>
       <section className='section-container'>
         <AssignmentsSection />
@@ -18,7 +20,7 @@ const LessonPlayer = () => {
         <YourProgress />
       </section>
       <section className='section-container'>
-        <KeepLearning />
+        <KeepLearning lessonId={id} />
       </section>
       <Footer />
     </section>

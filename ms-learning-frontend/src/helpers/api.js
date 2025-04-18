@@ -537,6 +537,14 @@ export const getLessonInfo = async lessonId => {
   }
 }
 
+export const getCoursesByCategory = async (categoryId) => {
+  const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+  const response = await bc.get(`/courses/by-category/${categoryId}`, {
+    headers: { Authorization: `Bearer ${token}` }
+  });
+  return response.data;
+};
+
 export const getLatestCourses = async () => {
   try {
     const response = await bc.get('/courses/latest')

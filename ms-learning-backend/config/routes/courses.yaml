@@ -33,6 +33,11 @@ course_content:
   controller: App\Controller\Course\CoursesController::getCourseWithModulesAndLessons
   methods: GET
 
+courses_by_category:
+  path: /courses/by-category/{id}
+  controller: App\Controller\Course\CoursesController::getCoursesByCategory
+  methods: GET
+
 create:
   path: /courses
   controller: App\Controller\Course\CoursesController::create
