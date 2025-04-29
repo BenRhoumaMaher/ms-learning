@@ -73,6 +73,13 @@ const Navbar = () => {
                   <div className='nav-separator'></div>
                 </>
               )}
+              <Link 
+              to={`/msconnect-home/${userId}`}
+              className='nav-link'>
+                <i className='bi bi-book'></i>
+              </Link>
+              <div className='nav-separator'></div>
+
               <Link to='/' className='nav-link'>
                 <i className='bi bi-chat'></i>
               </Link>
@@ -111,6 +118,19 @@ const Navbar = () => {
                     ) : (
                       <Link to='/student-dashboard' className='dropdown-item'>
                         Dashboard
+                      </Link>
+                    )}
+                    {userRoles.includes('ROLE_INSTRUCTOR') ? (
+                      <Link
+                        to={`/msconnect-profile/${userId}`}
+                        className='dropdown-item'
+                      >
+                        MS-CONNECT
+                      </Link>
+                    ) : (
+                      <Link to={`/msconnect-profile/${userId}`}
+                        className='dropdown-item'>
+                        MS-CONNECT
                       </Link>
                     )}
                     {userRoles.includes('ROLE_INSTRUCTOR') ? (

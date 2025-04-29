@@ -57,3 +57,38 @@ add_review:
   path: /courses/{courseId}/reviews
   controller: App\Controller\User\UserController::createReviewForCourse
   methods: POST
+
+user_follow:
+  path: /follow
+  controller: App\Controller\User\UserController::follow
+  methods: POST
+
+user_unfollow:
+  path: /unfollow
+  controller: App\Controller\User\UserController::unfollow
+  methods: POST
+
+suggested_people:
+  path: /suggested/{userId}
+  controller: App\Controller\User\UserController::suggested
+  methods: GET
+
+followers:
+  path: /followers/{userId}
+  controller: App\Controller\User\UserController::followers
+  methods: GET
+
+followings:
+  path: /followings/{userId}
+  controller: App\Controller\User\UserController::followings
+  methods: GET
+
+user_posts:
+  path: /user/posts/{id}
+  controller: App\Controller\User\UserController::getUserPosts
+  methods: GET
+
+student_enrollement_courses:
+  path: /student/{id}/courses/
+  controller: App\Controller\User\UserController::getStudentCourseTitles
+  methods: GET

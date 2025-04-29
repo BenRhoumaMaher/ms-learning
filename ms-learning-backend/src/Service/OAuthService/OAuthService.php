@@ -69,14 +69,20 @@ class OAuthService implements OAuthServiceInterface
 
         $token = $this->jwtManager->createFromPayload(
             $user,
-            ['user_id' => $user->getId()]
+            [
+                'user_id' => $user->getId(),
+                'username' => $user->getUsername(),
+                'roles' => $user->getRoles(),
+            ]
         );
 
         return new JsonResponse(
             [
             'token' => $token,
             'username' => $user->getUsername(),
+            'picture' => $user->getPicture(),
             'user_id' => $user->getId(),
+            'user_role' => $user->getRoles(),
             ]
         );
     }

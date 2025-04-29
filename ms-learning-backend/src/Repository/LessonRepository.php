@@ -31,6 +31,17 @@ class LessonRepository extends ServiceEntityRepository
             ->getOneOrNullResult();
     }
 
+    public function findLatestLiveLessons(int $maxResults = 5): array
+    {
+        return $this->createQueryBuilder('l')
+            ->where('l.liveStartTime > :now OR l.liveEndTime > :now')
+            ->setParameter('now', new DateTime())
+            ->orderBy('l.liveStartTime', 'DESC')
+            ->setMaxResults($maxResults)
+            ->getQuery()
+            ->getResult();
+    }
+
     public function findUserLiveSessions(int $userId): array
     {
         return $this->createQueryBuilder('l')

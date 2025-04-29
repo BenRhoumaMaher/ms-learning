@@ -1,0 +1,14 @@
+create_message:
+  path: /messages
+  controller: App\Controller\msconnect\message\MessagesController::sendMessage
+  methods: POST
+
+get_messages:
+  path: /messages/{roomId}
+  controller: App\Controller\msconnect\message\MessagesController::getMessages
+  methods: GET
+
+get_user_messages:
+    path: /user/{userId}/messages
+    controller: App\Controller\msconnect\message\MessagesController::getUserMessages
+    methods: GET

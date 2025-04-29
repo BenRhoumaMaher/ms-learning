@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import SignupContainer from './components/containers/auth/SignupContainer'
 import LoginContainer from './components/containers/auth/LoginContainer'
-import ResetPasswordContainer from './components/containers/auth/ResetPasswordContainer' 
+import ResetPasswordContainer from './components/containers/auth/ResetPasswordContainer'
 import ForgotPasswordContainer from './components/containers/auth/ForgotPasswordContainer'
 import Navbar from "./layouts/Navbar";
 import Home from './pages/home/Home'
@@ -25,14 +25,24 @@ import InstructorDemands from './pages/admin/InstructorDemands'
 import CreateCourse from './pages/createCourseInstructor/CreateCourse'
 import AccoyntSettingsInstructor from './pages/accountsettingsinstructor/AccountSettingsInstructor'
 import InstructorCalendar from './pages/instructor-calendar/InstructorCalendar'
-function App () {
+import UserProfilePage from './pages/msconnect/msconnectprofile/UserProfilePage'
+import UserProfileSection from './pages/msconnect/msconnectprofile/sections/UserProfileSection'
+import UserActivitySection from './pages/msconnect/msconnectprofile/sections/UserActivitySection'
+import UserFriendsSection from './pages/msconnect/msconnectprofile/sections/UserFriendsSection'
+import UserForumSection from './pages/msconnect/msconnectprofile/sections/UserForumSection'
+import MsConnectHome from './pages/msconnect/msconnecthome/msconnectHome'
+import MsconnectMessage from './pages/msconnect/msconnectMessage/msconnectMessage'
+import MsconnectForum from './pages/msconnect/forum/MsconnectForum'
+import MsconnectForumPost from './pages/msconnect/forumpost/msconnectforumpost'
+import MsconnectNotifications from './pages/msconnect/msnotifications/msconnectnotifications'
+function App() {
   return (
     <div className='App'>
       <Router>
         <Navbar />
         <Routes>
           <Route path='/signup' element={<SignupContainer />} />
-          <Route path='/login' element={<LoginContainer  />} />
+          <Route path='/login' element={<LoginContainer />} />
           <Route path='/' element={<Home />} />
           <Route path='/forgot-password' element={<ForgotPasswordContainer />} />
           <Route path='/reset-password' element={<ResetPasswordContainer />} />
@@ -56,6 +66,18 @@ function App () {
           <Route path='/create-course' element={<CreateCourse />} />
           <Route path='/account-settings-instructor' element={<AccoyntSettingsInstructor />} />
           <Route path='/instructor-calendar' element={<InstructorCalendar />} />
+          <Route path='/msconnect-home/:id' element={<MsConnectHome />} />
+          <Route path='/msconnect-message/:id' element={<MsconnectMessage />} />
+          <Route path='/msconnect-forum/:id' element={<MsconnectForum />} />
+          <Route path='/forum-post/:id' element={<MsconnectForumPost />} />
+          <Route path='/msconnect-notifications/:id' element={<MsconnectNotifications />} />
+          <Route path="/msconnect-profile/:id" element={<UserProfilePage />}>
+            <Route index element={<UserProfileSection />} />
+            <Route path="profile" element={<UserProfileSection />} />
+            <Route path="activity" element={<UserActivitySection />} />
+            <Route path="friends" element={<UserFriendsSection />} />
+            <Route path="forum" element={<UserForumSection />} />
+          </Route>
         </Routes>
       </Router>
     </div>

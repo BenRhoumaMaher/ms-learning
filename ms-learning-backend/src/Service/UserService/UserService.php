@@ -3,6 +3,7 @@
 namespace App\Service\UserService;
 
 use App\Entity\User;
+use App\Repository\PostRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Service\UserService\UserServiceInterface;
@@ -19,6 +20,7 @@ class UserService implements UserServiceInterface
         private string $uploaddirectory,
         private string $baseUrl,
         private UserRepository $userRepository,
+        private PostRepository $postRepository
     ) {
     }
 
@@ -41,6 +43,10 @@ class UserService implements UserServiceInterface
             'instagram' => $user->getInstagram(),
             'linkedin' => $user->getLinkedin(),
             'expertise' => $user->getExpertise(),
+            'image' => $user->getPicture(),
+            'role' => $user->getRoles(),
+            'member_since' => $user->getCreatedAt()->format('Y-m-d'),
+            'occupation' => $user->getOccupation(),
         ];
     }
     public function getAllUsers(): array
@@ -163,6 +169,72 @@ class UserService implements UserServiceInterface
         $filename = uniqid() . '.' . $file->guessExtension();
         $file->move($this->uploaddirectory, $filename);
         return $this->baseUrl . '/images/profiles/' . $filename;
+    }
+
+    public function follow(
+        int $userId,
+        int $targetId
+    ): array {
+        if ($userId === $targetId) {
+            return ['error' => 'You cannot follow yourself', 'code' => 400];
+        }
+
+        $user = $this->userRepository->find($userId);
+        $targetUser = $this->userRepository->find($targetId);
+
+        if (!$user || !$targetUser) {
+            return ['error' => 'User not found', 'code' => 404];
+        }
+
+        $user->addFollowing($targetUser);
+        $this->em->flush();
+
+        return ['message' => 'Followed successfully'];
+    }
+
+    public function unfollow(int $userId, int $targetId): array
+    {
+        $user = $this->userRepository->find($userId);
+        $targetUser = $this->userRepository->find($targetId);
+
+        if (!$user || !$targetUser) {
+            return ['error' => 'User not found', 'code' => 404];
+        }
+
+        $user->removeFollowing($targetUser);
+        $this->em->flush();
+
+        return ['message' => 'Unfollowed successfully'];
+    }
+
+    public function getUserPosts(int $userId): array
+    {
+        $posts = $this->postRepository->findBy(['user' => $userId]);
+
+        return array_map(
+            function ($post) {
+                return [
+                    'id' => $post->getId(),
+                    'content' => $post->getContent(),
+                    'userpicture' => $post->getUser()->getPicture(),
+                    'created_at' => $post->getCreatedAt()->format('Y-m-d'),
+                    'comments' => array_map(
+                        function ($comment) {
+                            return [
+                                'author' => $comment->getUser()->getUsername(),
+                                'content' => $comment->getContent(),
+                                'commentorpicture' => $comment->getUser()
+                                    ->getPicture(),
+                                'created_at' => $comment->getCreatedAt()
+                                    ->format('Y-m-d'),
+                            ];
+                        },
+                        $post->getComments()->toArray()
+                    ),
+                ];
+            },
+            $posts
+        );
     }
 
 }

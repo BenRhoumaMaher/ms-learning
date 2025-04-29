@@ -43,6 +43,7 @@ class Lesson
     private ?int $duration = null;
 
     #[ORM\ManyToOne(inversedBy: 'lessons')]
+    #[Groups(['lesson:read'])]
     private ?Courses $course = null;
 
     #[ORM\Column]

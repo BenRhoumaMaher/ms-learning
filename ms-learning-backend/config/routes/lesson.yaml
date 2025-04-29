@@ -8,6 +8,11 @@ lesson_info:
   controller: App\Controller\Lesson\LessonController::getLiveLessonInfo
   methods: GET
 
+latest_live_lessons:
+  path: /lessons/latest
+  controller: App\Controller\Lesson\LessonController::latestLiveLessons
+  methods: GET  
+
 add_lesson_resource:
   path: /lessons/{id}/resources
   controller: App\Controller\Lesson\LessonController::addResourceToLesson

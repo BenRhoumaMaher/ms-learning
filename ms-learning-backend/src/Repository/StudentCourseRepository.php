@@ -16,6 +16,20 @@ class StudentCourseRepository extends ServiceEntityRepository
         parent::__construct($registry, StudentCourse::class);
     }
 
+    public function findCourseTitlesByUserId(int $userId): array
+    {
+        $qb = $this->createQueryBuilder('sc')
+            ->join('sc.curse', 'c')
+            ->join('sc.user', 'u')
+            ->where('u.id = :userId')
+            ->setParameter('userId', $userId)
+            ->select('c.title');
+
+        $results = $qb->getQuery()->getArrayResult();
+
+        return array_column($results, 'title');
+    }
+
     //    /**
     //     * @return StudentCourse[] Returns an array of StudentCourse objects
     //     */

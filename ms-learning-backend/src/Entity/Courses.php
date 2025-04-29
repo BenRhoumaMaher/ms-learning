@@ -49,7 +49,7 @@ class Courses
     private ?\DateTimeInterface $updatedAt = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['category:read', 'course:read'])]
+    #[Groups(['category:read', 'course:read','lesson:read'])]
     private ?string $image = null;
 
     /**

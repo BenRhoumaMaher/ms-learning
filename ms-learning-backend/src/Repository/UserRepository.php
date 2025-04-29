@@ -43,7 +43,23 @@ class UserRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    public function findSuggestedUsers(
+        User $currentUser
+    ): array {
+        $qb = $this->createQueryBuilder('u')
+            ->where('u != :current')
+            ->setParameter('current', $currentUser);
 
+        $followedIds = $currentUser->getFollowing()
+            ->map(fn ($u) => $u->getId())->toArray();
+
+        if (!empty($followedIds)) {
+            $qb->andWhere($qb->expr()->notIn('u.id', ':excluded'))
+                ->setParameter('excluded', $followedIds);
+        }
+
+        return $qb->getQuery()->getResult();
+    }
 
 
     //    /**

@@ -19,20 +19,17 @@ export default function useInstructorCourses () {
   const [coursesWithLessonsNoResources, setCoursesWithLessonsNoResources] =
     useState([])
 
-  // Modal states
   const [deleteModalOpen, setDeleteModalOpen] = useState(false)
   const [courseToDelete, setCourseToDelete] = useState(null)
   const [showContentModal, setShowContentModal] = useState(false)
   const [showAddResourceModal, setShowAddResourceModal] = useState(false)
   const [showAddLessonModal, setShowAddLessonModal] = useState(false)
 
-  // Resource states
   const [selectedCourseForResource, setSelectedCourseForResource] = useState('')
   const [selectedModuleForResource, setSelectedModuleForResource] = useState('')
   const [selectedLessonForResource, setSelectedLessonForResource] = useState('')
   const [resourceFile, setResourceFile] = useState(null)
 
-  // Lesson states
   const [selectedCourseForLesson, setSelectedCourseForLesson] = useState('')
   const [selectedModuleForLesson, setSelectedModuleForLesson] = useState('')
   const [lessonData, setLessonData] = useState({
@@ -271,7 +268,6 @@ export default function useInstructorCourses () {
   }
 
   return {
-    // State
     courses,
     selectedCourseId,
     courseDetails,
@@ -293,7 +289,6 @@ export default function useInstructorCourses () {
     lessonData,
     formData,
 
-    // Functions
     setSelectedCourseId,
     setCourseToDelete,
     setDeleteModalOpen,

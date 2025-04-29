@@ -20,11 +20,11 @@ class AuthService implements AuthServiceInterface
             [
                 'user_id' => $user->getId(),
                 'roles' => $user->getRoles(),
-                'courses' => array_map(
-                    fn ($course) => [
-                        'id' => $course->getId(), 'title' => $course->getTitle()],
-                    $user->getCourses()->toArray()
-                )
+                // 'courses' => array_map(
+                //     fn ($course) => [
+                //         'id' => $course->getId(), 'title' => $course->getTitle()],
+                //     $user->getCourses()->toArray()
+                // )
             ]
         );
 
@@ -34,11 +34,11 @@ class AuthService implements AuthServiceInterface
             'picture' => $user->getPicture(),
             'user_id' => $user->getId(),
             'user_role' => $user->getRoles(),
-            'courses' => array_map(
-                fn ($course) => [
-                        'id' => $course->getId(), 'title' => $course->getTitle()],
-                $user->getCourses()->toArray()
-            )
+            // 'courses' => array_map(
+            //     fn ($course) => [
+            //             'id' => $course->getId(), 'title' => $course->getTitle()],
+            //     $user->getCourses()->toArray()
+            // )
         ];
     }
 }

@@ -20,7 +20,7 @@ class User implements
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups('user:read')]
+    #[Groups('user:read', 'forum:read')]
     private ?int $id = null;
 
     #[ORM\Column(length: 50, type: 'string')]
@@ -196,6 +196,55 @@ class User implements
     #[ORM\Column(nullable: true)]
     private ?array $specialization = null;
 
+    /**
+     * @var Collection<int, Post>
+     */
+    #[ORM\OneToMany(targetEntity: Post::class, mappedBy: 'user')]
+    private Collection $posts;
+
+    /**
+     * @var Collection<int, Comment>
+     */
+    #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: 'user')]
+    private Collection $comments;
+
+    /**
+     * @var Collection<int, CommentReply>
+     */
+    #[ORM\OneToMany(targetEntity: CommentReply::class, mappedBy: 'user')]
+    private Collection $commentReplies;
+
+    /**
+     * @var Collection<int, PostLike>
+     */
+    #[ORM\OneToMany(targetEntity: PostLike::class, mappedBy: 'user')]
+    private Collection $postLikes;
+
+    #[ORM\ManyToMany(targetEntity: self::class, inversedBy: 'following')]
+    #[ORM\JoinTable(name: 'user_followers')]
+    private Collection $followers;
+
+    #[ORM\ManyToMany(targetEntity: self::class, mappedBy: 'followers')]
+    private Collection $following;
+
+    /**
+     * @var Collection<int, ForumPost>
+     */
+    #[ORM\OneToMany(targetEntity: ForumPost::class, mappedBy: 'user')]
+    private Collection $forumPosts;
+
+    /**
+     * @var Collection<int, Message>
+     */
+    #[ORM\OneToMany(targetEntity: Message::class, mappedBy: 'sender')]
+    private Collection $messages;
+
+    /**
+     * @var Collection<int, Message>
+     */
+    #[ORM\OneToMany(targetEntity: Message::class, mappedBy: 'receiver')]
+    private Collection $receivermessages;
+
     public function __construct()
     {
         $this->createdAt = new \DateTime();
@@ -211,7 +260,61 @@ class User implements
         $this->modules = new ArrayCollection();
         $this->lessons = new ArrayCollection();
         $this->interests = new ArrayCollection();
+        $this->posts = new ArrayCollection();
+        $this->comments = new ArrayCollection();
+        $this->commentReplies = new ArrayCollection();
+        $this->postLikes = new ArrayCollection();
+        $this->followers = new ArrayCollection();
+        $this->following = new ArrayCollection();
+        $this->forumPosts = new ArrayCollection();
+        $this->messages = new ArrayCollection();
+        $this->receivermessages = new ArrayCollection();
     }
+
+    public function getFollowers(): Collection
+    {
+        return $this->followers;
+    }
+
+    public function addFollower(self $user): self
+    {
+        if (!$this->followers->contains($user)) {
+            $this->followers->add($user);
+        }
+
+        return $this;
+    }
+
+    public function removeFollower(self $user): self
+    {
+        $this->followers->removeElement($user);
+        return $this;
+    }
+
+    public function getFollowing(): Collection
+    {
+        return $this->following;
+    }
+
+    public function addFollowing(self $user): self
+    {
+        if (!$this->following->contains($user)) {
+            $this->following->add($user);
+            $user->addFollower($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFollowing(self $user): self
+    {
+        if ($this->following->removeElement($user)) {
+            $user->removeFollower($this);
+        }
+
+        return $this;
+    }
+
 
     public function getId(): ?int
     {
@@ -803,6 +906,216 @@ class User implements
     public function setSpecialization(?array $specialization): static
     {
         $this->specialization = $specialization;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Post>
+     */
+    public function getPosts(): Collection
+    {
+        return $this->posts;
+    }
+
+    public function addPost(Post $post): static
+    {
+        if (!$this->posts->contains($post)) {
+            $this->posts->add($post);
+            $post->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removePost(Post $post): static
+    {
+        if ($this->posts->removeElement($post)) {
+            // set the owning side to null (unless already changed)
+            if ($post->getUser() === $this) {
+                $post->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Comment>
+     */
+    public function getComments(): Collection
+    {
+        return $this->comments;
+    }
+
+    public function addComment(Comment $comment): static
+    {
+        if (!$this->comments->contains($comment)) {
+            $this->comments->add($comment);
+            $comment->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeComment(Comment $comment): static
+    {
+        if ($this->comments->removeElement($comment)) {
+            // set the owning side to null (unless already changed)
+            if ($comment->getUser() === $this) {
+                $comment->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, CommentReply>
+     */
+    public function getCommentReplies(): Collection
+    {
+        return $this->commentReplies;
+    }
+
+    public function addCommentReply(CommentReply $commentReply): static
+    {
+        if (!$this->commentReplies->contains($commentReply)) {
+            $this->commentReplies->add($commentReply);
+            $commentReply->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCommentReply(CommentReply $commentReply): static
+    {
+        if ($this->commentReplies->removeElement($commentReply)) {
+            // set the owning side to null (unless already changed)
+            if ($commentReply->getUser() === $this) {
+                $commentReply->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, PostLike>
+     */
+    public function getPostLikes(): Collection
+    {
+        return $this->postLikes;
+    }
+
+    public function addPostLike(PostLike $postLike): static
+    {
+        if (!$this->postLikes->contains($postLike)) {
+            $this->postLikes->add($postLike);
+            $postLike->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removePostLike(PostLike $postLike): static
+    {
+        if ($this->postLikes->removeElement($postLike)) {
+            // set the owning side to null (unless already changed)
+            if ($postLike->getUser() === $this) {
+                $postLike->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ForumPost>
+     */
+    public function getForumPosts(): Collection
+    {
+        return $this->forumPosts;
+    }
+
+    public function addForumPost(ForumPost $forumPost): static
+    {
+        if (!$this->forumPosts->contains($forumPost)) {
+            $this->forumPosts->add($forumPost);
+            $forumPost->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeForumPost(ForumPost $forumPost): static
+    {
+        if ($this->forumPosts->removeElement($forumPost)) {
+            // set the owning side to null (unless already changed)
+            if ($forumPost->getUser() === $this) {
+                $forumPost->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Message>
+     */
+    public function getMessages(): Collection
+    {
+        return $this->messages;
+    }
+
+    public function addMessage(Message $message): static
+    {
+        if (!$this->messages->contains($message)) {
+            $this->messages->add($message);
+            $message->setSender($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMessage(Message $message): static
+    {
+        if ($this->messages->removeElement($message)) {
+            // set the owning side to null (unless already changed)
+            if ($message->getSender() === $this) {
+                $message->setSender(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Message>
+     */
+    public function getReceivermessages(): Collection
+    {
+        return $this->receivermessages;
+    }
+
+    public function addReceivermessage(Message $receivermessage): static
+    {
+        if (!$this->receivermessages->contains($receivermessage)) {
+            $this->receivermessages->add($receivermessage);
+            $receivermessage->setReceiver($this);
+        }
+
+        return $this;
+    }
+
+    public function removeReceivermessage(Message $receivermessage): static
+    {
+        if ($this->receivermessages->removeElement($receivermessage)) {
+            // set the owning side to null (unless already changed)
+            if ($receivermessage->getReceiver() === $this) {
+                $receivermessage->setReceiver(null);
+            }
+        }
 
         return $this;
     }

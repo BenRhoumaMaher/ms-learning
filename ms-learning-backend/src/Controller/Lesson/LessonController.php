@@ -2,6 +2,7 @@
 
 namespace App\Controller\Lesson;
 
+use App\Repository\LessonRepository;
 use App\Service\UserService\UserService;
 use App\Command\Lesson\EditLessonCommand;
 use App\Command\Lesson\CreateLessonCommand;
@@ -53,6 +54,19 @@ final class LessonController extends AbstractController
         } catch (\Exception $e) {
             return $this->json(['error' => $e->getMessage()], 400);
         }
+    }
+
+    public function latestLiveLessons(
+        LessonRepository $lessonRepository
+    ): JsonResponse {
+        $lessons = $lessonRepository->findLatestLiveLessons();
+
+        return $this->json(
+            $lessons,
+            200,
+            [],
+            ['groups' => 'lesson:read']
+        );
     }
 
     public function getLiveLessonInfo(int $id): JsonResponse

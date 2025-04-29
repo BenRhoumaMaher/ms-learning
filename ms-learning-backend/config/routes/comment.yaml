@@ -1,0 +1,24 @@
+create_comment:
+  path: /comments
+  controller: App\Controller\msconnect\comment\CommentController::create
+  methods: POST
+
+create_reply:
+  path: /comments/{commentId}/replies
+  controller: App\Controller\msconnect\comment\CommentController::createReply
+  methods: POST
+
+get_comments_by_post:
+  path: /{postId}/comments
+  controller: App\Controller\msconnect\comment\CommentController::listByPost
+  methods: GET
+
+get_replies_by_comment:
+  path: /comments/{commentId}/replies
+  controller: App\Controller\msconnect\comment\CommentController::listRepliesByComment
+  methods: GET
+
+show_comment:
+  path: /comment/{id}
+  controller: App\Controller\msconnect\comment\CommentController::show
+  methods: GET

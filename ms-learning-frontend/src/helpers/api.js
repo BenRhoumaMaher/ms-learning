@@ -86,6 +86,23 @@ export const googleLogin = async (googleToken, rememberMe) => {
   }
 }
 
+export const getForumPostById = async (id) => {
+  try {
+    const response = await bc.get(`/forum-posts/${id}`);
+    return response.data;
+  } catch (error) {
+    throw new Error('Failed to fetch post');
+  }
+};
+
+
+export const getSiblingsById = async (id) => {
+  const response = await bc.get(`/forum-posts/${id}/siblings`);
+  return response.data;
+};
+
+
+
 export const getCategories = async () => {
   try {
     const response = await bc.get('/categories')
@@ -99,6 +116,16 @@ export const getCategories = async () => {
 export const getCourses = async () => {
   try {
     const response = await bc.get('/courses')
+    return response.data
+  } catch (error) {
+    console.error('Error fetching courses:', error)
+    throw error
+  }
+}
+
+export const getPosts = async () => {
+  try {
+    const response = await bc.get('/posts')
     return response.data
   } catch (error) {
     console.error('Error fetching courses:', error)
@@ -208,12 +235,14 @@ export const handleAccept = async id => {
   }
 }
 
-export const getUserCourses = async () => {
+export const getUserCourses = async (userId = null) => {
   try {
-    const token =
-      localStorage.getItem('token') || sessionStorage.getItem('token')
-    const user = JSON.parse(atob(token.split('.')[1]))
-    const userId = user?.user_id
+    if (!userId) {
+      const token =
+        localStorage.getItem('token') || sessionStorage.getItem('token');
+      const user = JSON.parse(atob(token.split('.')[1]));
+      userId = user?.user_id;
+    }
 
     const response = await bc.get(`/courses/user/${userId}`)
     console.log('Backend response:', response.data)
@@ -310,20 +339,40 @@ export const createCourse = async (courseData, files) => {
   }
 }
 
-export const getUserInfos = async () => {
+export const getUserInfos = async (userId = null) => {
   try {
-    const token =
-      localStorage.getItem('token') || sessionStorage.getItem('token')
-    const user = JSON.parse(atob(token.split('.')[1]))
-    const userId = user?.user_id
+    if (!userId) {
+      const token =
+        localStorage.getItem('token') || sessionStorage.getItem('token');
+      const user = JSON.parse(atob(token.split('.')[1]));
+      userId = user?.user_id;
+    }
 
-    const response = await bc.get(`/user/infos/${userId}`)
-    return response.data
+    const response = await bc.get(`/user/infos/${userId}`);
+    return response.data;
   } catch (error) {
-    console.error('Error fetching user courses:', error)
-    throw error
+    console.error('Error fetching user infos:', error);
+    throw error;
   }
-}
+};
+
+export const getUserEnrollements = async (userId = null) => {
+  try {
+    if (!userId) {
+      const token =
+        localStorage.getItem('token') || sessionStorage.getItem('token');
+      const user = JSON.parse(atob(token.split('.')[1]));
+      userId = user?.user_id;
+    }
+
+    const response = await bc.get(`/student/${userId}/courses/`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching user infos:', error);
+    throw error;
+  }
+};
+
 
 export const updateUserInfos = async (userId, formData) => {
   try {
@@ -399,6 +448,44 @@ export const createLesson = async formData => {
   }
 }
 
+export const createPost = async formData => {
+  try {
+    const response = await bc.post('/create/posts', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    })
+    return response.data
+  } catch (error) {
+    console.error('Error creating post:', error)
+    throw error
+  }
+}
+
+export const createForumPost = async formData => {
+  try {
+    const response = await bc.post('/createforum', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    })
+    return response.data
+  } catch (error) {
+    console.error('Error creating post:', error)
+    throw error
+  }
+}
+
+export const getForumPosts = async () => {
+  try {
+    const response = await bc.get('/forum')
+    return response.data
+  } catch (error) {
+    console.error('Error fetching courses:', error)
+    throw error
+  }
+}
+
 export const getLatestUserLiveLesson = async userId => {
   try {
     const token =
@@ -442,6 +529,194 @@ export const getCourseById = async courseId => {
     throw error
   }
 }
+
+export const getPostById = async postId => {
+  try {
+    const response = await bc.get(`/post/${postId}`)
+    return response.data
+  } catch (error) {
+    console.error('Error fetching post details:', error)
+    throw error
+  }
+}
+
+export const createComment = async formData => {
+  try {
+    const response = await bc.post('/comments', formData, {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    return response.data
+  } catch (error) {
+    console.error('Error creating post:', error)
+    throw error
+  }
+}
+
+export const followUser = async (userId, targetId) => {
+  return await bc.post('/follow', {
+    user_id: userId,
+    target_id: targetId,
+  });
+};
+
+export const unfollowUser = async (userId, targetId) => {
+  return await bc.post('/unfollow', {
+    user_id: userId,
+    target_id: targetId,
+  });
+};
+
+export const fetchSuggestedUsers = async (userId) => {
+  const response = await bc.get(`/suggested/${userId}`);
+  return response.data;
+};
+
+export const fetchUserFollowers = async (userId) => {
+  const response = await bc.get(`/followers/${userId}`);
+  return response.data;
+};
+
+export const fetchUserFollowings = async (userId) => {
+  const response = await bc.get(`/followings/${userId}`);
+  return response.data;
+};
+
+// const getRoomId = (currentUserId, friendId) => {
+//   const userIds = [parseInt(currentUserId), parseInt(friendId)].sort((a, b) => a - b);
+//   return `room_${userIds.join('_')}`;
+// };
+
+export const sendMessage = async (roomId, content, receiverId) => {
+  try {
+    const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+    const user = JSON.parse(atob(token.split('.')[1]));
+    const userId = user?.user_id;
+
+    const response = await bc.post('/messages', {
+      content,
+      roomId: roomId,
+      user_id: userId,
+      receiver_id: receiverId
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error sending message:', error);
+    throw error;
+  }
+};
+
+export const getMessages = async (roomId) => {
+  try {
+    const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+    const user = token ? JSON.parse(atob(token.split('.')[1])) : null;
+    const userId = user?.user_id;
+
+    const response = await bc.get(`/messages/${roomId}`, {
+      params: {
+        userId: userId
+      }
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching messages:', error);
+    throw error;
+  }
+};
+
+export const fetchUserPostsWithComments = async (userId) => {
+  const response = await bc.get(`/user/posts/${userId}`);
+  return response.data;
+};
+
+export const toggleLike = async (postId, userId) => {
+  try {
+    const response = await bc.post(
+      `/posts/${postId}/like`,
+      { user_id: userId },
+      {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error('Error toggling like:', error);
+    throw error;
+  }
+};
+
+
+export const updatePost = async (postId, data) => {
+  try {
+    const response = await bc.put(`/posts/${postId}`, data, {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+    return response.data;
+  } catch (err) {
+    console.error('Error updating post:', err);
+    throw err;
+  }
+};
+export const deletePost = async (postId) => {
+  try {
+    const response = await bc.delete(`/posts/${postId}`);
+    return response.data;
+  } catch (err) {
+    console.error('Error deleting post:', err);
+    throw err;
+  }
+};
+
+export const createReply = async (commentId, formData) => {
+  try {
+    const response = await bc.post(`/comments/${commentId}/replies`, formData, {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error creating reply:', error);
+    throw error;
+  }
+};
+
+export const getRepliesByComment = async (commentId) => {
+  try {
+    const response = await bc.get(`/comments/${commentId}/replies`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching replies:', error);
+    throw error;
+  }
+};
+
+export const getCommentsByPost = async postId => {
+  try {
+    const response = await bc.get(`/${postId}/comments`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching comments for post:', error);
+    throw error;
+  }
+};
+
+export const getCommentById = async commentId => {
+  try {
+    const response = await bc.get(`/comment/${commentId}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching comment:', error);
+    throw error;
+  }
+};
+
+
 
 export const getEnrolledCourse = async courseId => {
   try {
@@ -554,6 +829,17 @@ export const getLatestCourses = async () => {
     throw error
   }
 }
+
+export const getLatestLiveLessons = async () => {
+  try {
+    const response = await bc.get('/lessons/latest');
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching latest live lessons:', error);
+    throw error;
+  }
+};
+
 
 export const getFreeCourses = async () => {
   try {

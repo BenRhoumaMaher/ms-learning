@@ -1,0 +1,19 @@
+forum_posts_create:
+  path: /createforum
+  controller: App\Controller\msconnect\forum\ForumPostController::create
+  methods: POST
+
+get_comments_by_post:
+  path: /forum
+  controller: App\Controller\msconnect\forum\ForumPostController::index
+  methods: GET
+
+get_forum_post:
+  path: /forum-posts/{id}
+  controller: App\Controller\msconnect\forum\ForumPostController::show
+  methods: GET 
+
+get_forum_post_siblings:
+  path: /forum-posts/{id}/siblings
+  controller: App\Controller\msconnect\forum\ForumPostController::postsiblings
+  methods: GET    

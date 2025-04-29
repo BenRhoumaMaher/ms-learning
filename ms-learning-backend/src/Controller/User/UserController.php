@@ -11,12 +11,12 @@ use App\Repository\ReviewRepository;
 use App\Command\User\EditUserCommand;
 use App\Query\User\GetUserInfosQuery;
 use App\Repository\CoursesRepository;
-use App\Repository\CategoryRepository;
 use App\Query\User\GetInstructorsQuery;
 use App\Query\User\GetUserCoursesQuery;
 use App\Query\User\ShowInstructorQuery;
 use App\Service\UserService\UserService;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Repository\StudentCourseRepository;
 use App\Query\Course\GetEnrolledCourseQuery;
 use App\Command\Course\EnrollInCourseCommand;
 use App\Command\User\AddUserInterestsCommand;
@@ -289,4 +289,149 @@ final class UserController extends AbstractController
         return $this->json(['message' => 'Review added successfully'], 201);
     }
 
+    public function getStudentCourseTitles(
+        User $user,
+        StudentCourseRepository $studentCourseRepository
+    ): JsonResponse {
+        $titles = $studentCourseRepository->findCourseTitlesByUserId($user->getId());
+
+        return $this->json(
+            [
+            'student' => $user->getId(),
+            'course_titles' => $titles,
+            ]
+        );
+    }
+
+    public function follow(
+        Request $request,
+        UserService $userService
+    ): JsonResponse {
+        $data = json_decode(
+            $request->getContent(),
+            true
+        );
+
+        $userId = $data['user_id'] ?? null;
+        $targetId = $data['target_id'] ?? null;
+
+        if (!$userId || !$targetId) {
+            return $this->json(
+                ['error' => 'Missing user_id or target_id'],
+                400
+            );
+        }
+
+        $result = $userService->follow((int) $userId, (int) $targetId);
+
+        if (isset($result['error'])) {
+            return $this->json(
+                ['error' => $result['error']],
+                $result['code'] ?? 400
+            );
+        }
+
+        return $this->json(['message' => $result['message']]);
+    }
+
+    public function unfollow(
+        Request $request,
+        UserService $userService
+    ): JsonResponse {
+        $data = json_decode($request->getContent(), true);
+
+        $userId = $data['user_id'] ?? null;
+        $targetId = $data['target_id'] ?? null;
+
+        if (!$userId || !$targetId) {
+            return $this->json(['error' => 'Missing user_id or target_id'], 400);
+        }
+
+        $result = $userService->unfollow((int) $userId, (int) $targetId);
+
+        if (isset($result['error'])) {
+            return $this->json(['error' => $result['error']], $result['code'] ?? 400);
+        }
+
+        return $this->json(['message' => $result['message']]);
+    }
+
+    public function suggested(
+        Request $request,
+        int $userId,
+        UserRepository $userRepository
+    ): JsonResponse {
+        $currentUser = $userRepository->find($userId);
+
+        if (!$currentUser) {
+            return $this->json(
+                ['error' => 'User not found'],
+                404
+            );
+        }
+
+        $suggestedUsers = $userRepository->findSuggestedUsers($currentUser);
+
+        return $this->json(
+            $suggestedUsers,
+            200,
+            [],
+            ['groups' => ['user:read']]
+        );
+    }
+
+    public function followers(
+        int $userId,
+        UserRepository $userRepository
+    ): JsonResponse {
+        $user = $userRepository->find($userId);
+
+        if (!$user) {
+            return $this->json(
+                ['error' => 'User not found'],
+                404
+            );
+        }
+
+        $followers = $user->getFollowers();
+
+        return $this->json(
+            $followers,
+            200,
+            [],
+            ['groups' => ['user:read']]
+        );
+    }
+
+    public function followings(
+        int $userId,
+        UserRepository $userRepository
+    ): JsonResponse {
+        $user = $userRepository->find($userId);
+
+        if (!$user) {
+            return $this->json(
+                ['error' => 'User not found'],
+                404
+            );
+        }
+
+        $followings = $user->getFollowing();
+
+        return $this->json(
+            $followings,
+            200,
+            [],
+            ['groups' => ['user:read']]
+        );
+    }
+
+    public function getUserPosts(
+        int $id,
+        UserService $userService
+    ): JsonResponse {
+        $data = $userService->getUserPosts($id);
+
+        return new JsonResponse($data);
+    }
 }

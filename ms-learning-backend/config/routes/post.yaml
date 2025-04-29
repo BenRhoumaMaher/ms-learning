@@ -1,0 +1,29 @@
+create_post:
+  path: /create/posts
+  controller: App\Controller\msconnect\post\PostController::create
+  methods: POST
+
+toggle_like:
+  path: /posts/{id}/like
+  controller: App\Controller\msconnect\post\PostController::toggleLike
+  methods: POST
+
+edit_post:
+  path: /posts/{id}
+  controller: App\Controller\msconnect\post\PostController::edit
+  methods: PUT
+
+delete_posts:
+  path: /posts/{id}
+  controller: App\Controller\msconnect\post\PostController::delete
+  methods: DELETE
+
+get_posts:
+  path: /posts
+  controller: App\Controller\msconnect\post\PostController::list
+  methods: GET
+
+show_post:
+  path: /post/{id}
+  controller: App\Controller\msconnect\post\PostController::show
+  methods: GET

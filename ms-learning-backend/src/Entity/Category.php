@@ -18,7 +18,7 @@ class Category
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['category:read','course:read'])]
+    #[Groups(['category:read','course:read', 'forum:read'])]
     private ?string $name = null;
 
     /**
@@ -34,10 +34,17 @@ class Category
     #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'interests')]
     private Collection $users;
 
+    /**
+     * @var Collection<int, ForumPost>
+     */
+    #[ORM\ManyToMany(targetEntity: ForumPost::class, mappedBy: 'category')]
+    private Collection $forumPosts;
+
     public function __construct()
     {
         $this->courses = new ArrayCollection();
         $this->users = new ArrayCollection();
+        $this->forumPosts = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -109,6 +116,33 @@ class Category
     {
         if ($this->users->removeElement($user)) {
             $user->removeInterest($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ForumPost>
+     */
+    public function getForumPosts(): Collection
+    {
+        return $this->forumPosts;
+    }
+
+    public function addForumPost(ForumPost $forumPost): static
+    {
+        if (!$this->forumPosts->contains($forumPost)) {
+            $this->forumPosts->add($forumPost);
+            $forumPost->addCategory($this);
+        }
+
+        return $this;
+    }
+
+    public function removeForumPost(ForumPost $forumPost): static
+    {
+        if ($this->forumPosts->removeElement($forumPost)) {
+            $forumPost->removeCategory($this);
         }
 
         return $this;
