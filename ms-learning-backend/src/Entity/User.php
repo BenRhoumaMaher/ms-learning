@@ -245,6 +245,18 @@ class User implements
     #[ORM\OneToMany(targetEntity: Message::class, mappedBy: 'receiver')]
     private Collection $receivermessages;
 
+    /**
+     * @var Collection<int, ChatbotMessage>
+     */
+    #[ORM\OneToMany(targetEntity: ChatbotMessage::class, mappedBy: 'user')]
+    private Collection $chatbotMessages;
+
+    /**
+     * @var Collection<int, ChatbotMessage>
+     */
+    #[ORM\OneToMany(targetEntity: ChatbotMessage::class, mappedBy: 'adminuser')]
+    private Collection $chatbotadminResponses;
+
     public function __construct()
     {
         $this->createdAt = new \DateTime();
@@ -269,6 +281,8 @@ class User implements
         $this->forumPosts = new ArrayCollection();
         $this->messages = new ArrayCollection();
         $this->receivermessages = new ArrayCollection();
+        $this->chatbotMessages = new ArrayCollection();
+        $this->chatbotadminResponses = new ArrayCollection();
     }
 
     public function getFollowers(): Collection
@@ -1114,6 +1128,66 @@ class User implements
             // set the owning side to null (unless already changed)
             if ($receivermessage->getReceiver() === $this) {
                 $receivermessage->setReceiver(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ChatbotMessage>
+     */
+    public function getChatbotMessages(): Collection
+    {
+        return $this->chatbotMessages;
+    }
+
+    public function addChatbotMessage(ChatbotMessage $chatbotMessage): static
+    {
+        if (!$this->chatbotMessages->contains($chatbotMessage)) {
+            $this->chatbotMessages->add($chatbotMessage);
+            $chatbotMessage->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeChatbotMessage(ChatbotMessage $chatbotMessage): static
+    {
+        if ($this->chatbotMessages->removeElement($chatbotMessage)) {
+            // set the owning side to null (unless already changed)
+            if ($chatbotMessage->getUser() === $this) {
+                $chatbotMessage->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ChatbotMessage>
+     */
+    public function getChatbotadminResponses(): Collection
+    {
+        return $this->chatbotadminResponses;
+    }
+
+    public function addChatbotadminResponse(ChatbotMessage $chatbotadminResponse): static
+    {
+        if (!$this->chatbotadminResponses->contains($chatbotadminResponse)) {
+            $this->chatbotadminResponses->add($chatbotadminResponse);
+            $chatbotadminResponse->setAdminuser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeChatbotadminResponse(ChatbotMessage $chatbotadminResponse): static
+    {
+        if ($this->chatbotadminResponses->removeElement($chatbotadminResponse)) {
+            // set the owning side to null (unless already changed)
+            if ($chatbotadminResponse->getAdminuser() === $this) {
+                $chatbotadminResponse->setAdminuser(null);
             }
         }
 

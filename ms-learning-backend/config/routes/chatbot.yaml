@@ -1,0 +1,26 @@
+chatbot_send:
+  path: /chatbot/send
+  controller: App\Controller\Chatbot\ChatbotController::sendMessage
+  methods: POST
+
+chatbot_respond:
+  path: /chatbot/admin/respond/{id}
+  controller: App\Controller\Chatbot\ChatbotController::respondToMessage
+  methods: POST
+
+chatbot_mark_read:
+  path: /chatbot/mark-as-read/{id}
+  controller: App\Controller\Chatbot\ChatbotController::markAsRead
+  methods: POST  
+
+chatbot_pending_messages:
+  path: /chatbot/admin/pending
+  controller: App\Controller\Chatbot\ChatbotController::getPendingMessages
+  methods: GET  
+
+chatbot_messages:
+  path: /chatbot/messages
+  controller: App\Controller\Chatbot\ChatbotController::getUserMessages
+  methods: GET    
+
+

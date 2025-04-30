@@ -54,19 +54,24 @@ App\Controller\Lesson\LessonController:
 App\Controller\msconnect\post\PostController:
   resource: routes/post.yaml
   prefix: /
-  name_prefix: "post_"  
+  name_prefix: "post_"
 
 App\Controller\msconnect\comment\CommentController:
   resource: routes/comment.yaml
   prefix: /
-  name_prefix: "comment_"  
+  name_prefix: "comment_"
 
 App\Controller\msconnect\forum\ForumPostController:
   resource: routes/forum.yaml
   prefix: /
-  name_prefix: "forum_"      
+  name_prefix: "forum_"
 
 App\Controller\msconnect\message\MessagesController:
   resource: routes/message.yaml
   prefix: /
-  name_prefix: "message_" 
+  name_prefix: "message_"
+
+App\Controller\chatbot\ChatbotController:
+  resource: routes/chatbot.yaml
+  prefix: /
+  name_prefix: "chatbot_"

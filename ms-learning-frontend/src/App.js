@@ -35,6 +35,8 @@ import MsconnectMessage from './pages/msconnect/msconnectMessage/msconnectMessag
 import MsconnectForum from './pages/msconnect/forum/MsconnectForum'
 import MsconnectForumPost from './pages/msconnect/forumpost/msconnectforumpost'
 import MsconnectNotifications from './pages/msconnect/msnotifications/msconnectnotifications'
+import ChatbotMessagesList from './pages/admin/ChatbotMessagesList'
+import ChatbotWidget from './pages/admin/ChatbotWidget'
 function App() {
   return (
     <div className='App'>
@@ -63,6 +65,7 @@ function App() {
           <Route path='/admin/users' element={<Users />} />
           <Route path='/admin/users-list' element={<UsersList />} />
           <Route path='/admin/instructor-demands' element={<InstructorDemands />} />
+          <Route path='/admin/chatbot-messages' element={<ChatbotMessagesList />} />
           <Route path='/create-course' element={<CreateCourse />} />
           <Route path='/account-settings-instructor' element={<AccoyntSettingsInstructor />} />
           <Route path='/instructor-calendar' element={<InstructorCalendar />} />
@@ -79,6 +82,7 @@ function App() {
             <Route path="forum" element={<UserForumSection />} />
           </Route>
         </Routes>
+        <ChatbotWidget />
       </Router>
     </div>
   )

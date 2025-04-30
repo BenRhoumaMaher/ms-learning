@@ -5,7 +5,8 @@ import {
   FaUsers,
   FaPlus,
   FaList,
-  FaChalkboardTeacher
+  FaChalkboardTeacher,
+  FaCommentDots
 } from 'react-icons/fa'
 import ProfileMenu from './ProfileMenu'
 
@@ -93,6 +94,15 @@ const Sidebar = () => {
               </li>
             </ul>
           )}
+        </li>
+
+        <li>
+          <Link
+            to='/admin/chatbot-messages'
+            className='text-white text-decoration-none d-block py-2'
+          >
+            <FaCommentDots className='me-2' /> Chatbot Messages
+          </Link>
         </li>
       </ul>
     </div>

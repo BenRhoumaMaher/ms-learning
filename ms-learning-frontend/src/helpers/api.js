@@ -540,6 +540,90 @@ export const getPostById = async postId => {
   }
 }
 
+export const sendChatbotMessage = async (message) => {
+  try {
+    const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+    const user = JSON.parse(atob(token.split('.')[1]));
+    const userId = user?.user_id;
+
+    const response = await bc.post('/chatbot/send', {
+      message,
+      user_id: userId
+    }, {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error('Error sending chatbot message:', error);
+    throw error;
+  }
+};
+
+
+export const getUserChatbotMessages = async () => {
+  try {
+    const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+    const user = JSON.parse(atob(token.split('.')[1]));
+    const userId = user?.user_id;
+
+    const response = await bc.get('/chatbot/messages', {
+      params: {
+        user_id: userId
+      }
+    });
+
+    return response.data.messages;
+  } catch (error) {
+    console.error('Error fetching user chatbot messages:', error);
+    throw error;
+  }
+};
+export const getPendingChatbotMessages = async () => {
+  try {
+    const response = await bc.get('/chatbot/admin/pending');
+    const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+    const user = JSON.parse(atob(token.split('.')[1]));
+    const userId = user?.user_id;
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching pending chatbot messages:', error);
+    throw error;
+  }
+};
+
+export const respondToChatbotMessage = async (messageId, response) => {
+  try {
+    const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+    const user = JSON.parse(atob(token.split('.')[1]));
+    const userId = user?.user_id;
+    const result = await bc.post(`/chatbot/admin/respond/${messageId}`, {
+      response: response,
+      user_id: userId
+    }, {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+    return result.data;
+  } catch (error) {
+    console.error('Error responding to chatbot message:', error);
+    throw error;
+  }
+};
+
+export const markChatbotMessageAsRead = async (messageId) => {
+  try {
+    const response = await bc.post(`/chatbot/mark-as-read/${messageId}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error marking message as read:', error);
+    throw error;
+  }
+};
+
 export const createComment = async formData => {
   try {
     const response = await bc.post('/comments', formData, {
