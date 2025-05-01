@@ -129,6 +129,41 @@
   color: #333;
 }
 
+.subtitles-container {
+  position: absolute;
+  bottom: 20px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  pointer-events: none;
+}
+
+.subtitle-text {
+  display: inline-block;
+  background-color: rgba(0, 0, 0, 0.7);
+  color: white;
+  font-size: 1.2rem;
+  padding: 8px 16px;
+  border-radius: 4px;
+  max-width: 80%;
+  margin: 0 auto;
+}
+
+.stylish-select {
+  background-color: #f8f9fa;
+  color: #333;
+  border-radius: 6px;
+  font-weight: 500;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  transition: border-color 0.3s ease-in-out;
+}
+
+.stylish-select:focus {
+  border-color: #198754;
+  outline: none;
+  box-shadow: 0 0 0 0.2rem rgba(25, 135, 84, 0.25);
+}
+
 
 .home-container .col-lg-5:first-child {
   text-align: left;

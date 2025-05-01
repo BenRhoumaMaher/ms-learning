@@ -38,4 +38,46 @@ class MessagesController extends AbstractController
         }
     }
 
+    public function translateMessage(
+        Request $request
+    ): JsonResponse {
+        try {
+            $messageText = $request->request->get('text');
+            $targetLang = $request->request->get('lang', 'fr');
+
+            if (!$messageText) {
+                throw new \InvalidArgumentException("Message text is required.");
+            }
+
+            $client = new \GuzzleHttp\Client();
+            $response = $client->post(
+                'http://whisper:5000/translate-text',
+                [
+                'form_params' => [
+                    'text' => $messageText,
+                    'lang' => $targetLang,
+                ],
+                'timeout' => 20,
+                ]
+            );
+
+            $translated = json_decode($response->getBody(), true);
+            return $this->json(
+                [
+                'status' => 'success',
+                'translated' => $translated['translated'],
+                ]
+            );
+
+        } catch (\Exception $e) {
+            return $this->json(
+                [
+                'status' => 'error',
+                'message' => $e->getMessage(),
+                ],
+                500
+            );
+        }
+    }
+
 }

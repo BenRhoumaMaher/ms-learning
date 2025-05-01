@@ -48,6 +48,11 @@ create_Instructor:
   controller: App\Controller\Course\CoursesController::createCourse
   methods: POST
 
+lesson_translate:
+  path: /lessons/{id}/translate
+  controller: App\Controller\Course\CoursesController::translateLesson
+  methods: POST
+
 update:
   path: /course/{id}
   controller: App\Controller\Course\CoursesController::update

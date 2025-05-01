@@ -85,6 +85,15 @@ services:
       - mslearning
     command: [ "php", "bin/console", "messenger:consume", "async", "-vv" ]
 
+  whisper:
+    build:
+      context: ./whisper-service
+    container_name: mslearning_whisper
+    ports:
+      - "5000:5000"
+    networks:
+      - mslearning
+
 networks:
   mslearning:
     driver: bridge

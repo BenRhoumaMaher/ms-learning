@@ -71,6 +71,9 @@ class Lesson
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?array $translations = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -254,5 +257,27 @@ class Lesson
         $this->user = $user;
 
         return $this;
+    }
+
+    public function getTranslations(): ?array
+    {
+        return $this->translations;
+    }
+
+    public function setTranslations(?array $translations): static
+    {
+        $this->translations = $translations;
+
+        return $this;
+    }
+
+    public function addTranslation(string $language, array $subtitles): void
+    {
+        $this->translations[$language] = $subtitles;
+    }
+
+    public function getTranslation(string $language): ?array
+    {
+        return $this->translations[$language] ?? null;
     }
 }

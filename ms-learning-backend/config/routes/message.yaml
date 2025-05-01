@@ -3,6 +3,11 @@ create_message:
   controller: App\Controller\msconnect\message\MessagesController::sendMessage
   methods: POST
 
+translate_message:
+  path: /messages/translate
+  controller: App\Controller\msconnect\message\MessagesController::translateMessage
+  methods: POST  
+
 get_messages:
   path: /messages/{roomId}
   controller: App\Controller\msconnect\message\MessagesController::getMessages
