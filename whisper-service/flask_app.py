@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify
-import whisper  # This will now correctly import openai-whisper
+import whisper
 import tempfile
 import os
 from deep_translator import GoogleTranslator
@@ -8,13 +8,12 @@ from flask_cors import CORS
 app = Flask(__name__)
 CORS(app)
 
-# Initialize model inside a function to handle loading properly
 def get_model():
     return whisper.load_model("base")
 
 @app.route("/transcribe", methods=["POST"])
 def transcribe():
-    model = get_model()  # Load model when needed
+    model = get_model()
     video = request.files["video"]
     lang = request.form.get("lang", "fr")
 
