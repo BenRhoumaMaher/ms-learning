@@ -17,8 +17,11 @@ class Answer
     #[ORM\ManyToOne(inversedBy: 'answers')]
     private ?Question $question = null;
 
-    #[ORM\Column(type: Types::TEXT)]
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $text = null;
+
+    #[ORM\Column(type: Types::BOOLEAN)]
+    private bool $isCorrect = false;
 
     public function getId(): ?int
     {
@@ -46,6 +49,17 @@ class Answer
     {
         $this->text = $text;
 
+        return $this;
+    }
+
+    public function isCorrect(): bool
+    {
+        return $this->isCorrect;
+    }
+
+    public function setIsCorrect(bool $isCorrect): static
+    {
+        $this->isCorrect = $isCorrect;
         return $this;
     }
 }

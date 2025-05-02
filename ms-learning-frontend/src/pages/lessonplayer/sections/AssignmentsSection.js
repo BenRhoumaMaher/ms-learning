@@ -1,10 +1,34 @@
 import React, { useEffect, useRef } from "react";
 import { Chart, registerables } from "chart.js";
+import { useNavigate, useParams } from "react-router-dom";
+import { getLessonInfo } from "../../../helpers/api";
 
 Chart.register(...registerables);
 
 const AssignmentsSection = () => {
-  const chartRef = useRef(null); // Store chart instance
+  const chartRef = useRef(null);
+  const navigate = useNavigate();
+  const { id: lessonId } = useParams();
+  const [quizData, setQuizData] = React.useState(null);
+
+  useEffect(() => {
+    const fetchLessonInfo = async () => {
+      try {
+        const data = await getLessonInfo(lessonId);
+        setQuizData(data.course.quiz);
+      } catch (error) {
+        console.error("Error fetching lesson info:", error);
+      }
+    };
+
+    fetchLessonInfo();
+  }, [lessonId]);
+
+  const handleStartQuiz = () => {
+    if (quizData) {
+      navigate(`/quiz/${lessonId}`);
+    }
+  };
 
   useEffect(() => {
     const ctx = document.getElementById("rankChart").getContext("2d");
@@ -58,12 +82,19 @@ const AssignmentsSection = () => {
         </div>
 
         <div className="col-md-6 d-flex justify-content-center">
-          <div className="assignments-quiz-card">
-            <h5 className="text-danger fw-bold">Quiz Title</h5>
-            <p className="fw-bold">Duration</p>
-            <p className="fw-bold">Status</p>
-            <button className="btn assignments-start-btn">Start</button>
-          </div>
+          {quizData && (
+            <div className="assignments-quiz-card">
+              <h5 className="text-danger fw-bold">{quizData.title}</h5>
+              <p className="fw-bold">Duration: {quizData.time_limit} minutes</p>
+              <p className="fw-bold">Passing Score: {quizData.passing_score}%</p>
+              <button
+                className="btn assignments-start-btn"
+                onClick={handleStartQuiz}
+              >
+                Start
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </section>

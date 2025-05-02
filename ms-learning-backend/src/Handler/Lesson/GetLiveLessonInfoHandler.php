@@ -30,7 +30,17 @@ class GetLiveLessonInfoHandler
             'liveEndTime' => $lesson->getLiveEndTime(),
             'position' => $lesson->getPosition(),
             'liveMeetingLink' => $lesson->getLiveMeetingLink(),
-            'course' => $lesson->getCourse()->getId(),
+            'course' => [
+                'id' => $lesson->getCourse()->getId(),
+                'title' => $lesson->getCourse()->getTitle(),
+                'quiz' => [
+                    'id' => $lesson->getCourse()->getQuiz()->getId(),
+                    'title' => $lesson->getCourse()->getQuiz()->getTitle(),
+                    'time_limit' => $lesson->getCourse()->getQuiz()->getTimeLimit(),
+                    'questions' => count($lesson->getCourse()->getQuiz()->getQuestions()),
+                    'passing_score' => $lesson->getCourse()->getQuiz()->getPassingScore(),
+                ]
+            ],
             'category' => $lesson->getCourse()->getCategory()->getId(),
         ];
     }

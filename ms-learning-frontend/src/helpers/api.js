@@ -812,6 +812,16 @@ export const getEnrolledCourse = async courseId => {
   }
 }
 
+export const getQuizQuestions = async (lessonId) => {
+  try {
+    const response = await bc.get(`/quizzes/lesson/${lessonId}/questions`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching quiz questions:', error);
+    throw error;
+  }
+};
+
 export const convertLessonToRegistered = async (lessonId, videoUrl) => {
   try {
     const token =

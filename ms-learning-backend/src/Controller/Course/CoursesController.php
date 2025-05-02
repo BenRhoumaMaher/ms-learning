@@ -2,6 +2,7 @@
 
 namespace App\Controller\Course;
 
+use App\Repository\QuizRepository;
 use App\Repository\UserRepository;
 use App\Repository\LessonRepository;
 use App\Repository\CoursesRepository;
@@ -367,6 +368,59 @@ class CoursesController extends AbstractController
             200,
             [],
             ['groups' => 'course:read']
+        );
+    }
+
+    public function getQuizQuestions(
+        int $lessonId,
+        LessonRepository $lessonRepository,
+        QuizRepository $quizRepository
+    ): JsonResponse {
+
+        $lesson = $lessonRepository->find($lessonId);
+
+        if (!$lesson) {
+            return $this->json(['error' => 'Lesson not found'], 404);
+        }
+
+        $course = $lesson->getCourse();
+
+        if (!$course) {
+            return $this->json(['error' => 'Course not found for this lesson'], 404);
+        }
+
+        $quiz = $quizRepository->findOneBy(['course' => $course]);
+
+        if (!$quiz) {
+            return $this->json(['error' => 'Quiz not found for this course'], 404);
+        }
+
+        $questions = $quiz->getQuestions();
+        $result = [];
+
+        foreach ($questions as $question) {
+            $answers = [];
+            foreach ($question->getAnswers() as $answer) {
+                $answers[] = [
+                    'id' => $answer->getId(),
+                    'text' => $answer->getText(),
+                    'isCorrect' => $answer->isCorrect()
+                ];
+            }
+
+            $result[] = [
+                'id' => $question->getId(),
+                'text' => $question->getText(),
+                'answers' => $answers,
+                'position' => $question->getPosition()
+            ];
+        }
+
+        return $this->json(
+            [
+            'timeLimit' => $quiz->getTimeLimit(),
+            'questions' => $result
+            ]
         );
     }
 

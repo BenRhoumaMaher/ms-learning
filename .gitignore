@@ -7,6 +7,8 @@ ms-learning-backend/public/build/
 ms-learning-frontend/node_modules/
 ms-learning-frontend/build/
 
+whisper-service/models
+
 db_data/
 docker/nginx/error.log
 docker/nginx/access.log

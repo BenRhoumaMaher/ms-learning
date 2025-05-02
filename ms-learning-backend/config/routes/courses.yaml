@@ -3,6 +3,11 @@ index:
   controller: App\Controller\Course\CoursesController::index
   methods: GET
 
+quiz_questions:
+  path: /quizzes/lesson/{lessonId}/questions
+  controller: App\Controller\Course\CoursesController::getQuizQuestions
+  methods: GET  
+
 latestCourses:
   path: /courses/latest
   controller: App\Controller\Course\CoursesController::getLatestCourses

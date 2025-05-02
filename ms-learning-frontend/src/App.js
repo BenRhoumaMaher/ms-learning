@@ -37,6 +37,7 @@ import MsconnectForumPost from './pages/msconnect/forumpost/msconnectforumpost'
 import MsconnectNotifications from './pages/msconnect/msnotifications/msconnectnotifications'
 import ChatbotMessagesList from './pages/admin/ChatbotMessagesList'
 import ChatbotWidget from './pages/admin/ChatbotWidget'
+import QuizQuestion from './pages/quiz/sections/QuizQuestion'
 function App() {
   return (
     <div className='App'>
@@ -53,7 +54,8 @@ function App() {
           <Route path='/student-payment' element={<StudentPayment />} />
           <Route path='/student-calendar' element={<StudentCalendar />} />
           <Route path='/registered-courses/:id' element={<RegisteredCourses />} />
-          <Route path='/quiz' element={<Quiz />} />
+          <Route path="/quiz/:id" element={<Quiz />} />
+          <Route path="/quiz/:id/question/:questionId" element={<QuizQuestion />} />
           <Route path='/instructor-public/:id' element={<InstructorPublic />} />
           <Route path='/instructor-dashboard' element={<InsctructorDashboard />} />
           <Route path='/course-catalog' element={<CourseCatalog />} />
