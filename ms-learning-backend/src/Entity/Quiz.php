@@ -43,9 +43,16 @@ class Quiz
     #[ORM\OneToMany(targetEntity: Question::class, mappedBy: 'quiz')]
     private Collection $questions;
 
+    /**
+     * @var Collection<int, QuizScore>
+     */
+    #[ORM\OneToMany(targetEntity: QuizScore::class, mappedBy: 'quiz')]
+    private Collection $quizScores;
+
     public function __construct()
     {
         $this->questions = new ArrayCollection();
+        $this->quizScores = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -161,6 +168,36 @@ class Quiz
             // set the owning side to null (unless already changed)
             if ($question->getQuiz() === $this) {
                 $question->setQuiz(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, QuizScore>
+     */
+    public function getQuizScores(): Collection
+    {
+        return $this->quizScores;
+    }
+
+    public function addQuizScore(QuizScore $quizScore): static
+    {
+        if (!$this->quizScores->contains($quizScore)) {
+            $this->quizScores->add($quizScore);
+            $quizScore->setQuiz($this);
+        }
+
+        return $this;
+    }
+
+    public function removeQuizScore(QuizScore $quizScore): static
+    {
+        if ($this->quizScores->removeElement($quizScore)) {
+            // set the owning side to null (unless already changed)
+            if ($quizScore->getQuiz() === $this) {
+                $quizScore->setQuiz(null);
             }
         }
 

@@ -6,13 +6,16 @@ use DateTime;
 use App\Entity\Lesson;
 use App\Entity\Module;
 use DateTimeImmutable;
+use GuzzleHttp\Client;
 use App\Entity\Courses;
 use App\Entity\StudentCourse;
 use App\Repository\UserRepository;
+use App\Repository\LessonRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 class CourseService implements CourseServiceInterface
 {
@@ -20,10 +23,129 @@ class CourseService implements CourseServiceInterface
         private EntityManagerInterface $entityManager,
         private UserRepository $userRepository,
         private string $lessonResourceDirectory,
-        private string $baseUrl
+        private string $baseUrl,
+        private LessonRepository $lessonRepository,
+        private ParameterBagInterface $parameterBag
     ) {
     }
 
+    public function translateLesson(int $lessonId, string $language): array
+    {
+        $lesson = $this->lessonRepository->find($lessonId);
+
+        if (!$lesson) {
+            throw new NotFoundHttpException('Lesson not found');
+        }
+
+        if ($lesson->getTranslation($language)) {
+            return [
+                'status' => 'success',
+                'from_cache' => true,
+                'segments' => $lesson->getTranslation($language)
+            ];
+        }
+
+        $videoPath = $this->parameterBag->get(
+            'kernel.project_dir'
+        ) . '/public/' . $lesson->getVideoUrl();
+        if (!file_exists($videoPath)) {
+            throw new \RuntimeException('Video file not found');
+        }
+
+        $client = new \GuzzleHttp\Client();
+        $response = $client->post(
+            'http://whisper:5000/transcribe',
+            [
+                'multipart' => [
+                    [
+                        'name' => 'video',
+                        'contents' => fopen($videoPath, 'r'),
+                        'filename' => 'video.mp4'
+                    ],
+                    [
+                        'name' => 'lang',
+                        'contents' => $language
+                    ]
+                ],
+                'timeout' => 60
+            ]
+        );
+
+        $subtitles = json_decode($response->getBody(), true);
+
+        if (!isset($subtitles['segments'])) {
+            throw new \RuntimeException('Invalid response from translation service');
+        }
+
+        $lesson->addTranslation($language, $subtitles['segments']);
+        $this->entityManager->persist($lesson);
+        $this->entityManager->flush();
+
+        return [
+            'status' => 'success',
+            'from_cache' => false,
+            'segments' => $subtitles['segments']
+        ];
+    }
+
+    public function generateLessonNotes(int $lessonId): array
+    {
+        $lesson = $this->lessonRepository->find($lessonId);
+
+        if (!$lesson) {
+            throw new NotFoundHttpException('Lesson not found');
+        }
+
+        if ($lesson->getGeneratedNotes()) {
+            return [
+                'status' => 'success',
+                'from_cache' => true,
+                'summary' => $lesson->getGeneratedNotes(),
+                'full_transcript' => $lesson->getFullTranscript()
+            ];
+        }
+
+        $videoPath = $this->parameterBag->get(
+            'kernel.project_dir'
+        ) . '/public/' . $lesson->getVideoUrl();
+        if (!file_exists($videoPath)) {
+            throw new \RuntimeException('Video file not found');
+        }
+
+        $client = new Client();
+        $response = $client->post(
+            'http://whisper:5000/generate-notes',
+            [
+                'multipart' => [
+                    [
+                        'name' => 'video',
+                        'contents' => fopen($videoPath, 'r'),
+                        'filename' => 'video.mp4'
+                    ]
+                ],
+                'timeout' => 60
+            ]
+        );
+
+        $result = json_decode($response->getBody(), true);
+
+        if (!isset($result['summary']) || !isset($result['full_transcript'])) {
+            throw new \RuntimeException('Invalid response from notes service');
+        }
+
+        $lesson->setGeneratedNotes($result['summary']);
+        $lesson->setFullTranscript($result['full_transcript']);
+
+        $this->entityManager->persist($lesson);
+        $this->entityManager->flush();
+
+        return [
+            'status' => 'success',
+            'from_cache' => false,
+            'summary' => $result['summary'],
+            'full_transcript' => $result['full_transcript']
+        ];
+    }
     public function getAllCourses(): array
     {
         return $this->entityManager->getRepository(

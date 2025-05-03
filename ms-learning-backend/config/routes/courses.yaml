@@ -43,10 +43,25 @@ courses_by_category:
   controller: App\Controller\Course\CoursesController::getCoursesByCategory
   methods: GET
 
+score_comparaison:
+  path: /scores/comparison/{quizId}
+  controller: App\Controller\Course\CoursesController::getComparisonData
+  methods: GET  
+
 create:
   path: /courses
   controller: App\Controller\Course\CoursesController::create
   methods: POST
+
+generate_notes:
+  path: /lessons/{id}/generate-notes
+  controller: App\Controller\Course\CoursesController::generateLessonNotes
+  methods: POST  
+
+score_save:
+  path: /scores/save
+  controller: App\Controller\Course\CoursesController::saveScore
+  methods: POST  
 
 create_Instructor:
   path: instructor/course/create

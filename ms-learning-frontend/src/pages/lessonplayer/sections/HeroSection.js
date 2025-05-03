@@ -1,23 +1,41 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useRef } from "react";
 import { useLocation } from "react-router-dom";
+import useLessonPlayer from "../../../hooks/useLessonPlayer";
 
 const HeroSection = ({ lessonId }) => {
   const { state } = useLocation();
   const { modules = [], courseTitle } = state || {};
   const videoRef = useRef(null);
 
-  const [flatLessons, setFlatLessons] = useState([]);
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [currentLesson, setCurrentLesson] = useState(null);
-  const [currentVideo, setCurrentVideo] = useState("");
-  const [subtitles, setSubtitles] = useState([]);
-  const [showSubtitles, setShowSubtitles] = useState(false);
-  const [isTranslating, setIsTranslating] = useState(false);
-  const [translationError, setTranslationError] = useState(null);
-  const [activeSubtitle, setActiveSubtitle] = useState(null);
-  const [targetLanguage, setTargetLanguage] = useState('fr');
-  const [isLoading, setIsLoading] = useState(true);
-  const [videoReady, setVideoReady] = useState(false);
+  const {
+    notes,
+    isGeneratingNotes,
+    notesError,
+    showFullTranscript,
+    setShowFullTranscript,
+    generateNotes,
+
+    flatLessons,
+    currentIndex,
+    currentLesson,
+    currentVideo,
+    handleLessonSelect,
+    scroll,
+    getVisibleLessons,
+
+    subtitles,
+    showSubtitles,
+    isTranslating,
+    translationError,
+    activeSubtitle,
+    targetLanguage,
+    setTargetLanguage,
+    fetchSubtitles,
+
+    isLoading,
+    videoReady,
+    setShowSubtitles,
+  } = useLessonPlayer(modules, lessonId, videoRef);
 
   const supportedLanguages = [
     { code: 'fr', name: 'French' },
@@ -26,131 +44,6 @@ const HeroSection = ({ lessonId }) => {
     { code: 'de', name: 'German' },
     { code: 'it', name: 'Italian' },
   ];
-
-  const fetchSubtitles = async (lessonId, lang = 'fr') => {
-    try {
-      setIsTranslating(true);
-      setTranslationError(null);
-
-      const response = await fetch(`http://localhost:8080/lessons/${lessonId}/translate`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: `lang=${lang}`
-      });
-
-      if (!response.ok) {
-        throw new Error(response.status === 404 ? 'Lesson not found' : 'Translation failed');
-      }
-
-      const data = await response.json();
-      if (data.status === 'success') {
-        setSubtitles(data.segments);
-        setShowSubtitles(true);
-        if (data.from_cache) {
-          console.log('Using cached translation');
-        }
-      } else {
-        throw new Error(data.message || 'Translation failed');
-      }
-    } catch (error) {
-      console.error('Error fetching subtitles:', error);
-      setTranslationError(error.message);
-      setShowSubtitles(false);
-    } finally {
-      setIsTranslating(false);
-    }
-    console.log("Requesting translation for lessonId:", lessonId, "with lang:", lang);
-  };
-
-  useEffect(() => {
-    const fetchLessonData = async () => {
-      setIsLoading(true);
-      try {
-        const lessons = [];
-        modules.forEach((mod) =>
-          mod.lessons.forEach((lesson) =>
-            lessons.push({ ...lesson, moduleTitle: mod.title })
-          )
-        );
-        setFlatLessons(lessons);
-
-        const foundIndex = lessons.findIndex((l) => l.id === parseInt(lessonId));
-        const indexToUse = foundIndex !== -1 ? foundIndex : 0;
-
-        setCurrentIndex(indexToUse);
-        const lesson = lessons[indexToUse];
-        setCurrentLesson(lesson);
-        setCurrentVideo(`http://localhost:8080/${lesson.video_url}`);
-        setSubtitles([]);
-        setShowSubtitles(false);
-      } catch (error) {
-        console.error('Error loading lesson:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    if (modules.length > 0) {
-      fetchLessonData();
-    }
-  }, [lessonId, modules]);
-
-  useEffect(() => {
-    const videoElement = videoRef.current;
-    if (!videoElement) return;
-
-    const handleTimeUpdate = () => {
-      if (!videoRef.current || !showSubtitles || subtitles.length === 0) return;
-      const currentTime = videoRef.current.currentTime;
-      const activeSub = subtitles.find(sub =>
-        currentTime >= sub.start && currentTime <= sub.end
-      );
-      setActiveSubtitle(activeSub?.text || null);
-    };
-
-    const handleReady = () => setVideoReady(true);
-
-    videoElement.addEventListener('timeupdate', handleTimeUpdate);
-    videoElement.addEventListener('canplay', handleReady);
-
-    return () => {
-      videoElement.removeEventListener('timeupdate', handleTimeUpdate);
-      videoElement.removeEventListener('canplay', handleReady);
-    };
-  }, [showSubtitles, subtitles]);
-
-  const handleLessonSelect = (index) => {
-    const lesson = flatLessons[index];
-    if (lesson) {
-      setCurrentIndex(index);
-      setCurrentLesson(lesson);
-      setCurrentVideo(`http://localhost:8080/${lesson.video_url}`);
-      setSubtitles([]);
-      setShowSubtitles(false);
-      setVideoReady(false);
-    }
-  };
-
-  const scroll = (direction) => {
-    const newIndex = direction === "up" ? currentIndex - 1 : currentIndex + 1;
-    if (newIndex >= 0 && newIndex < flatLessons.length) {
-      handleLessonSelect(newIndex);
-    }
-  };
-
-  const getVisibleLessons = () => {
-    const visible = [];
-    if (flatLessons[currentIndex - 1]) {
-      visible.push({ ...flatLessons[currentIndex - 1], viewType: "prev" });
-    }
-    visible.push({ ...flatLessons[currentIndex], viewType: "current" });
-    if (flatLessons[currentIndex + 1]) {
-      visible.push({ ...flatLessons[currentIndex + 1], viewType: "next" });
-    }
-    return visible;
-  };
 
   if (isLoading) {
     return (
@@ -175,8 +68,53 @@ const HeroSection = ({ lessonId }) => {
 
       <div className="row align-items-center justify-content-between">
         <div className="col-md-2 text-center lessplay-notes-section">
-          <i className="fas fa-book-open lessplay-notes-icon"></i>
-          <p className="lessplay-text-danger fw-bold mt-3">Notes</p>
+          <button
+            onClick={generateNotes}
+            disabled={isGeneratingNotes}
+            style={{
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer'
+            }}
+          >
+            <i className="fas fa-pencil-alt lessplay-notes-icon"></i>
+            <p className="lessplay-text-danger fw-bold mt-3">
+              {isGeneratingNotes ? 'Generating...' : 'Summary & Transcript'}
+            </p>
+          </button>
+
+          {notes && (
+            <div className="mt-3 p-2" style={{
+              border: '1px solid #ddd',
+              borderRadius: '5px',
+              maxHeight: '300px',
+              overflowY: 'auto',
+              textAlign: 'left'
+            }}>
+              <h6>Lecture Summary:</h6>
+              <p style={{ fontSize: '0.8rem' }}>{notes.summary}</p>
+
+              <button
+                className="btn btn-sm btn-outline-primary mt-2"
+                onClick={() => setShowFullTranscript(!showFullTranscript)}
+              >
+                {showFullTranscript ? 'Hide Full Transcript' : 'Show Full Transcript'}
+              </button>
+
+              {showFullTranscript && (
+                <div className="mt-2" style={{ fontSize: '0.7rem' }}>
+                  <h6>Full Transcript:</h6>
+                  <p style={{ whiteSpace: 'pre-wrap' }}>{notes.fullTranscript}</p>
+                </div>
+              )}
+            </div>
+          )}
+
+          {notesError && (
+            <div className="alert alert-danger mt-2" style={{ fontSize: '0.7rem' }}>
+              {notesError}
+            </div>
+          )}
         </div>
 
         <div className="col-md-6 lessplay-video-wrapper">
@@ -328,10 +266,7 @@ const HeroSection = ({ lessonId }) => {
                     <span className="text-muted" style={{ fontSize: "0.95rem" }}>
                       {lesson.moduleTitle}:
                     </span>
-                  )} <span
-                    style={{
-                      fontSize: "0.75rem",
-                    }}>{lesson.title}</span>
+                  )} <span style={{ fontSize: "0.75rem" }}>{lesson.title}</span>
                 </p>
                 {isLive && (
                   <span className="badge bg-danger" style={{ fontSize: "0.6rem", position: "absolute", top: "-5px", right: "-5px" }}>

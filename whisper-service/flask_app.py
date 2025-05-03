@@ -37,6 +37,30 @@ def transcribe():
 def test():
     return jsonify({"status": "Backend is working!"})
 
+@app.route("/generate-notes", methods=["POST"])
+def generate_notes():
+    model = get_model()
+    video = request.files["video"]
+    
+    with tempfile.NamedTemporaryFile(delete=False, suffix=".mp4") as temp:
+        video.save(temp.name)
+        result = model.transcribe(temp.name)
+    
+    full_text = " ".join([segment["text"] for segment in result["segments"]])
+    
+    summary_segments = [
+        result["segments"][0]["text"],
+        result["segments"][len(result["segments"])//2]["text"],
+        result["segments"][-1]["text"]
+    ]
+    summary = " ".join(summary_segments)
+    
+    os.remove(temp.name)
+    return jsonify({
+        "summary": summary,
+        "full_transcript": full_text
+    })
+
 @app.route("/translate-text", methods=["POST"])
 def translate_text():
     text = request.form.get("text")
@@ -53,7 +77,3 @@ def translate_text():
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
-    
-
-
-    

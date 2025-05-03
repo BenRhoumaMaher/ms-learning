@@ -2,59 +2,65 @@ import React, { useEffect, useRef } from "react";
 import { Container } from "react-bootstrap";
 import Chart from "chart.js/auto";
 
-const CompareResults = () => {
+const CompareResults = ({ averageScore, highestScore, totalAttempts, ranking, userScore }) => {
   const chartRef = useRef(null);
+  const chartInstanceRef = useRef(null);
 
   useEffect(() => {
-    if (chartRef.current) {
+    if (chartRef.current && userScore !== undefined && averageScore !== undefined && highestScore !== undefined) {
       const ctx = chartRef.current.getContext("2d");
 
-      if (chartRef.current.chart) {
-        chartRef.current.chart.destroy();
+      if (chartInstanceRef.current) {
+        chartInstanceRef.current.destroy();
       }
 
-      chartRef.current.chart = new Chart(ctx, {
+      chartInstanceRef.current = new Chart(ctx, {
         type: "bar",
         data: {
-          labels: ["A", "B", "C", "D", "E", "F", "G", "H"],
+          labels: ["You", "Average", "Top Score"],
           datasets: [
             {
-              label: "Your Score",
-              data: [20, 30, 40, 50, 20, 60, 70, 80],
-              backgroundColor: "#2c51d1", // Blue bars
-            },
-            {
-              label: "Average Score",
-              data: [50, 40, 30, 40, 30, 50, 40, 45],
-              backgroundColor: "#ff6f61", // Red bars
-            },
-            {
-              label: "Highest Score",
-              data: [70, 80, 60, 90, 60, 70, 85, 90],
-              backgroundColor: "#ffcc33", // Yellow bars
-            },
-          ],
+              label: "Scores",
+              data: [userScore, averageScore, highestScore],
+              backgroundColor: ["#2c51d1", "#ff6f61", "#ffcc33"]
+            }
+          ]
         },
         options: {
           responsive: true,
           maintainAspectRatio: false,
           scales: {
-            y: { beginAtZero: true },
-          },
-        },
+            y: {
+              beginAtZero: true,
+              ticks: { stepSize: 1 }
+            }
+          }
+        }
       });
     }
-  }, []);
+
+    return () => {
+      if (chartInstanceRef.current) {
+        chartInstanceRef.current.destroy();
+      }
+    };
+  }, [userScore, averageScore, highestScore]);
 
   return (
-    <Container className="compare-results text-center">
-      <h3 className="fw-bold text-start mb-5">Compare your results with other students</h3>
+    <Container className="compare-results text-center mt-5">
+      <h3 className="fw-bold text-start mb-4">
+        Compare your results with other students
+      </h3>
 
-      <div className="chart-container">
+      <div className="chart-container" style={{ height: "400px" }}>
         <canvas ref={chartRef}></canvas>
       </div>
 
-      <p className="ranking-text">You’re 12th out of 100</p>
+      {ranking && (
+        <p className="ranking-text mt-3">
+          You’re <strong>{ranking.position}</strong> out of <strong>{ranking.total}</strong>
+        </p>
+      )}
     </Container>
   );
 };

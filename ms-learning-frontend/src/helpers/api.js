@@ -263,6 +263,39 @@ export const getInstructorCourses = async instructorId => {
   }
 }
 
+export const saveQuizScore = async (userId, quizId, score, totalQuestions) => {
+  try {
+    console.log("Sending to backend:", { userId, quizId, score, totalQuestions });
+    const response = await bc.post('/scores/save', {
+      userId,
+      quizId,
+      score,
+      totalQuestions
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error saving quiz score:', error);
+    throw error;
+  }
+};
+
+
+export const getQuizComparisonData = async (quizId, userId, userScore, totalQuestions) => {
+  try {
+    const response = await bc.get(`/scores/comparison/${quizId}`, {
+      params: {
+        userId,
+        userScore,
+        totalQuestions
+      }
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching comparison data:', error);
+    throw error;
+  }
+};
+
 export const getUserCoursesModules = async () => {
   try {
     const token =

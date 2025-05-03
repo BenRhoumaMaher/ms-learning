@@ -257,6 +257,12 @@ class User implements
     #[ORM\OneToMany(targetEntity: ChatbotMessage::class, mappedBy: 'adminuser')]
     private Collection $chatbotadminResponses;
 
+    /**
+     * @var Collection<int, QuizScore>
+     */
+    #[ORM\OneToMany(targetEntity: QuizScore::class, mappedBy: 'user')]
+    private Collection $quizScores;
+
     public function __construct()
     {
         $this->createdAt = new \DateTime();
@@ -283,6 +289,7 @@ class User implements
         $this->receivermessages = new ArrayCollection();
         $this->chatbotMessages = new ArrayCollection();
         $this->chatbotadminResponses = new ArrayCollection();
+        $this->quizScores = new ArrayCollection();
     }
 
     public function getFollowers(): Collection
@@ -1188,6 +1195,36 @@ class User implements
             // set the owning side to null (unless already changed)
             if ($chatbotadminResponse->getAdminuser() === $this) {
                 $chatbotadminResponse->setAdminuser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, QuizScore>
+     */
+    public function getQuizScores(): Collection
+    {
+        return $this->quizScores;
+    }
+
+    public function addQuizScore(QuizScore $quizScore): static
+    {
+        if (!$this->quizScores->contains($quizScore)) {
+            $this->quizScores->add($quizScore);
+            $quizScore->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeQuizScore(QuizScore $quizScore): static
+    {
+        if ($this->quizScores->removeElement($quizScore)) {
+            // set the owning side to null (unless already changed)
+            if ($quizScore->getUser() === $this) {
+                $quizScore->setUser(null);
             }
         }
 

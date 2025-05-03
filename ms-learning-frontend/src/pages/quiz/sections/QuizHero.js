@@ -39,7 +39,8 @@ const QuizHero = ({ lessonId }) => {
           text: answer.text,
           isCorrect: answer.isCorrect
         })),
-        correctAnswer: question.answers.findIndex(answer => answer.isCorrect)
+        correctAnswer: question.answers.findIndex(answer => answer.isCorrect),
+        quizId: quizInfo.id
       }));
 
       startQuiz({

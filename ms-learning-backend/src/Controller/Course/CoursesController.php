@@ -2,12 +2,14 @@
 
 namespace App\Controller\Course;
 
+use DateTimeImmutable;
+use App\Entity\QuizScore;
 use App\Repository\QuizRepository;
 use App\Repository\UserRepository;
 use App\Repository\LessonRepository;
 use App\Repository\CoursesRepository;
 use App\Service\Course\CourseService;
-use App\Repository\CategoryRepository;
+use App\Repository\QuizScoreRepository;
 use App\Query\Course\GetAllCoursesQuery;
 use App\Query\Course\GetCourseByIdQuery;
 use Doctrine\ORM\EntityManagerInterface;
@@ -16,10 +18,8 @@ use App\Command\Course\DeleteCourseCommand;
 use App\Command\Course\UpdateCourseCommand;
 use App\Query\Course\GetLatestCoursesQuery;
 use App\Query\Course\GetEnrolledCourseQuery;
-use App\Query\Course\GetEnrollzdCourseQuery;
 use Symfony\Component\HttpFoundation\Request;
 use App\Query\User\GetUserCoursesModulesQuery;
-use Symfony\Component\Routing\Attribute\Route;
 use App\Command\Course\CreateFullCourseCommand;
 use App\Query\Course\GetRecommendedCoursesQuery;
 use App\Service\QueryBusService\QueryBusService;
@@ -35,7 +35,11 @@ class CoursesController extends AbstractController
 {
     public function __construct(
         private QueryBusService $queryBusService,
-        private CommandBusService $commandBusService
+        private CommandBusService $commandBusService,
+        private QuizScoreRepository $quizScoreRepository,
+        private EntityManagerInterface $entityManager,
+        private UserRepository $userRepository,
+        private QuizRepository $quizRepository,
     ) {
     }
 
@@ -179,83 +183,42 @@ class CoursesController extends AbstractController
     public function translateLesson(
         int $id,
         Request $request,
-        LessonRepository $lessonRepository,
-        EntityManagerInterface $entityManager
+        CourseService $courseService
     ): JsonResponse {
         try {
-            $lesson = $lessonRepository->find($id);
-            if (!$lesson) {
-                throw $this->createNotFoundException('Lesson not found');
-            }
-
             $language = $request->request->get('lang', 'fr');
+            $result = $courseService->translateLesson($id, $language);
 
-            if ($lesson->getTranslation($language)) {
-                return $this->json(
-                    [
-                    'status' => 'success',
-                    'from_cache' => true,
-                    'segments' => $lesson->getTranslation($language)
-                    ]
-                );
-            }
-
-            $videoPath = $this->getParameter(
-                'kernel.project_dir'
-            ) . '/public/' . $lesson->getVideoUrl();
-            if (!file_exists($videoPath)) {
-                throw new \Exception('Video file not found');
-            }
-
-            $client = new \GuzzleHttp\Client();
-            $response = $client->post(
-                'http://whisper:5000/transcribe',
-                [
-                'multipart' => [
-                    [
-                        'name' => 'video',
-                        'contents' => fopen($videoPath, 'r'),
-                        'filename' => 'video.mp4'
-                    ],
-                    [
-                        'name' => 'lang',
-                        'contents' => $language
-                    ]
-                ],
-                'timeout' => 60
-                ]
-            );
-
-            $subtitles = json_decode($response->getBody(), true);
-
-            if (!isset($subtitles['segments'])) {
-                throw new \Exception('Invalid response from translation service');
-            }
-
-            $lesson->addTranslation($language, $subtitles['segments']);
-            $entityManager->persist($lesson);
-            $entityManager->flush();
-
-            return $this->json(
-                [
-                'status' => 'success',
-                'from_cache' => false,
-                'segments' => $subtitles['segments']
-                ]
-            );
-
+            return $this->json($result);
         } catch (\Exception $e) {
             return $this->json(
                 [
-                'status' => 'error',
-                'message' => $e->getMessage()
+                    'status' => 'error',
+                    'message' => $e->getMessage()
                 ],
                 500
             );
         }
     }
 
+    public function generateLessonNotes(
+        int $id,
+        CourseService $courseService
+    ): JsonResponse {
+        try {
+            $result = $courseService->generateLessonNotes($id);
 
+            return $this->json($result);
+        } catch (\Exception $e) {
+            return $this->json(
+                [
+                    'status' => 'error',
+                    'message' => $e->getMessage()
+                ],
+                500
+            );
+        }
+    }
     public function update(
         int $id,
         Request $request
@@ -420,6 +383,74 @@ class CoursesController extends AbstractController
             [
             'timeLimit' => $quiz->getTimeLimit(),
             'questions' => $result
+            ]
+        );
+    }
+
+    public function saveScore(Request $request): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true);
+
+        if (!isset($data['userId'], $data['quizId'], $data['score'], $data['totalQuestions'])) {
+            return $this->json(['error' => 'Missing required fields'], 400);
+        }
+
+        $user = $this->userRepository->find($data['userId']); // ✅ fix
+        if (!$user) {
+            return $this->json(['error' => 'User not found'], 404);
+        }
+
+        $quiz = $this->quizRepository->find($data['quizId']); // ✅ fix
+        if (!$quiz) {
+            return $this->json(['error' => 'Quiz not found'], 404);
+        }
+
+        $score = new QuizScore();
+        $score->setUser($user);
+        $score->setQuiz($quiz);
+        $score->setScore($data['score']);
+        $score->setTotalQuestions($data['totalQuestions']);
+        $score->setCompletedAt(new DateTimeImmutable());
+
+        $this->entityManager->persist($score);
+        $this->entityManager->flush();
+
+        return $this->json(
+            [
+            'success' => true,
+            'scoreId' => $score->getId()
+            ]
+        );
+    }
+
+    public function getComparisonData(
+        int $quizId,
+        Request $request
+    ): JsonResponse {
+        $userId = (int) $request->query->get('userId', 0);
+        $userScore = (int) $request->query->get('userScore', 0);
+        $totalQuestions = (int) $request->query->get('totalQuestions', 0);
+
+        if (!$userId || !$userScore || !$totalQuestions) {
+            return $this->json(['error' => 'Missing required parameters'], 400);
+        }
+
+        $stats = $this->quizScoreRepository->getQuizStatistics($quizId);
+        $ranking = $this->quizScoreRepository->getUserRanking(
+            $quizId,
+            $userId,
+            $userScore
+        );
+
+        return $this->json(
+            [
+            'averageScore' => (float) $stats['averageScore'],
+            'highestScore' => (int) $stats['highestScore'],
+            'totalAttempts' => (int) $stats['totalAttempts'],
+            'ranking' => [
+                'position' => (int) $ranking['position'],
+                'total' => (int) $ranking['total']
+            ]
             ]
         );
     }

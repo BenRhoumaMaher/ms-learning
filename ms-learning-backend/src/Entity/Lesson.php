@@ -74,6 +74,12 @@ class Lesson
     #[ORM\Column(nullable: true)]
     private ?array $translations = null;
 
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $generatedNotes = null;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $fullTranscript = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -279,5 +285,29 @@ class Lesson
     public function getTranslation(string $language): ?array
     {
         return $this->translations[$language] ?? null;
+    }
+
+    public function getGeneratedNotes(): ?string
+    {
+        return $this->generatedNotes;
+    }
+
+    public function setGeneratedNotes(?string $generatedNotes): static
+    {
+        $this->generatedNotes = $generatedNotes;
+
+        return $this;
+    }
+
+    public function getFullTranscript(): ?string
+    {
+        return $this->fullTranscript;
+    }
+
+    public function setFullTranscript(?string $fullTranscript): static
+    {
+        $this->fullTranscript = $fullTranscript;
+
+        return $this;
     }
 }
