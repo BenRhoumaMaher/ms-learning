@@ -1,0 +1,9 @@
+index:
+  path: /testimonials
+  controller: App\Controller\Testimonial\TestimonialsController::getTestimonials
+  methods: GET
+
+create:
+  path: /testimonials
+  controller: App\Controller\Testimonial\TestimonialsController::createTestimonial
+  methods: POST

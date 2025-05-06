@@ -1,7 +1,10 @@
 import React from 'react'
 import heroImage from '../../../assets/hero-image.jpg'
 
-const HeroSection = () => {
+const HeroSection = ({ faqRef }) => {
+  const handleLearnMoreClick = () => {
+    faqRef.current.scrollIntoView({ behavior: 'smooth' })
+  }
   return (
     <section className='section-container'>
       <div className='container'>
@@ -12,7 +15,7 @@ const HeroSection = () => {
             </h1>
             <p className='home-subtitle'>Learn Smarter, Not Harder...</p>
             <p>Anytime, Anywhere</p>
-            <button className='btn btn-success mt-3'>Learn More</button>
+            <button className='btn btn-success mt-3' onClick={handleLearnMoreClick}>Learn More</button>
           </div>
 
           <div className='col-lg-5 text-center'>

@@ -1,0 +1,10 @@
+get_plans:
+  path: /plans/subscribe
+  controller: App\Controller\Plan\PlanController::subscribe
+  methods: POST
+
+subscribe_to_plan:
+  path: /plans
+  controller: App\Controller\Plan\PlanController::getPlans
+  methods: GET  
+

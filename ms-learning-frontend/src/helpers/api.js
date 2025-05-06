@@ -59,6 +59,37 @@ export const resetPassword = async (token, password) => {
   }
 }
 
+export const getPlans = async () => {
+  try {
+    const response = await bc.get('/plans');
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching plans:', error);
+    throw error;
+  }
+};
+
+export const subscribeToPlan = async (planId) => {
+  try {
+    const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+    const user = JSON.parse(atob(token.split('.')[1]));
+
+    const response = await bc.post('/plans/subscribe', {
+      planId,
+      userId: user.user_id
+    }, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      }
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error subscribing to plan:', error);
+    throw error;
+  }
+};
+
 export const googleLogin = async (googleToken, rememberMe) => {
   // console.log("Sending Google Token to Backend:", googleToken)
 
@@ -133,6 +164,41 @@ export const getPosts = async () => {
   }
 }
 
+export const getTestimonials = async () => {
+  try {
+    const response = await bc.get('/testimonials');
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching testimonials:', error);
+    throw error;
+  }
+};
+
+export const getFAQs = async () => {
+  try {
+    const response = await bc.get('/faqs');
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching FAQs:', error);
+    throw error;
+  }
+};
+
+export const createTestimonial = async (testimonialData) => {
+  try {
+    const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+    const response = await bc.post('/testimonials', testimonialData, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      }
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error creating testimonial:', error);
+    throw error;
+  }
+};
 
 export const becomeInstructor = async newuserdata => {
   try {

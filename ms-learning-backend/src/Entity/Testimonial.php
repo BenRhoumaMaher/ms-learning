@@ -17,20 +17,11 @@ class Testimonial
     #[ORM\ManyToOne(inversedBy: 'testimonials')]
     private ?User $user = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $role = null;
-
     #[ORM\Column(type: Types::TEXT)]
     private ?string $content = null;
 
     #[ORM\Column]
-    private ?int $rating = null;
-
-    #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
-
-    #[ORM\Column]
-    private ?bool $isApproved = null;
 
     public function getId(): ?int
     {
@@ -49,18 +40,6 @@ class Testimonial
         return $this;
     }
 
-    public function getRole(): ?string
-    {
-        return $this->role;
-    }
-
-    public function setRole(string $role): static
-    {
-        $this->role = $role;
-
-        return $this;
-    }
-
     public function getContent(): ?string
     {
         return $this->content;
@@ -73,18 +52,6 @@ class Testimonial
         return $this;
     }
 
-    public function getRating(): ?int
-    {
-        return $this->rating;
-    }
-
-    public function setRating(int $rating): static
-    {
-        $this->rating = $rating;
-
-        return $this;
-    }
-
     public function getCreatedAt(): ?\DateTimeImmutable
     {
         return $this->createdAt;
@@ -93,18 +60,6 @@ class Testimonial
     public function setCreatedAt(\DateTimeImmutable $createdAt): static
     {
         $this->createdAt = $createdAt;
-
-        return $this;
-    }
-
-    public function isApproved(): ?bool
-    {
-        return $this->isApproved;
-    }
-
-    public function setIsApproved(bool $isApproved): static
-    {
-        $this->isApproved = $isApproved;
 
         return $this;
     }

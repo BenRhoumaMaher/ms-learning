@@ -75,3 +75,19 @@ App\Controller\chatbot\ChatbotController:
   resource: routes/chatbot.yaml
   prefix: /
   name_prefix: "chatbot_"
+
+App\Controller\Testimonials\TestimonialController:
+  resource: routes/testimonial.yaml
+  prefix: /
+  name_prefix: "testimonial_"  
+
+App\Controller\Faq\FaqController:
+  resource: routes/faq.yaml
+  prefix: /
+  name_prefix: "faq_"  
+
+App\Controller\Plan\PlanController:
+  resource: routes/Plan.yaml
+  prefix: /
+  name_prefix: "plan_"  
+

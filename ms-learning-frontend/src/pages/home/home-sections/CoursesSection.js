@@ -5,6 +5,8 @@ const CoursesSection = () => {
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [courses, setCourses] = useState([]);
+  const [currentPage, setCurrentPage] = useState(0);
+  const coursesPerPage = 2;
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -22,7 +24,21 @@ const CoursesSection = () => {
   const handleCategoryClick = (category) => {
     setSelectedCategory(category.id);
     setCourses(category.courses);
+    setCurrentPage(0);
   };
+
+  const handleNext = () => {
+    const totalPages = Math.ceil(courses.length / coursesPerPage);
+    setCurrentPage((prev) => (prev < totalPages - 1 ? prev + 1 : prev));
+  };
+
+  const handlePrev = () => {
+    setCurrentPage((prev) => (prev > 0 ? prev - 1 : prev));
+  };
+
+  const indexOfLastCourse = (currentPage + 1) * coursesPerPage;
+  const indexOfFirstCourse = indexOfLastCourse - coursesPerPage;
+  const currentCourses = courses.slice(indexOfFirstCourse, indexOfLastCourse);
 
   return (
     <section className='courses-section'>
@@ -47,12 +63,12 @@ const CoursesSection = () => {
         </div>
 
         <div className='row mt-5'>
-          {courses.length > 0 ? (
-            courses.map((course) => (
-              <div key={course.id} className='col-md-4'>
+          {currentCourses.length > 0 ? (
+            currentCourses.map((course) => (
+              <div key={course.id} className='col-md-6'>
                 <div className='course-card'>
                   <div className='course-image'>
-                  {course.image && <img className='course-image' src={`http://localhost:8080/${course.image}`} alt='course thumbnail' />}
+                    {course.image && <img className='course-image' src={`http://localhost:8080/${course.image}`} alt='course thumbnail' />}
                   </div>
                   <div className='course-info'>
                     <h5 className='text-danger'>{course.title}</h5>
@@ -69,6 +85,25 @@ const CoursesSection = () => {
             <p>Select a category to see courses.</p>
           )}
         </div>
+
+        {courses.length > coursesPerPage && (
+          <div className='pagination-controls mt-4'>
+            <button
+              className='btn btn-outline-primary me-2'
+              onClick={handlePrev}
+              disabled={currentPage === 0}
+            >
+              Previous
+            </button>
+            <button
+              className='btn btn-outline-primary ms-2'
+              onClick={handleNext}
+              disabled={currentPage === Math.ceil(courses.length / coursesPerPage) - 1}
+            >
+              Next
+            </button>
+          </div>
+        )}
       </div>
     </section>
   );

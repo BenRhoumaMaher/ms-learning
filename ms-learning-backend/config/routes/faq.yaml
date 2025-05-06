@@ -1,0 +1,4 @@
+index:
+  path: /faqs
+  controller: App\Controller\Faq\FaqController::index
+  methods: GET

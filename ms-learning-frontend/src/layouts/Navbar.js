@@ -73,19 +73,23 @@ const Navbar = () => {
                   <div className='nav-separator'></div>
                 </>
               )}
-              <Link 
-              to={`/msconnect-home/${userId}`}
-              className='nav-link'>
-                <i className='bi bi-book'></i>
+              <Link
+                to={`/msconnect-home/${userId}`}
+                className='nav-link'>
+                <i class="bi bi-pencil-square"></i>
               </Link>
               <div className='nav-separator'></div>
 
-              <Link to='/' className='nav-link'>
+              <Link
+                to={`/msconnect-message/${userId}`}
+                className='nav-link'>
                 <i className='bi bi-chat'></i>
               </Link>
               <div className='nav-separator'></div>
 
-              <Link to='/' className='nav-link'>
+              <Link
+                to={`/msconnect-notifications/${userId}`}
+                className='nav-link'>
                 <i className='bi bi-bell'></i>
               </Link>
               <div className='nav-separator'></div>
@@ -125,12 +129,12 @@ const Navbar = () => {
                         to={`/msconnect-profile/${userId}`}
                         className='dropdown-item'
                       >
-                        MS-CONNECT
+                        MS-CONNECT Profile
                       </Link>
                     ) : (
                       <Link to={`/msconnect-profile/${userId}`}
                         className='dropdown-item'>
-                        MS-CONNECT
+                        MS-CONNECT Profile
                       </Link>
                     )}
                     {userRoles.includes('ROLE_INSTRUCTOR') ? (
@@ -139,7 +143,7 @@ const Navbar = () => {
                       </Link>
                     ) : (
                       <Link
-                        to='/student-notifications'
+                        to={`/student-notifications/${userId}`}
                         className='dropdown-item'
                       >
                         Notifications
