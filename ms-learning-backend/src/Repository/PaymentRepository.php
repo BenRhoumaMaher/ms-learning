@@ -16,6 +16,18 @@ class PaymentRepository extends ServiceEntityRepository
         parent::__construct($registry, Payment::class);
     }
 
+    public function findCoursePurchasesByUser(int $userId)
+    {
+        return $this->createQueryBuilder('p')
+            ->andWhere('p.user = :userId')
+            ->andWhere('p.SubscriptionPlan IS NULL')
+            ->andWhere('p.course IS NOT NULL')
+            ->setParameter('userId', $userId)
+            ->orderBy('p.paymentDate', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
     //    /**
     //     * @return Payment[] Returns an array of Payment objects
     //     */

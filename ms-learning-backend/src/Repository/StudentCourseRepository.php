@@ -23,11 +23,35 @@ class StudentCourseRepository extends ServiceEntityRepository
             ->join('sc.user', 'u')
             ->where('u.id = :userId')
             ->setParameter('userId', $userId)
-            ->select('c.title');
+            ->select('c.id AS id, c.title AS title');
 
         $results = $qb->getQuery()->getArrayResult();
 
-        return array_column($results, 'title');
+        $titles = array_column($results, 'title');
+        $ids = array_column($results, 'id');
+
+        return [
+            'titles' => $titles,
+            'ids' => $ids
+        ];
+    }
+
+    public function findTrendingCourses(int $limit = 6): array
+    {
+        return $this->createQueryBuilder('sc')
+            ->select(
+                'c.id, c.title, c.image, c.description, c.price, 
+                 COUNT(sc.id) AS enrollCount, 
+                 u.username as instructor_username'
+            )
+            ->join('sc.curse', 'c')
+            ->join('c.modules', 'm')
+            ->join('m.user', 'u')
+            ->groupBy('c.id, u.id')
+            ->orderBy('enrollCount', 'DESC')
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
     }
 
     //    /**

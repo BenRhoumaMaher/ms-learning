@@ -81,7 +81,7 @@ const MeetMasters = () => {
                   )}
                 </div>
                 <div className='meetmast-card-body'>
-                  <h5 className='text-dark'>{instructor.username}</h5>
+                  <h5 className='text-dark'>{instructor.firstname} {instructor.lastname}</h5>
                   <p className='text-muted'>
                     {instructor.expertise || 'Expert Instructor'}
                   </p>

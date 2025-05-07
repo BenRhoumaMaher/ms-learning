@@ -1,0 +1,39 @@
+app_payment_enroll:
+  path: /payment/enroll
+  controller: App\Controller\Payment\PaymentController::enroll
+  methods: POST
+
+app_payment_success:
+  path: /payment/success/{courseId}
+  controller: App\Controller\Payment\PaymentController::success
+  methods: GET
+
+app_payment_cancel:
+  path: /payment/cancel/{courseId}
+  controller: App\Controller\Payment\PaymentController::cancel
+  methods: GET
+
+pruchased_user_courses:
+  path: /payment/pruchased-user-courses/{userId}
+  controller: App\Controller\Payment\PaymentController::getUserPurchasedCourses
+  methods: GET
+
+payment_user_history:
+  path: /payment/history/{userId}
+  controller: App\Controller\Payment\PaymentController::getUserPaymentHistory
+  methods: GET
+
+app_subscription_subscribe:
+  path: /plans/pay
+  controller: App\Controller\Payment\PaymentController::subscribe
+  methods: POST
+
+app_subscription_success:
+  path: /plans/success/{planId}
+  controller: App\Controller\Payment\PaymentController::subscriptionSuccess
+  methods: GET
+
+app_subscription_cancel:
+  path: /plans/cancel/{planId}
+  controller: App\Controller\Payment\PaymentController::subscriptionCancel
+  methods: GET

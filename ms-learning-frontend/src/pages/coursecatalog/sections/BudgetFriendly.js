@@ -1,66 +1,80 @@
-import React, { useState, useEffect } from 'react'
-import { getFreeCourses, enrollInCourse } from '../../../helpers/api'
-import { useNavigate } from 'react-router-dom'
+import React, { useState, useEffect } from 'react';
+import {
+  getFreeCourses,
+  enrollInCourse,
+  getUserPlan
+} from '../../../helpers/api';
+import { useNavigate } from 'react-router-dom';
 
 const BudgetFriendly = () => {
-  const token = localStorage.getItem('token') || sessionStorage.getItem('token')
-  const user = JSON.parse(atob(token.split('.')[1]))
-  const userId = user?.user_id
-  const [courses, setCourses] = useState([])
-  const [visibleCount, setVisibleCount] = useState(3)
-  const [loading, setLoading] = useState(true)
-  const [enrolling, setEnrolling] = useState(null)
-  const navigate = useNavigate()
+  const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+  const user = JSON.parse(atob(token.split('.')[1]));
+  const userId = user?.user_id;
+
+  const [courses, setCourses] = useState([]);
+  const [visibleCount, setVisibleCount] = useState(3);
+  const [loading, setLoading] = useState(true);
+  const [enrolling, setEnrolling] = useState(null);
+  const [userPlan, setUserPlan] = useState(null);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchFreeCourses = async () => {
+    const fetchData = async () => {
       try {
-        const data = await getFreeCourses()
-        setCourses(data)
+        const [coursesData, planData] = await Promise.all([
+          getFreeCourses(),
+          getUserPlan(userId)
+        ]);
+        setCourses(coursesData);
+        setUserPlan(planData);
       } catch (error) {
-        console.error('Error fetching free courses:', error)
+        console.error('Error fetching data:', error);
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
-    }
+    };
 
-    fetchFreeCourses()
-  }, [])
+    fetchData();
+  }, [userId]);
 
-  const handleEnroll = async courseId => {
-    setEnrolling(courseId)
+  const handleEnroll = async (courseId) => {
+    setEnrolling(courseId);
 
     try {
-      await enrollInCourse(courseId, userId)
-      navigate('/registered-courses')
+      await enrollInCourse(courseId, userId);
+      navigate('/registered-courses');
     } catch (error) {
-      console.error('Error enrolling in course:', error)
+      console.error('Error enrolling in course:', error);
     } finally {
-      setEnrolling(null)
+      setEnrolling(null);
     }
-  }
+  };
 
   const handleShowMore = () => {
-    setVisibleCount(prev => prev + 3)
-  }
+    setVisibleCount(prev => prev + 3);
+  };
 
   const handleShowLess = () => {
-    setVisibleCount(3)
-  }
+    setVisibleCount(3);
+  };
+
+  const isAccessible = () => {
+    return userPlan && userPlan.planId !== 1;
+  };
 
   if (loading) {
-    return <div className='container my-5'>Loading free courses...</div>
+    return <div className='container my-5'>Loading free courses...</div>;
   }
 
   if (courses.length === 0) {
-    return <div className='container my-5'>No free courses available</div>
+    return <div className='container my-5'>No free courses available</div>;
   }
 
   return (
     <div className='container my-5'>
       <h3 className='text-dark fw-bold'>
-        Learn for Free:{' '}
-        <span className='text-danger'>Budget-Friendly Picks</span>
+        Learn for Free: <span className='text-danger'>Budget-Friendly Picks</span>
       </h3>
       <p className='text-success'>
         High-quality courses <i>without spending a dime</i>
@@ -70,7 +84,7 @@ const BudgetFriendly = () => {
         {courses.slice(0, visibleCount).map((course, index) => (
           <div key={index} className='col-md-4 mb-4'>
             <div className='budgetfriendly-card h-100'>
-              <div className=''>
+              <div>
                 {course.image && (
                   <img
                     src={`http://localhost:8080/${course.image}`}
@@ -85,20 +99,25 @@ const BudgetFriendly = () => {
                 )}
               </div>
               <div className='budgetfriendly-content p-3'>
-                <h5 className='text-danger'>{course.name}</h5>
+                <h5 className='text-danger mb-2'>{course.title}</h5>
                 <p className='text-secondary'>
                   {course.description || 'No description available'}
-                </p>
-                <p className='text-success'>
-                  Instructor: {course.instructor?.username || 'Unknown'}
                 </p>
                 <p className='text-primary fw-bold'>FREE</p>
                 <button
                   className='btn btn-success mt-2'
-                  onClick={() => handleEnroll(course.id)}
+                  onClick={() =>
+                    isAccessible()
+                      ? navigate(`/registered-courses/${course.id}`)
+                      : handleEnroll(course.id)
+                  }
                   disabled={enrolling === course.id}
                 >
-                  {enrolling === course.id ? 'Enrolling...' : 'Enroll Now'}
+                  {isAccessible()
+                    ? 'Start Course'
+                    : enrolling === course.id
+                      ? 'Enrolling...'
+                      : 'Enroll Now'}
                 </button>
               </div>
             </div>
@@ -126,7 +145,7 @@ const BudgetFriendly = () => {
         )}
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default BudgetFriendly
+export default BudgetFriendly;

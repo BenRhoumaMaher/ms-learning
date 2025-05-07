@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { getPlans, subscribeToPlan } from "../../../helpers/api";
+import { getPlans, subscribeToPlan, payForPlan, getUserPlan } from "../../../helpers/api";
 
 const AvailablePlans = () => {
   const [plans, setPlans] = useState([]);
+  const [currentPlanId, setCurrentPlanId] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [subscribing, setSubscribing] = useState({});
@@ -10,8 +11,10 @@ const AvailablePlans = () => {
   useEffect(() => {
     const fetchPlans = async () => {
       try {
-        const data = await getPlans();
-        setPlans(data);
+        const plansData = await getPlans();
+        const userPlan = await getUserPlan();
+        setPlans(plansData);
+        setCurrentPlanId(userPlan.planId);
         setLoading(false);
       } catch (err) {
         setError(err.message);
@@ -21,17 +24,24 @@ const AvailablePlans = () => {
     fetchPlans();
   }, []);
 
-  const handleSubscribe = async (planId) => {
+  const handleSubscribe = async (plan) => {
     try {
-      setSubscribing(prev => ({ ...prev, [planId]: true }));
-      await subscribeToPlan(planId);
-      alert('Subscription successful!');
+      setSubscribing(prev => ({ ...prev, [plan.id]: true }));
+
+      if (plan.price === 0) {
+        await subscribeToPlan(plan.id);
+        alert("Free plan activated successfully!");
+      } else {
+        const { paymentUrl } = await payForPlan(plan.id);
+        window.location.href = paymentUrl;
+      }
     } catch (error) {
       alert(`Subscription failed: ${error.message}`);
     } finally {
-      setSubscribing(prev => ({ ...prev, [planId]: false }));
+      setSubscribing(prev => ({ ...prev, [plan.id]: false }));
     }
   };
+
 
   if (loading) return <div className="text-center">Loading plans...</div>;
   if (error) return <div className="text-center text-danger">Error: {error}</div>;
@@ -46,7 +56,7 @@ const AvailablePlans = () => {
   };
 
   const formatPrice = (price) => {
-    return price === 0 ? 'Free' : `$${price}/month`;
+    return price === 0 ? 'Free' : `$${price}/year`;
   };
 
   return (
@@ -63,22 +73,30 @@ const AvailablePlans = () => {
                 <div className="plan-title">
                   {plan.name}
                   <div>
-                    <span className="plan-price fw-bold text-warning">{formatPrice(plan.price)}</span>
+                    <span className="plan-price fw-bold text-warning">
+                      {formatPrice(plan.price)}
+                    </span>
                   </div>
                 </div>
                 <div className="plan-content">
                   <p className="features text-center text-white">
-                    {plan.features}
+                    {plan.features.join(', ')}
                   </p>
                 </div>
                 <div>
-                  <button
-                    className={`btn mt-3 ${index === 1 ? 'btn-success' : 'btn-primary'}`}
-                    onClick={() => handleSubscribe(plan.id)}
-                    disabled={subscribing[plan.id]}
-                  >
-                    {subscribing[plan.id] ? 'Subscribing...' : 'Subscribe Now'}
-                  </button>
+                  {plan.id === currentPlanId ? (
+                    <button className="btn mt-3 btn-secondary" disabled>
+                      Already Subscribed
+                    </button>
+                  ) : (
+                    <button
+                      className={`btn mt-3 ${index === 1 ? 'btn-success' : 'btn-primary'}`}
+                      onClick={() => handleSubscribe(plan)}
+                      disabled={subscribing[plan.id]}
+                    >
+                      {subscribing[plan.id] ? 'Subscribing...' : 'Subscribe Now'}
+                    </button>
+                  )}
                 </div>
               </div>
             </div>

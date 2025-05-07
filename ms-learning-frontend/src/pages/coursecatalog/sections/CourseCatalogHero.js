@@ -4,7 +4,7 @@ import {
   getCategories,
   updateUserInterests
 } from '../../../helpers/api'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import Modal from 'react-bootstrap/Modal'
 import Button from 'react-bootstrap/Button'
 import Form from 'react-bootstrap/Form'
@@ -80,10 +80,8 @@ const CourscatlHero = () => {
     try {
       await updateUserInterests(selectedCategories)
       handleCloseModal()
-      // Optionally show a success message
     } catch (error) {
       console.error('Error updating interests:', error)
-      // Optionally show an error message
     } finally {
       setIsSubmitting(false)
     }
@@ -108,7 +106,7 @@ const CourscatlHero = () => {
           </h4>
           <p className='courscatl-link'>
             <a
-              href='#'
+              href='/'
               className='courscatl-add-interests'
               onClick={e => {
                 e.preventDefault()
@@ -118,7 +116,8 @@ const CourscatlHero = () => {
               Add interests for future recommendations
             </a>
           </p>
-          <button className='btn courscatl-btn'>Start Free 07-Day Trial</button>
+          {/* <button className='btn courscatl-btn'>Start Free 07-Day Trial</button> */}
+          <Link to='/student-payment' className='btn courscatl-btn btn-warning ms-2'>Change your Plan</Link>
         </div>
 
         <div className='col-md-6 d-flex justify-content-center'>
@@ -143,7 +142,6 @@ const CourscatlHero = () => {
         </div>
       </div>
 
-      {/* Interests Modal */}
       <Modal show={showModal} onHide={handleCloseModal}>
         <Modal.Header closeButton>
           <Modal.Title>Select Your Interests</Modal.Title>

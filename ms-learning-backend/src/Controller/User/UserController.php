@@ -21,6 +21,7 @@ use App\Query\Course\GetEnrolledCourseQuery;
 use App\Command\Course\EnrollInCourseCommand;
 use App\Command\User\AddUserInterestsCommand;
 use Symfony\Component\HttpFoundation\Request;
+use App\Repository\UserSubscriptionRepository;
 use App\Command\User\UpdateUserPasswordCommand;
 use App\Service\QueryBusService\QueryBusService;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -293,12 +294,14 @@ final class UserController extends AbstractController
         User $user,
         StudentCourseRepository $studentCourseRepository
     ): JsonResponse {
-        $titles = $studentCourseRepository->findCourseTitlesByUserId($user->getId());
+        $enrollmentData = $studentCourseRepository->
+            findCourseTitlesByUserId($user->getId());
 
         return $this->json(
             [
             'student' => $user->getId(),
-            'course_titles' => $titles,
+            'course_titles' => $enrollmentData['titles'],
+            'course_ids' => $enrollmentData['ids'],
             ]
         );
     }
@@ -434,4 +437,27 @@ final class UserController extends AbstractController
 
         return new JsonResponse($data);
     }
+
+    public function getUserCurrentPlan(
+        int $userId,
+        UserSubscriptionRepository $subscriptionRepo
+    ): JsonResponse {
+        $subscription = $subscriptionRepo->findActivePlanByUserId($userId);
+
+        if (!$subscription) {
+            return $this->json(
+                ['planId' => null, 'planName' => null],
+                200
+            );
+        }
+
+        return $this->json(
+            [
+            'planId' => $subscription->getPlan()->getId(),
+            'planName' => $subscription->getPlan()->getName(),
+            'endDate' => $subscription->getEndDate()->format('Y-m-d')
+            ]
+        );
+    }
+
 }

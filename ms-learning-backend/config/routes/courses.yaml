@@ -92,3 +92,8 @@ courses_modules_lessons:
   path: /coursesmoduleslessons/user/{id}
   controller: App\Controller\Course\CoursesController::getCoursesModulesLessonsWithoutResources
   methods: GET
+
+trending_courses:
+  path: /trending-courses
+  controller: App\Controller\Course\CoursesController::getTrendingCourses
+  methods: GET  

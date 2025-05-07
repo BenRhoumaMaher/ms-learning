@@ -92,3 +92,8 @@ student_enrollement_courses:
   path: /student/{id}/courses/
   controller: App\Controller\User\UserController::getStudentCourseTitles
   methods: GET
+
+user_current_plan:
+  path: /plans/user/{userId}
+  controller: App\Controller\User\UserController::getUserCurrentPlan
+  methods: GET  

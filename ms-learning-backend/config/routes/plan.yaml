@@ -8,3 +8,8 @@ subscribe_to_plan:
   controller: App\Controller\Plan\PlanController::getPlans
   methods: GET  
 
+current_plan:
+  path: /user-subscription/current/{userId}
+  controller: App\Controller\Plan\PlanController::getCurrentSubscription
+  methods: GET    
+

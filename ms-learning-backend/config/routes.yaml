@@ -87,7 +87,13 @@ App\Controller\Faq\FaqController:
   name_prefix: "faq_"  
 
 App\Controller\Plan\PlanController:
-  resource: routes/Plan.yaml
+  resource: routes/plan.yaml
   prefix: /
-  name_prefix: "plan_"  
+  name_prefix: "plan_" 
+
+App\Controller\Payment\PaymentController:
+  resource: routes/payment.yaml
+  prefix: /
+  name_prefix: "payment_"
+
 

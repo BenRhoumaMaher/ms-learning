@@ -17,6 +17,7 @@ use App\Query\Course\GetFreeCoursesQuery;
 use App\Command\Course\DeleteCourseCommand;
 use App\Command\Course\UpdateCourseCommand;
 use App\Query\Course\GetLatestCoursesQuery;
+use App\Repository\StudentCourseRepository;
 use App\Query\Course\GetEnrolledCourseQuery;
 use Symfony\Component\HttpFoundation\Request;
 use App\Query\User\GetUserCoursesModulesQuery;
@@ -26,6 +27,7 @@ use App\Service\QueryBusService\QueryBusService;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use App\Service\CommandBusService\CommandBusService;
 use Symfony\Component\Messenger\MessageBusInterface;
+use Symfony\Component\Serializer\SerializerInterface;
 use App\Query\Course\GetCourseWithModulesAndLessonsQuery;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -452,6 +454,24 @@ class CoursesController extends AbstractController
                 'total' => (int) $ranking['total']
             ]
             ]
+        );
+    }
+
+    public function getTrendingCourses(
+        StudentCourseRepository $studentCourseRepository,
+        SerializerInterface $serializer
+    ): JsonResponse {
+        $courses = $studentCourseRepository->findTrendingCourses();
+
+        return new JsonResponse(
+            $serializer->serialize(
+                $courses,
+                'json',
+                ['groups' => ['course:read']]
+            ),
+            200,
+            [],
+            true
         );
     }
 

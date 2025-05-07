@@ -8,8 +8,8 @@ parameters:
   lesson_resource_directory: "%kernel.project_dir%/public/images/courseressources"
   upload_directory: "%kernel.project_dir%/public/images/profiles"
   base_url: "localhost:8080"
-  post_upload_dir: '%kernel.project_dir%/public/images/posts'
-  forum_upload_dir: '%kernel.project_dir%/public/images/forum'
+  post_upload_dir: "%kernel.project_dir%/public/images/posts"
+  forum_upload_dir: "%kernel.project_dir%/public/images/forum"
 
 services:
   # default configuration for services in *this* file
@@ -43,6 +43,10 @@ services:
     arguments:
       $uploaddirectory: "%upload_directory%"
       $baseUrl: "%base_url%"
+
+  App\Service\Payment\StripePayment:
+    arguments:
+      $stripeSecret: "%env(STRIPE_SECRET)%"
 
   # add more service definitions when explicit configuration is needed
   # please note that last definitions always *replace* previous ones

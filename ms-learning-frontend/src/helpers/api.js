@@ -90,6 +90,49 @@ export const subscribeToPlan = async (planId) => {
   }
 };
 
+export const enrollInPaidCourse = async (courseId) => {
+  try {
+    const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+    const user = JSON.parse(atob(token.split('.')[1]));
+
+    const response = await bc.post('/payment/enroll', {
+      courseId,
+      userId: user.user_id
+    }, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      }
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error enrolling in course:', error);
+    throw error;
+  }
+};
+
+export const payForPlan = async (planId) => {
+  try {
+    const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+    const user = JSON.parse(atob(token.split('.')[1]));
+
+    const response = await bc.post('/plans/pay', {
+      planId,
+      userId: user.user_id
+    }, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      }
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error('Error initiating plan payment:', error);
+    throw error;
+  }
+};
+
 export const googleLogin = async (googleToken, rememberMe) => {
   // console.log("Sending Google Token to Backend:", googleToken)
 
@@ -301,6 +344,66 @@ export const handleAccept = async id => {
   }
 }
 
+export const getUserPurchasedCourses = async (userId = null) => {
+  try {
+    if (!userId) {
+      const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+      if (!token) throw new Error('No authentication token found');
+
+      const user = JSON.parse(atob(token.split('.')[1]));
+      userId = user?.user_id;
+
+      if (!userId) throw new Error('User ID not found in token');
+    }
+
+    const response = await bc.get(`/payment/pruchased-user-courses/${userId}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching purchased courses:', error);
+    throw error;
+  }
+};
+
+export const getUserPaymentHistory = async (userId = null) => {
+  try {
+    if (!userId) {
+      const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+      if (!token) throw new Error('No authentication token found');
+
+      const user = JSON.parse(atob(token.split('.')[1]));
+      userId = user?.user_id;
+
+      if (!userId) throw new Error('User ID not found in token');
+    }
+
+    const response = await bc.get(`/payment/history/${userId}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching purchased courses:', error);
+    throw error;
+  }
+};
+
+export const getCurrentSubscription = async (userId = null) => {
+  try {
+    if (!userId) {
+      const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+      if (!token) throw new Error('No authentication token found');
+
+      const user = JSON.parse(atob(token.split('.')[1]));
+      userId = user?.user_id;
+
+      if (!userId) throw new Error('User ID not found in token');
+    }
+
+    const response = await bc.get(`/user-subscription/current/${userId}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching current subscription:', error);
+    throw error;
+  }
+};
+
 export const getUserCourses = async (userId = null) => {
   try {
     if (!userId) {
@@ -318,6 +421,23 @@ export const getUserCourses = async (userId = null) => {
     throw error
   }
 }
+
+export const getUserPlan = async (userId = null) => {
+  try {
+    if (!userId) {
+      const token =
+        localStorage.getItem('token') || sessionStorage.getItem('token');
+      const user = JSON.parse(atob(token.split('.')[1]));
+      userId = user?.user_id;
+    }
+
+    const response = await bc.get(`/plans/user/${userId}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching user plan:', error);
+    throw error;
+  }
+};
 
 export const getInstructorCourses = async instructorId => {
   try {
@@ -471,6 +591,16 @@ export const getUserEnrollements = async (userId = null) => {
     throw error;
   }
 };
+
+export const getTrendingCourses = async () => {
+  try {
+    const response = await bc.get('/trending-courses')
+    return response.data
+  } catch (error) {
+    console.error('Error fetching courses:', error)
+    throw error
+  }
+}
 
 
 export const updateUserInfos = async (userId, formData) => {
