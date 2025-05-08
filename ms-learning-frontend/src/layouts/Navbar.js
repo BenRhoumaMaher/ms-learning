@@ -6,6 +6,7 @@ import logo from '../assets/logo.png'
 import useClickOutside from '../hooks/useClickOutside'
 import { useNavigate } from 'react-router-dom'
 import { getUserInfos } from '../helpers/api'
+import CourseSearch from '../components/search/CourseSearch';
 
 const Navbar = () => {
   const isAuthenticated =
@@ -47,14 +48,9 @@ const Navbar = () => {
             <span className='nav-text me-3'>Explore</span>
           </Link>
 
-          <form className='d-none d-md-flex'>
-            <input
-              className='form-control me-2'
-              type='search'
-              placeholder='Search...'
-              aria-label='Search'
-            />
-          </form>
+          <div className='d-none d-md-flex me-2 nav-search-container'>
+            <CourseSearch compact />
+          </div>
         </div>
 
         <div className='d-flex align-items-center'>

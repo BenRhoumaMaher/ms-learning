@@ -12,6 +12,8 @@
         "doctrine/doctrine-migrations-bundle": "^3.4",
         "doctrine/orm": "^3.3",
         "easycorp/easyadmin-bundle": "^4.24",
+        "elasticsearch/elasticsearch": "*",
+        "friendsofsymfony/elastica-bundle": "*",
         "knpuniversity/oauth2-client-bundle": "^2.18",
         "league/oauth2-google": "^4.0",
         "lexik/jwt-authentication-bundle": "^3.1",

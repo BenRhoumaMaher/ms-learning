@@ -1,0 +1,36 @@
+fos_elastica:
+  clients:
+    default:
+      host: "%env(ELASTICSEARCH_HOST)%"
+      port: "%env(ELASTICSEARCH_PORT)%"
+  indexes:
+    courses:
+      persistence:
+        driver: orm
+        model: App\Entity\Courses
+        provider: ~
+        finder: ~
+      properties:
+        id:
+          type: integer
+        title:
+          type: text
+          analyzer: standard
+          fields:
+            keyword:
+              type: keyword
+        description:
+          type: text
+          analyzer: standard
+        price:
+          type: float
+        duration:
+          type: keyword
+        image:
+          type: keyword
+      settings:
+        index:
+          analysis:
+            analyzer:
+              default:
+                type: standard

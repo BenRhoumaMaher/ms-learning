@@ -48,5 +48,9 @@ services:
     arguments:
       $stripeSecret: "%env(STRIPE_SECRET)%"
 
+  App\Controller\ElasticSearch\SearchController:
+    arguments:
+      $coursesFinder: '@fos_elastica.finder.courses'
+
   # add more service definitions when explicit configuration is needed
   # please note that last definitions always *replace* previous ones

@@ -1,0 +1,4 @@
+search_courses:
+  path: /search/courses
+  controller: App\Controller\ElasticSearch\SearchController::searchCourses
+  methods: GET

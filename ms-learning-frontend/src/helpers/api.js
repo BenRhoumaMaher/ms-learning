@@ -449,6 +449,16 @@ export const getInstructorCourses = async instructorId => {
   }
 }
 
+export const searchCourses = async (query) => {
+  try {
+    const response = await bc.get(`/search/courses?q=${encodeURIComponent(query)}`);
+    return response.data.results;
+  } catch (error) {
+    console.error('Error searching courses:', error);
+    throw error;
+  }
+};
+
 export const saveQuizScore = async (userId, quizId, score, totalQuestions) => {
   try {
     console.log("Sending to backend:", { userId, quizId, score, totalQuestions });

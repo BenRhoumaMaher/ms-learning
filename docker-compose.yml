@@ -10,6 +10,7 @@ services:
       - ./ms-learning-backend:/var/www/html
     depends_on:
       - db
+      - elasticsearch
     networks:
       - mslearning
 
@@ -94,9 +95,29 @@ services:
     networks:
       - mslearning
 
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.12.0
+    container_name: mslearning_elasticsearch
+    environment:
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms1g -Xmx1g"
+      - xpack.security.enabled=false
+    volumes:
+      - elasticsearch_data:/usr/share/elasticsearch/data
+    ports:
+      - "9200:9200"
+    networks:
+      - mslearning
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+
 networks:
   mslearning:
     driver: bridge
 
 volumes:
   db_data:
+  elasticsearch_data:

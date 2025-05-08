@@ -164,6 +164,79 @@
   box-shadow: 0 0 0 0.2rem rgba(25, 135, 84, 0.25);
 }
 
+/* Search Styles */
+.course-search {
+  position: relative;
+}
+
+.course-search.compact {
+  width: 250px;
+}
+
+.search-results-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.search-results-container {
+  padding: 10px;
+}
+
+.search-results-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.search-result-item {
+  padding: 8px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.search-result-item:last-child {
+  border-bottom: none;
+}
+
+.search-result-link {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: #333;
+}
+
+.search-result-image {
+  width: 50px;
+  height: 30px;
+  object-fit: cover;
+  margin-right: 10px;
+  border-radius: 3px;
+}
+
+.search-result-info h5 {
+  margin: 0 0 3px 0;
+  font-size: 0.9rem;
+}
+
+.search-result-info p {
+  margin: 0;
+  font-size: 0.8rem;
+  color: #666;
+}
+
+.no-results {
+  padding: 10px;
+  color: #666;
+  text-align: center;
+}
 
 .home-container .col-lg-5:first-child {
   text-align: left;
