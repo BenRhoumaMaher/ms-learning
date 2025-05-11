@@ -4,6 +4,7 @@ namespace App\Controller\Lesson;
 
 use App\Repository\LessonRepository;
 use App\Service\UserService\UserService;
+use Doctrine\ORM\EntityManagerInterface;
 use App\Command\Lesson\EditLessonCommand;
 use App\Command\Lesson\CreateLessonCommand;
 use App\Command\Lesson\DeleteLessonCommand;
@@ -23,7 +24,8 @@ final class LessonController extends AbstractController
     public function __construct(
         private UserService $userService,
         private QueryBusService $queryBusService,
-        private CommandBusService $commandBusService
+        private CommandBusService $commandBusService,
+        private EntityManagerInterface $entityManager
     ) {
     }
 
@@ -181,4 +183,45 @@ final class LessonController extends AbstractController
             return $this->json(['error' => $e->getMessage()], 404);
         }
     }
+
+    public function trackLessonEngagement(
+        int $id,
+        Request $request,
+        LessonRepository $lessonRepository
+    ): JsonResponse {
+        $data = json_decode($request->getContent(), true);
+        $lesson = $lessonRepository->find($id);
+
+        if (!$lesson) {
+            return $this->json(['error' => 'Lesson not found'], 404);
+        }
+
+        $lesson
+            ->addWatchTime((int)($data['watchTime'] ?? 0))
+            ->incrementPauses(($data['pauseCount'] ?? 0))
+            ->incrementReplays(($data['replayCount'] ?? 0))
+            ->updateAverageCompletion((float)($data['completionPercentage'] ?? 0));
+
+        $this->entityManager->persist($lesson);
+        $this->entityManager->flush();
+
+        return $this->json(['status' => 'success']);
+    }
+
+    public function trackLessonView(
+        int $id,
+        LessonRepository $lessonRepository,
+    ): JsonResponse {
+        $lesson = $lessonRepository->find($id);
+
+        if (!$lesson) {
+            return $this->json(['error' => 'Lesson not found'], 404);
+        }
+
+        $lesson->incrementTotalViews();
+        $this->entityManager->flush();
+
+        return $this->json(['status' => 'view tracked']);
+    }
+
 }

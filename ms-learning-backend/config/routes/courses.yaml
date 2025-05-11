@@ -88,6 +88,11 @@ courses:
   controller: App\Controller\Course\CoursesController::getUserCoursesModules
   methods: GET
 
+user_forum_posts:
+  path: instructor/{id}/forum-posts
+  controller: App\Controller\Course\CoursesController::getInstructorForumPosts
+  methods: GET  
+
 courses_modules_lessons:
   path: /coursesmoduleslessons/user/{id}
   controller: App\Controller\Course\CoursesController::getCoursesModulesLessonsWithoutResources

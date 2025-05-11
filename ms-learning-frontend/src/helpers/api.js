@@ -19,7 +19,6 @@ export const signup = async newuserdata => {
     const response = await api.post('/register', newuserdata)
     return response.data
   } catch (error) {
-    // console.error("Signup Error Response:", error.response?.data);
     throw error
   }
 }
@@ -134,7 +133,6 @@ export const payForPlan = async (planId) => {
 };
 
 export const googleLogin = async (googleToken, rememberMe) => {
-  // console.log("Sending Google Token to Backend:", googleToken)
 
   try {
     const response = await axios.post(
@@ -155,7 +153,6 @@ export const googleLogin = async (googleToken, rememberMe) => {
     }
     return response.data
   } catch (error) {
-    // console.error("Backend Error:", error.response?.data || error.message)
     throw error
   }
 }
@@ -306,6 +303,36 @@ export const getINstructorDemands = async () => {
   }
 }
 
+export const trackLessonEngagement = async (lessonId, engagementData) => {
+  try {
+    const response = await bc.post(`/lessons/${lessonId}/engagement`, engagementData);
+    return response.data;
+  } catch (error) {
+    console.error('Error tracking engagement:', error);
+    throw error;
+  }
+};
+
+export const trackLessonView = async (lessonId) => {
+  try {
+    const response = await bc.post(`/lessons/${lessonId}/view`);
+    return response.data;
+  } catch (error) {
+    console.error('Error tracking lesson view:', error);
+    throw error;
+  }
+};
+
+export const getInstructorStudents = async (instructorId) => {
+  try {
+    const response = await bc.get(`/instructor/${instructorId}/students`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching students:', error);
+    throw error;
+  }
+}
+
 export const deleteCourse = async courseId => {
   try {
     await bc.delete(`/course/${courseId}`)
@@ -449,6 +476,16 @@ export const getInstructorCourses = async instructorId => {
   }
 }
 
+export const getInstructorContent = async Id => {
+  try {
+    const response = await bc.get(`/content/user/${Id}`)
+    return response.data
+  } catch (error) {
+    console.error('Error fetching instructor content:', error)
+    throw error
+  }
+}
+
 export const searchCourses = async (query) => {
   try {
     const response = await bc.get(`/search/courses?q=${encodeURIComponent(query)}`);
@@ -506,6 +543,7 @@ export const getUserCoursesModules = async () => {
     throw error
   }
 }
+
 
 export const getUserCoursesModulesLessonsNoResource = async () => {
   try {
@@ -621,7 +659,6 @@ export const updateUserInfos = async (userId, formData) => {
     const response = await bc.put(`/user/${userId}`, formData, {
       headers: {
         Authorization: `Bearer ${token}`
-        // 'Content-Type': 'multipart/form-data'
       }
     })
 
@@ -718,6 +755,16 @@ export const createForumPost = async formData => {
 export const getForumPosts = async () => {
   try {
     const response = await bc.get('/forum')
+    return response.data
+  } catch (error) {
+    console.error('Error fetching courses:', error)
+    throw error
+  }
+}
+
+export const getInstructorForumPosts = async userId => {
+  try {
+    const response = await bc.get(`instructor/${userId}/forum-posts`)
     return response.data
   } catch (error) {
     console.error('Error fetching courses:', error)
@@ -905,11 +952,6 @@ export const fetchUserFollowings = async (userId) => {
   const response = await bc.get(`/followings/${userId}`);
   return response.data;
 };
-
-// const getRoomId = (currentUserId, friendId) => {
-//   const userIds = [parseInt(currentUserId), parseInt(friendId)].sort((a, b) => a - b);
-//   return `room_${userIds.join('_')}`;
-// };
 
 export const sendMessage = async (roomId, content, receiverId) => {
   try {

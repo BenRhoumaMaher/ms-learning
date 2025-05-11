@@ -5,6 +5,7 @@ namespace App\Controller\User;
 use App\Entity\User;
 use App\Entity\Review;
 use DateTimeImmutable;
+use App\Repository\PostRepository;
 use App\Repository\UserRepository;
 use App\Query\User\GetAllUsersQuery;
 use App\Repository\ReviewRepository;
@@ -25,7 +26,9 @@ use App\Repository\UserSubscriptionRepository;
 use App\Command\User\UpdateUserPasswordCommand;
 use App\Service\QueryBusService\QueryBusService;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use App\Service\ElasticSearch\QuizAnalyticsService;
 use App\Service\CommandBusService\CommandBusService;
+use App\Service\ElasticSearch\ContentAnalyticsService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 final class UserController extends AbstractController
@@ -33,7 +36,8 @@ final class UserController extends AbstractController
     public function __construct(
         private UserService $userService,
         private QueryBusService $queryBusService,
-        private CommandBusService $commandBusService
+        private CommandBusService $commandBusService,
+        private QuizAnalyticsService $quizAnalyticsService
     ) {
     }
     public function index(
@@ -54,8 +58,18 @@ final class UserController extends AbstractController
                 new GetUserCoursesQuery($id)
             );
 
-            return $this->json(
+            $analytics = $this->quizAnalyticsService
+                ->getInstructorQuizAnalytics($id);
+
+            $responseData = array_merge(
                 $userCourses,
+                [
+                'analytics' => $analytics
+                ]
+            );
+
+            return $this->json(
+                $responseData,
                 200,
                 [],
                 ['groups' => 'course:read']
@@ -72,7 +86,6 @@ final class UserController extends AbstractController
     {
         try {
             $userData = $this->queryBusService->handle(new GetUserInfosQuery($id));
-            // dd($userData);
             return $this->json(
                 $userData,
                 200,
@@ -456,6 +469,62 @@ final class UserController extends AbstractController
             'planId' => $subscription->getPlan()->getId(),
             'planName' => $subscription->getPlan()->getName(),
             'endDate' => $subscription->getEndDate()->format('Y-m-d')
+            ]
+        );
+    }
+
+    public function getUserContent(
+        User $user,
+        PostRepository $postRepository,
+        ContentAnalyticsService $contentAnalyticsService
+    ): JsonResponse {
+        $reviews = [];
+        foreach ($user->getCourses() as $course) {
+            foreach ($course->getReviews() as $review) {
+                $reviews[] = [
+                    'course_id' => $course->getId(),
+                    'course_title' => $course->getTitle(),
+                    'rating' => $review->getRating(),
+                    'comment' => $review->getComment(),
+                    'created_at' => $review->getCreatedAt()->format('Y-m-d H:i:s'),
+                ];
+            }
+        }
+
+        $courseTitles = array_map(
+            fn ($course) => $course->getTitle(),
+            $user->getCourses()->toArray()
+        );
+        $posts = $postRepository->findPostsByUserOrCourses(
+            $user,
+            $courseTitles
+        );
+
+        $formattedPosts = array_map(
+            function ($post) {
+                return [
+                    'id' => $post->getId(),
+                    'title' => $post->getTitle(),
+                    'content' => $post->getContent(),
+                    'tags' => $post->getTags(),
+                    'created_at' => $post->getCreatedAt()->format('Y-m-d H:i:s'),
+                ];
+            },
+            $posts
+        );
+
+        $analytics = $contentAnalyticsService->getContentAnalytics($user->getId());
+
+        return $this->json(
+            [
+            'reviews' => [
+            'data' => $reviews,
+            'analytics' => $analytics['reviews']
+            ],
+            'posts' => [
+            'data' => $formattedPosts,
+            'analytics' => $analytics['posts']
+            ]
             ]
         );
     }

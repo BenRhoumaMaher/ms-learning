@@ -8,6 +8,7 @@ use App\Repository\LessonRepository;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: LessonRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class Lesson
 {
     #[ORM\Id]
@@ -79,6 +80,31 @@ class Lesson
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $fullTranscript = null;
+
+    #[ORM\Column(type: 'integer', options: ['default' => 0])]
+    #[Groups(['lesson:read'])]
+    private int $totalViews = 0;
+
+    #[ORM\Column(type: 'integer', options: ['default' => 0])]
+    #[Groups(['lesson:read'])]
+    private int $totalWatchTime = 0;
+
+    #[ORM\Column(type: 'integer', options: ['default' => 0])]
+    #[Groups(['lesson:read'])]
+    private int $totalPauses = 0;
+
+    #[ORM\Column(type: 'integer', options: ['default' => 0])]
+    #[Groups(['lesson:read'])]
+    private int $totalReplays = 0;
+
+    #[ORM\Column(type: 'float', options: ['default' => 0])]
+    #[Groups(['lesson:read'])]
+    private float $averageCompletion = 0.0;
+
+
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?User $instructor = null;
 
     public function getId(): ?int
     {
@@ -307,6 +333,94 @@ class Lesson
     public function setFullTranscript(?string $fullTranscript): static
     {
         $this->fullTranscript = $fullTranscript;
+
+        return $this;
+    }
+
+    public function getTotalViews(): int
+    {
+        return $this->totalViews;
+    }
+
+    public function incrementTotalViews(): self
+    {
+        $this->totalViews++;
+        return $this;
+    }
+
+    public function getTotalWatchTime(): int
+    {
+        return $this->totalWatchTime;
+    }
+
+    public function addWatchTime(int $seconds): self
+    {
+        $this->totalWatchTime += $seconds;
+        return $this;
+    }
+
+    public function getTotalPauses(): int
+    {
+        return $this->totalPauses;
+    }
+
+    public function incrementPauses(): self
+    {
+        $this->totalPauses++;
+        return $this;
+    }
+
+    public function getTotalReplays(): int
+    {
+        return $this->totalReplays;
+    }
+
+    public function incrementReplays(): self
+    {
+        $this->totalReplays++;
+        return $this;
+    }
+
+    public function getAverageCompletion(): float
+    {
+        return $this->averageCompletion;
+    }
+
+    public function updateAverageCompletion(float $completion): self
+    {
+        $this->averageCompletion = ($this->averageCompletion * $this->totalViews + $completion) / ($this->totalViews + 1);
+        return $this;
+    }
+
+    #[ORM\PreUpdate]
+    #[ORM\PrePersist]
+    public function updateEngagementStats(): void
+    {
+        if ($this->totalViews > 0 && $this->duration > 0) {
+            $this->averageCompletion = min(
+                100,
+                ($this->totalWatchTime / ($this->duration * $this->totalViews)) * 100
+            );
+        }
+    }
+
+
+    /**
+     * Get the value of instructor
+     */
+    public function getInstructor()
+    {
+        return $this->instructor;
+    }
+
+    /**
+     * Set the value of instructor
+     *
+     * @return  self
+     */
+    public function setInstructor($instructor)
+    {
+        $this->instructor = $instructor;
 
         return $this;
     }

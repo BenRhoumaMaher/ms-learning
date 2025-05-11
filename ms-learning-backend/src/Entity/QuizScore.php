@@ -25,6 +25,9 @@ class QuizScore
     #[ORM\Column]
     private ?int $totalQuestions = null;
 
+    #[ORM\Column(type: 'float', nullable: true)]
+    private ?float $percentage = null;
+
     #[ORM\Column]
     private ?\DateTimeImmutable $completedAt = null;
 
@@ -65,7 +68,7 @@ class QuizScore
     public function setScore(int $score): static
     {
         $this->score = $score;
-
+        $this->updatePercentage();
         return $this;
     }
 
@@ -77,8 +80,18 @@ class QuizScore
     public function setTotalQuestions(int $totalQuestions): static
     {
         $this->totalQuestions = $totalQuestions;
-
+        $this->updatePercentage();
         return $this;
+    }
+
+    private function updatePercentage(): void
+    {
+        if ($this->totalQuestions > 0) {
+            $this->percentage = round(
+                ($this->score / $this->totalQuestions) * 100,
+                2
+            );
+        }
     }
 
     public function getCompletedAt(): ?\DateTimeImmutable
@@ -89,6 +102,26 @@ class QuizScore
     public function setCompletedAt(\DateTimeImmutable $completedAt): static
     {
         $this->completedAt = $completedAt;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of percentage
+     */
+    public function getPercentage()
+    {
+        return $this->percentage;
+    }
+
+    /**
+     * Set the value of percentage
+     *
+     * @return  self
+     */
+    public function setPercentage($percentage)
+    {
+        $this->percentage = $percentage;
 
         return $this;
     }

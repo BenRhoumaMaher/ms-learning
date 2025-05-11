@@ -13,6 +13,11 @@ courses:
   controller: App\Controller\User\UserController::getUserCourses
   methods: GET
 
+instructor_content:
+  path: /content/user/{id}
+  controller: App\Controller\User\UserController::getUserContent
+  methods: GET  
+
 infos:
   path: /user/infos/{id}
   controller: App\Controller\User\UserController::getUserInfos
@@ -96,4 +101,4 @@ student_enrollement_courses:
 user_current_plan:
   path: /plans/user/{userId}
   controller: App\Controller\User\UserController::getUserCurrentPlan
-  methods: GET  
+  methods: GET

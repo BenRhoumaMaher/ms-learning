@@ -3,8 +3,9 @@
 namespace App\Repository;
 
 use App\Entity\Post;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use App\Entity\User;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
 /**
  * @extends ServiceEntityRepository<Post>
@@ -14,6 +15,26 @@ class PostRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Post::class);
+    }
+
+    public function findPostsByUserOrCourses(User $user, array $courseTitles)
+    {
+        $qb = $this->createQueryBuilder('p');
+        $qb->where(
+            'p.title LIKE :username 
+            OR p.content LIKE :username OR p.tags LIKE :username'
+        )
+            ->setParameter('username', '%' . $user->getUsername() . '%');
+
+        foreach ($courseTitles as $i => $title) {
+            $qb->orWhere(
+                "p.title LIKE :courseTitle$i 
+                OR p.content LIKE :courseTitle$i OR p.tags LIKE :courseTitle$i"
+            )
+                ->setParameter("courseTitle$i", '%' . $title . '%');
+        }
+
+        return $qb->getQuery()->getResult();
     }
 
     //    /**

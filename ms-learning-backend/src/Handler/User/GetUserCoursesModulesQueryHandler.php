@@ -5,13 +5,14 @@ namespace App\Handler\User;
 use App\Repository\UserRepository;
 use App\Query\User\GetUserCoursesModulesQuery;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
-use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
+use App\Service\ElasticSearch\VideoEngagementAnalyticsService;
 
 #[AsMessageHandler]
 class GetUserCoursesModulesQueryHandler
 {
     public function __construct(
-        private UserRepository $userRepository
+        private UserRepository $userRepository,
+        private VideoEngagementAnalyticsService $videoAnalyticsService
     ) {
     }
 
@@ -31,24 +32,61 @@ class GetUserCoursesModulesQueryHandler
         $courses = [];
 
         foreach ($user->getCourses() as $course) {
-            $modules = array_map(
-                fn ($module) => [
+            $modules = [];
+
+            foreach ($course->getModules() as $module) {
+                $lessons = [];
+
+                foreach ($module->getLessons() as $lesson) {
+                    $lessonData = [
+                        'id' => $lesson->getId(),
+                        'title' => $lesson->getTitle(),
+                        'type' => $lesson->getType(),
+                        'video_url' => $lesson->getVideoUrl(),
+                        'duration' => $lesson->getDuration(),
+                    ];
+
+                    if ($lesson->getType() === 'registered') {
+                        $lessonAnalytics = $this->videoAnalyticsService
+                            ->getLessonAnalytics($lesson->getId());
+                        $lessonData['analytics'] = [
+                            'totalPauses' => $lessonAnalytics['totalPauses'] ?? 0,
+                            'totalReplays' => $lessonAnalytics['totalReplays'] ?? 0,
+                        ];
+                    }
+
+                    $lessons[] = $lessonData;
+                }
+
+                $modules[] = [
                     'id' => $module->getId(),
                     'title' => $module->getTitle(),
-                ],
-                $course->getModules()->toArray()
-            );
+                    'position' => $module->getPosition(),
+                    'course' => $module->getCourse()->getTitle(),
+                    'lessons' => $lessons,
+                ];
+            }
 
             $courses[] = [
                 'id' => $course->getId(),
                 'title' => $course->getTitle(),
+                'description' => $course->getDescription(),
+                'price' => $course->getPrice(),
+                'duration' => $course->getDuration(),
+                'image' => $course->getImage(),
+                'category' => $course->getCategory()->getName(),
                 'modules' => $modules,
             ];
         }
 
+        $videoAnalytics = $this->videoAnalyticsService
+            ->getInstructorVideoAnalytics($user->getId());
+
         return [
             'username' => $user->getFirstname() . ' ' . $user->getLastName(),
             'courses' => $courses,
+            'videoAnalytics' => $videoAnalytics
         ];
+
     }
 }

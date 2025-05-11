@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { trackLessonEngagement, trackLessonView } from '../helpers/api';
 
 const useLessonPlayer = (modules, lessonId, videoRef) => {
     const [notes, setNotes] = useState(null);
@@ -19,6 +20,172 @@ const useLessonPlayer = (modules, lessonId, videoRef) => {
     const [isLoading, setIsLoading] = useState(true);
     const [videoReady, setVideoReady] = useState(false);
 
+    const [lastPosition, setLastPosition] = useState(0);
+    const [pauses, setPauses] = useState(0);
+    const [replays, setReplays] = useState(0);
+    const [hasTrackedView, setHasTrackedView] = useState(false);
+    const [lastUpdateTime, setLastUpdateTime] = useState(0);
+    const [isPlaying, setIsPlaying] = useState(false);
+
+    useEffect(() => {
+        if (!hasTrackedView && currentLesson?.id) {
+            trackLessonView(currentLesson.id).catch(console.error);
+            setHasTrackedView(true);
+        }
+    }, [currentLesson?.id, hasTrackedView]);
+
+    useEffect(() => {
+        const videoElement = videoRef.current;
+        if (!videoElement) return;
+
+        let effectiveWatchTime = 0;
+        let lastTrackedTime = videoElement.currentTime;
+
+        const trackEngagement = async () => {
+            if (!currentLesson?.id) return;
+
+            const currentTime = videoElement.currentTime;
+            const duration = videoElement.duration;
+            const completionPercentage = duration > 0 ?
+                Math.min(100, (currentTime / duration) * 100) : 0;
+
+            try {
+                await trackLessonEngagement(currentLesson.id, {
+                    watchTime: currentTime - lastPosition,
+                    pauseCount: pauses,
+                    replayCount: replays,
+                    completionPercentage
+                });
+
+                setLastPosition(currentTime);
+                setPauses(0);
+                setReplays(0);
+            } catch (error) {
+                console.error('Engagement tracking error:', error);
+            }
+        };
+
+        const interval = setInterval(trackEngagement, 30000);
+
+        const handlePlay = () => {
+            setIsPlaying(true);
+            setLastUpdateTime(videoElement.currentTime);
+        };
+
+        const handlePause = () => {
+            setIsPlaying(false);
+            setPauses(prev => prev + 1);
+        };
+
+        const handleSeek = (e) => {
+            const currentTime = e.target.currentTime;
+            if (isPlaying && currentTime < lastUpdateTime) {
+                setReplays(prev => prev + 1);
+            }
+            setLastUpdateTime(currentTime);
+        };
+
+        const handleEnded = () => {
+            if (videoElement.duration > 0) {
+                trackLessonEngagement(currentLesson.id, {
+                    watchTime: videoElement.duration - lastPosition,
+                    pauseCount: pauses,
+                    replayCount: replays,
+                    completionPercentage: 100
+                }).catch(console.error);
+            }
+        };
+
+        const handleTimeUpdate = () => {
+            if (!showSubtitles || subtitles.length === 0) return;
+            const currentTime = videoElement.currentTime;
+            const activeSub = subtitles.find(sub =>
+                currentTime >= sub.start && currentTime <= sub.end
+            );
+            setActiveSubtitle(activeSub?.text || null);
+        };
+
+        const handleReady = () => setVideoReady(true);
+
+        videoElement.addEventListener('play', handlePlay);
+        videoElement.addEventListener('pause', handlePause);
+        videoElement.addEventListener('seeked', handleSeek);
+        videoElement.addEventListener('ended', handleEnded);
+        videoElement.addEventListener('timeupdate', handleTimeUpdate);
+        videoElement.addEventListener('canplay', handleReady);
+
+        return () => {
+            clearInterval(interval);
+            videoElement.removeEventListener('play', handlePlay);
+            videoElement.removeEventListener('pause', handlePause);
+            videoElement.removeEventListener('seeked', handleSeek);
+            videoElement.removeEventListener('ended', handleEnded);
+            videoElement.removeEventListener('timeupdate', handleTimeUpdate);
+            videoElement.removeEventListener('canplay', handleReady);
+
+            if (currentLesson?.id && videoElement.currentTime > 0) {
+                trackEngagement().catch(console.error);
+            }
+        };
+    }, [currentLesson?.id, showSubtitles, subtitles, lastPosition, pauses, replays, videoRef, isPlaying, lastUpdateTime]);
+
+    useEffect(() => {
+        const fetchLessonData = async () => {
+            setIsLoading(true);
+            try {
+                const lessons = modules.flatMap(mod =>
+                    mod.lessons.map(lesson => ({ ...lesson, moduleTitle: mod.title }))
+                );
+                setFlatLessons(lessons);
+
+                const foundIndex = lessons.findIndex(l => l.id === parseInt(lessonId));
+                const indexToUse = Math.max(0, foundIndex);
+                setCurrentIndex(indexToUse);
+
+                const lesson = lessons[indexToUse];
+                if (lesson) {
+                    setCurrentLesson(lesson);
+                    setCurrentVideo(`http://localhost:8080/${lesson.video_url}`);
+                    setSubtitles([]);
+                    setShowSubtitles(false);
+                    setHasTrackedView(false);
+                }
+            } catch (error) {
+                console.error('Error loading lesson:', error);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        if (modules.length > 0) {
+            fetchLessonData();
+        }
+    }, [lessonId, modules]);
+
+    useEffect(() => {
+        const videoElement = videoRef.current;
+        if (!videoElement) return;
+
+        const handleTimeUpdate = () => {
+            if (!showSubtitles || subtitles.length === 0) return;
+            const currentTime = videoElement.currentTime;
+            const activeSub = subtitles.find(sub =>
+                currentTime >= sub.start && currentTime <= sub.end
+            );
+            setActiveSubtitle(activeSub?.text || null);
+        };
+
+        const handleReady = () => setVideoReady(true);
+
+        videoElement.addEventListener('timeupdate', handleTimeUpdate);
+        videoElement.addEventListener('canplay', handleReady);
+
+        return () => {
+            videoElement.removeEventListener('timeupdate', handleTimeUpdate);
+            videoElement.removeEventListener('canplay', handleReady);
+        };
+    }, [showSubtitles, subtitles, videoRef]);
+
     const generateNotes = async () => {
         try {
             setIsGeneratingNotes(true);
@@ -27,10 +194,17 @@ const useLessonPlayer = (modules, lessonId, videoRef) => {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
             });
-            if (!response.ok) throw new Error('Failed to generate notes');
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
             const data = await response.json();
             if (data.status === 'success') {
-                setNotes({ summary: data.summary, fullTranscript: data.full_transcript });
+                setNotes({
+                    summary: data.summary,
+                    fullTranscript: data.full_transcript
+                });
             } else {
                 throw new Error(data.message || 'Failed to generate notes');
             }
@@ -50,7 +224,11 @@ const useLessonPlayer = (modules, lessonId, videoRef) => {
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 body: `lang=${lang}`
             });
-            if (!response.ok) throw new Error(response.status === 404 ? 'Lesson not found' : 'Translation failed');
+
+            if (!response.ok) {
+                throw new Error(response.status === 404 ? 'Lesson not found' : 'Translation failed');
+            }
+
             const data = await response.json();
             if (data.status === 'success') {
                 setSubtitles(data.segments);
@@ -66,56 +244,9 @@ const useLessonPlayer = (modules, lessonId, videoRef) => {
         }
     };
 
-    useEffect(() => {
-        const fetchLessonData = async () => {
-            setIsLoading(true);
-            try {
-                const lessons = [];
-                modules.forEach((mod) =>
-                    mod.lessons.forEach((lesson) =>
-                        lessons.push({ ...lesson, moduleTitle: mod.title })
-                    )
-                );
-                setFlatLessons(lessons);
-                const foundIndex = lessons.findIndex((l) => l.id === parseInt(lessonId));
-                const indexToUse = foundIndex !== -1 ? foundIndex : 0;
-                setCurrentIndex(indexToUse);
-                const lesson = lessons[indexToUse];
-                setCurrentLesson(lesson);
-                setCurrentVideo(`http://localhost:8080/${lesson.video_url}`);
-                setSubtitles([]);
-                setShowSubtitles(false);
-            } catch (error) {
-                console.error('Error loading lesson:', error);
-            } finally {
-                setIsLoading(false);
-            }
-        };
-
-        if (modules.length > 0) {
-            fetchLessonData();
-        }
-    }, [lessonId, modules]);
-
-    useEffect(() => {
-        const videoElement = videoRef.current;
-        if (!videoElement) return;
-        const handleTimeUpdate = () => {
-            if (!showSubtitles || subtitles.length === 0) return;
-            const currentTime = videoElement.currentTime;
-            const activeSub = subtitles.find(sub => currentTime >= sub.start && currentTime <= sub.end);
-            setActiveSubtitle(activeSub?.text || null);
-        };
-        const handleReady = () => setVideoReady(true);
-        videoElement.addEventListener('timeupdate', handleTimeUpdate);
-        videoElement.addEventListener('canplay', handleReady);
-        return () => {
-            videoElement.removeEventListener('timeupdate', handleTimeUpdate);
-            videoElement.removeEventListener('canplay', handleReady);
-        };
-    }, [showSubtitles, subtitles,videoRef]);
-
     const handleLessonSelect = (index) => {
+        if (index < 0 || index >= flatLessons.length) return;
+
         const lesson = flatLessons[index];
         if (lesson) {
             setCurrentIndex(index);
@@ -124,6 +255,7 @@ const useLessonPlayer = (modules, lessonId, videoRef) => {
             setSubtitles([]);
             setShowSubtitles(false);
             setVideoReady(false);
+            setHasTrackedView(false);
         }
     };
 
@@ -136,9 +268,13 @@ const useLessonPlayer = (modules, lessonId, videoRef) => {
 
     const getVisibleLessons = () => {
         const visible = [];
-        if (flatLessons[currentIndex - 1]) visible.push({ ...flatLessons[currentIndex - 1], viewType: "prev" });
+        if (currentIndex > 0) {
+            visible.push({ ...flatLessons[currentIndex - 1], viewType: "prev" });
+        }
         visible.push({ ...flatLessons[currentIndex], viewType: "current" });
-        if (flatLessons[currentIndex + 1]) visible.push({ ...flatLessons[currentIndex + 1], viewType: "next" });
+        if (currentIndex < flatLessons.length - 1) {
+            visible.push({ ...flatLessons[currentIndex + 1], viewType: "next" });
+        }
         return visible;
     };
 

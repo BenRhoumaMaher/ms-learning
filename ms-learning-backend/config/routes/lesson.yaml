@@ -11,7 +11,7 @@ lesson_info:
 latest_live_lessons:
   path: /lessons/latest
   controller: App\Controller\Lesson\LessonController::latestLiveLessons
-  methods: GET  
+  methods: GET
 
 add_lesson_resource:
   path: /lessons/{id}/resources
@@ -42,3 +42,13 @@ user_live_sessions:
   path: /user/{id}/live-sessions
   controller: App\Controller\Lesson\LessonController::getUserLiveSessions
   methods: GET
+
+lesson_track_engagement:
+  path: /lessons/{id}/engagement
+  controller: App\Controller\Lesson\LessonController::trackLessonEngagement
+  methods: POST
+
+lesson_track_view:
+  path: /lessons/{id}/view
+  controller: App\Controller\Lesson\LessonController::trackLessonView
+  methods: POST

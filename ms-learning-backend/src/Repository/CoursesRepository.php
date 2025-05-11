@@ -17,6 +17,28 @@ class CoursesRepository extends ServiceEntityRepository
         parent::__construct($registry, Courses::class);
     }
 
+    public function findCourseIdsByInstructor(int $instructorId): array
+    {
+        return $this->createQueryBuilder('c')
+            ->select('c.id')
+            ->join('c.enrollments', 'u')
+            ->where('u.id = :instructorId')
+            ->setParameter('instructorId', $instructorId)
+            ->getQuery()
+            ->getSingleColumnResult();
+    }
+
+    public function findCourseTitlesByInstructor(int $instructorId): array
+    {
+        return $this->createQueryBuilder('c')
+            ->select('c.title')
+            ->join('c.enrollments', 'u')
+            ->where('u.id = :instructorId')
+            ->setParameter('instructorId', $instructorId)
+            ->getQuery()
+            ->getSingleColumnResult();
+    }
+
     //    /**
     //     * @return Courses[] Returns an array of Courses objects
     //     */

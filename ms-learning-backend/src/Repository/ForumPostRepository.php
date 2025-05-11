@@ -16,6 +16,16 @@ class ForumPostRepository extends ServiceEntityRepository
         parent::__construct($registry, ForumPost::class);
     }
 
+    public function findByInstructorId(int $userId): array
+    {
+        return $this->createQueryBuilder('fp')
+            ->andWhere('fp.user = :userId')
+            ->setParameter('userId', $userId)
+            ->orderBy('fp.createdAt', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
     //    /**
     //     * @return ForumPost[] Returns an array of ForumPost objects
     //     */

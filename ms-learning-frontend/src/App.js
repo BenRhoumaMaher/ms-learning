@@ -38,6 +38,13 @@ import MsconnectNotifications from './pages/msconnect/msnotifications/msconnectn
 import ChatbotMessagesList from './pages/admin/ChatbotMessagesList'
 import ChatbotWidget from './pages/admin/ChatbotWidget'
 import QuizQuestion from './pages/quiz/sections/QuizQuestion'
+import InstructorIotDashboard from './pages/instructor-iot-dashboard/InstructorIotDashboard'
+import InstructorRouteGuard from './components/instructor-dashboard/InstructorRouteGuard'
+import StudentManagement from './pages/instructor-iot-dashboard/sections/StudentManagement'
+import EngagementAnalytics from './pages/instructor-iot-dashboard/sections/EngagementAnalytics'
+import OverView from './pages/instructor-iot-dashboard/sections/OverView'
+import FeedbackAndSentiment from './pages/instructor-iot-dashboard/sections/FeedbackAndSentiment'
+
 function App() {
   return (
     <div className='App'>
@@ -75,6 +82,19 @@ function App() {
           <Route path='/msconnect-message/:id' element={<MsconnectMessage />} />
           <Route path='/msconnect-forum/:id' element={<MsconnectForum />} />
           <Route path='/forum-post/:id' element={<MsconnectForumPost />} />
+          <Route
+            path='/instructor-iot-dashboard/:id'
+            element={
+              <InstructorRouteGuard>
+                <InstructorIotDashboard />
+              </InstructorRouteGuard>
+            }
+          >
+            <Route path="student-management" element={<StudentManagement />} />
+            <Route path="engagement-analytics" element={<EngagementAnalytics />} />
+            <Route path="feedback" element={<FeedbackAndSentiment />} />
+            <Route path="" element={<OverView />} />
+          </Route>
           <Route path='/msconnect-notifications/:id' element={<MsconnectNotifications />} />
           <Route path="/msconnect-profile/:id" element={<UserProfilePage />}>
             <Route index element={<UserProfileSection />} />

@@ -37,6 +37,10 @@ class Quiz
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $updatedAt = null;
 
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?User $instructor = null;
+
     /**
      * @var Collection<int, Question>
      */
@@ -63,6 +67,17 @@ class Quiz
     public function getTitle(): ?string
     {
         return $this->title;
+    }
+
+    public function getInstructor(): ?User
+    {
+        return $this->instructor;
+    }
+
+    public function setInstructor(?User $instructor): self
+    {
+        $this->instructor = $instructor;
+        return $this;
     }
 
     public function setTitle(string $title): static

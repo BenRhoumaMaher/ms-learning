@@ -3,12 +3,14 @@
 namespace App\Controller\Course;
 
 use DateTimeImmutable;
+use App\Entity\ForumPost;
 use App\Entity\QuizScore;
 use App\Repository\QuizRepository;
 use App\Repository\UserRepository;
 use App\Repository\LessonRepository;
 use App\Repository\CoursesRepository;
 use App\Service\Course\CourseService;
+use App\Repository\ForumPostRepository;
 use App\Repository\QuizScoreRepository;
 use App\Query\Course\GetAllCoursesQuery;
 use App\Query\Course\GetCourseByIdQuery;
@@ -29,6 +31,7 @@ use App\Service\CommandBusService\CommandBusService;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Serializer\SerializerInterface;
 use App\Query\Course\GetCourseWithModulesAndLessonsQuery;
+use App\Service\ElasticSearch\VideoEngagementAnalyticsService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use App\Query\Course\GetCoursesModulesLessonsWithoutResourcesQuery;
@@ -42,6 +45,7 @@ class CoursesController extends AbstractController
         private EntityManagerInterface $entityManager,
         private UserRepository $userRepository,
         private QuizRepository $quizRepository,
+        private VideoEngagementAnalyticsService $videoAnalyticsService
     ) {
     }
 
@@ -135,14 +139,34 @@ class CoursesController extends AbstractController
 
     public function getUserCoursesModules(
         int $id,
-        MessageBusInterface $queryBus
+        MessageBusInterface $queryBus,
     ): JsonResponse {
         try {
             $userData = $this->queryBusService->handle(
                 new GetUserCoursesModulesQuery($id)
             );
 
-            return $this->json($userData);
+            $videoAnalytics = $this->videoAnalyticsService
+                ->getInstructorVideoAnalytics($id);
+
+            foreach ($userData['courses'] as &$course) {
+                foreach ($course['modules'] as &$module) {
+                    foreach ($module['lessons'] as &$lesson) {
+                        if ($lesson['type'] === 'registered') {
+                            $lessonAnalytics = $this->videoAnalyticsService
+                                ->getLessonAnalytics($lesson['id']);
+                            $lesson['analytics'] = $lessonAnalytics;
+                        }
+                    }
+                }
+            }
+
+            $response = [
+                ...$userData,
+                'videoAnalytics' => $videoAnalytics
+            ];
+
+            return $this->json($response);
         } catch (\Exception $e) {
             return $this->json(['error' => $e->getMessage()], 404);
         }
@@ -397,12 +421,12 @@ class CoursesController extends AbstractController
             return $this->json(['error' => 'Missing required fields'], 400);
         }
 
-        $user = $this->userRepository->find($data['userId']); // ✅ fix
+        $user = $this->userRepository->find($data['userId']);
         if (!$user) {
             return $this->json(['error' => 'User not found'], 404);
         }
 
-        $quiz = $this->quizRepository->find($data['quizId']); // ✅ fix
+        $quiz = $this->quizRepository->find($data['quizId']);
         if (!$quiz) {
             return $this->json(['error' => 'Quiz not found'], 404);
         }
@@ -469,6 +493,29 @@ class CoursesController extends AbstractController
                 'json',
                 ['groups' => ['course:read']]
             ),
+            200,
+            [],
+            true
+        );
+    }
+
+    public function getInstructorForumPosts(
+        int $id,
+        ForumPostRepository $forumPostRepository,
+        SerializerInterface $serializer
+    ): JsonResponse {
+        $forumPosts = $forumPostRepository->findByInstructorId($id);
+
+        $json = $serializer->serialize(
+            $forumPosts,
+            'json',
+            [
+                'groups' => ['forum:read'],
+            ]
+        );
+
+        return new JsonResponse(
+            $json,
             200,
             [],
             true

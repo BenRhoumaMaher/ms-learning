@@ -11,26 +11,160 @@ fos_elastica:
         provider: ~
         finder: ~
       properties:
-        id:
-          type: integer
+        id: { type: integer }
         title:
           type: text
           analyzer: standard
           fields:
-            keyword:
-              type: keyword
-        description:
-          type: text
-          analyzer: standard
-        price:
-          type: float
-        duration:
-          type: keyword
-        image:
-          type: keyword
+            keyword: { type: keyword }
+        description: { type: text }
+        price: { type: float }
+        duration: { type: keyword }
+        image: { type: keyword }
       settings:
         index:
           analysis:
             analyzer:
               default:
                 type: standard
+
+    quiz_scores:
+      persistence:
+        driver: orm
+        model: App\Entity\QuizScore
+        provider: ~
+        finder: ~
+        listener:
+          insert: true
+          update: true
+          delete: true
+      properties:
+        id: { type: integer }
+        score: { type: integer }
+        totalQuestions: { type: integer }
+        percentage: { type: float }
+        completedAt: { type: date }
+        quiz:
+          type: nested
+          properties:
+            id: { type: integer }
+            title: { type: text }
+            passingScore: { type: float }
+            instructor:
+              type: nested
+              properties:
+                id: { type: integer }
+      settings:
+        index:
+          number_of_replicas: 0
+          refresh_interval: 5s
+
+    lessons:
+      persistence:
+        driver: orm
+        model: App\Entity\Lesson
+        provider: ~
+        finder: ~
+        listener:
+          insert: true
+          update: true
+          delete: true
+      properties:
+        id: { type: integer }
+        title: { type: text }
+        type: { type: keyword }
+        videoUrl: { type: keyword }
+        duration: { type: integer }
+        totalViews: { type: integer }
+        totalWatchTime: { type: integer }
+        totalPauses: { type: integer }
+        totalReplays: { type: integer }
+        averageCompletion: { type: float }
+        instructor:
+          type: nested
+          properties:
+            id: { type: integer }
+        course:
+          type: nested
+          properties:
+            id: { type: integer }
+            title: { type: text }
+
+    reviews:
+      persistence:
+        driver: orm
+        model: App\Entity\Review
+        provider: ~
+        finder: ~
+        listener:
+          insert: true
+          update: true
+          delete: true
+      properties:
+        id: { type: integer }
+        rating: { type: integer }
+        comment:
+          type: text
+          analyzer: english
+          fields:
+            keyword:
+              type: keyword
+        createdAt: { type: date }
+        course:
+          type: nested
+          properties:
+            id: { type: integer }
+            title: { type: text }
+            enrollments:
+              type: nested
+              properties:
+                id: { type: integer }
+                username: { type: keyword }
+    posts:
+      persistence:
+        driver: orm
+        model: App\Entity\Post
+        provider: ~
+        finder: ~
+        listener:
+          insert: true
+          update: true
+          delete: true
+      settings:
+        analysis:
+          filter:
+            english_stopwords:
+              type: stop
+              stopwords: _english_
+            english_stemmer:
+              type: stemmer
+              language: english
+          analyzer:
+            word_analyzer:
+              type: custom
+              tokenizer: standard
+              filter: [lowercase, english_stopwords]
+            raw_word_analyzer:
+                type: custom
+                tokenizer: standard
+                filter: [lowercase]  
+      properties:
+        content:
+          type: text
+          analyzer: english
+          fields:
+            raw_words:
+              type: text
+              analyzer: raw_word_analyzer
+              fielddata: true
+            words:
+              type: text
+              analyzer: word_analyzer
+              fielddata: true
+            raw:
+              type: keyword
+              ignore_above: 256
+        tags:
+          type: text
+          analyzer: standard
+        createdAt: { type: date }
