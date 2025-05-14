@@ -32,6 +32,7 @@ class GetUserCoursesQueryHandler
                 'title' => $course->getTitle(),
                 'description' => $course->getDescription(),
                 'category' => $course->getCategory()?->getName(),
+                'created_at' => $course->getCreatedAt()->format('Y-m-d H:i:s'),
                 'students' => [],
                 'quiz' => null
             ];

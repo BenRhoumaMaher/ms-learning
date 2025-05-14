@@ -5,15 +5,14 @@ import {
   updateUserInterests
 } from '../../../helpers/api'
 import { Link, useNavigate } from 'react-router-dom'
-import Modal from 'react-bootstrap/Modal'
-import Button from 'react-bootstrap/Button'
 import Form from 'react-bootstrap/Form'
+import Button from 'react-bootstrap/Button'
 
 const CourscatlHero = () => {
   const [courses, setCourses] = useState([])
   const [currentIndex, setCurrentIndex] = useState(0)
   const [fade, setFade] = useState(true)
-  const [showModal, setShowModal] = useState(false)
+  const [showInterestForm, setShowInterestForm] = useState(false)
   const [categories, setCategories] = useState([])
   const [selectedCategories, setSelectedCategories] = useState([])
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -49,18 +48,18 @@ const CourscatlHero = () => {
     navigate('/registered-courses')
   }
 
-  const handleShowModal = async () => {
+  const handleShowInterestForm = async () => {
     try {
       const data = await getCategories()
       setCategories(data)
-      setShowModal(true)
+      setShowInterestForm(true)
     } catch (error) {
       console.error('Error fetching categories:', error)
     }
   }
 
-  const handleCloseModal = () => {
-    setShowModal(false)
+  const handleCloseInterestForm = () => {
+    setShowInterestForm(false)
     setSelectedCategories([])
   }
 
@@ -79,7 +78,7 @@ const CourscatlHero = () => {
     setIsSubmitting(true)
     try {
       await updateUserInterests(selectedCategories)
-      handleCloseModal()
+      handleCloseInterestForm()
     } catch (error) {
       console.error('Error updating interests:', error)
     } finally {
@@ -105,19 +104,55 @@ const CourscatlHero = () => {
             Ready to continue learning?
           </h4>
           <p className='courscatl-link'>
-            <a
-              href='/'
-              className='courscatl-add-interests'
-              onClick={e => {
-                e.preventDefault()
-                handleShowModal()
-              }}
+            <button
+              className='courscatl-add-interests btn btn-link btn-danger p-0'
+              onClick={handleShowInterestForm}
             >
               Add interests for future recommendations
-            </a>
+            </button>
           </p>
-          {/* <button className='btn courscatl-btn'>Start Free 07-Day Trial</button> */}
-          <Link to='/student-payment' className='btn courscatl-btn btn-warning ms-2'>Change your Plan</Link>
+
+          {showInterestForm && (
+            <div className="interest-form-container mt-3 p-3 border rounded">
+              <h5>Select Your Interests</h5>
+              <Form>
+                <div className="row">
+                  {categories.map(category => (
+                    <div key={category.id} className="col-md-6 mb-2">
+                      <Form.Check
+                        type='checkbox'
+                        id={`category-${category.id}`}
+                        label={category.name}
+                        value={category.id}
+                        checked={selectedCategories.includes(category.id)}
+                        onChange={handleCategoryChange}
+                      />
+                    </div>
+                  ))}
+                </div>
+              </Form>
+              <div className="d-flex justify-content-end mt-3">
+                <Button
+                  variant='secondary'
+                  onClick={handleCloseInterestForm}
+                  className="me-2"
+                >
+                  Cancel
+                </Button>
+                <Button
+                  variant='primary'
+                  onClick={handleSubmit}
+                  disabled={isSubmitting || selectedCategories.length === 0}
+                >
+                  {isSubmitting ? 'Saving...' : 'Save Interests'}
+                </Button>
+              </div>
+            </div>
+          )}
+
+          <Link to='/student-payment' className='btn courscatl-btn btn-warning ms-2 mt-3'>
+            Change your Plan
+          </Link>
         </div>
 
         <div className='col-md-6 d-flex justify-content-center'>
@@ -126,9 +161,8 @@ const CourscatlHero = () => {
               key={currentIndex}
               src={`http://localhost:8080/${courses[currentIndex].image}`}
               alt={`Course ${currentIndex + 1}`}
-              className={`courscatl-image-placeholder ${
-                fade ? 'fade-in' : 'fade-out'
-              }`}
+              className={`courscatl-image-placeholder ${fade ? 'fade-in' : 'fade-out'
+                }`}
               style={{
                 width: '100%',
                 height: 'auto',
@@ -142,39 +176,6 @@ const CourscatlHero = () => {
         </div>
       </div>
 
-      <Modal show={showModal} onHide={handleCloseModal}>
-        <Modal.Header closeButton>
-          <Modal.Title>Select Your Interests</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Form>
-            {categories.map(category => (
-              <Form.Check
-                key={category.id}
-                type='checkbox'
-                id={`category-${category.id}`}
-                label={category.name}
-                value={category.id}
-                checked={selectedCategories.includes(category.id)}
-                onChange={handleCategoryChange}
-              />
-            ))}
-          </Form>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant='secondary' onClick={handleCloseModal}>
-            Cancel
-          </Button>
-          <Button
-            variant='primary'
-            onClick={handleSubmit}
-            disabled={isSubmitting || selectedCategories.length === 0}
-          >
-            {isSubmitting ? 'Saving...' : 'Save Interests'}
-          </Button>
-        </Modal.Footer>
-      </Modal>
-
       <style>
         {`
           .fade-in {
@@ -184,6 +185,9 @@ const CourscatlHero = () => {
           .fade-out {
             opacity: 0;
             transition: opacity 0.5s ease-in-out;
+          }
+          .interest-form-container {
+            background-color: #f8f9fa;
           }
         `}
       </style>

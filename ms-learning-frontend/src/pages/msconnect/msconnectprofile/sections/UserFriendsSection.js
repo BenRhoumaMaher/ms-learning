@@ -50,7 +50,7 @@ const UserFriendsSection = () => {
                                 <div className="actions">
                                     <ul className="nav">
                                         <li>
-                                            <Link to="/" title="Send Message" className="btn-link">
+                                            <Link to="/msconnect-message" title="Send Message" className="btn-link">
                                                 <i className="fa fa-envelope-o"></i>
                                             </Link>
                                         </li>

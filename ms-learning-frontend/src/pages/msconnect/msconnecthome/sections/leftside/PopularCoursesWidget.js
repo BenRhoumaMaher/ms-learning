@@ -1,14 +1,16 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import usePopularCourses from '../../../../../hooks/usePopularCourses';
+import { useTranslation } from 'react-i18next';
 
 const PopularCoursesWidget = () => {
+    const { t } = useTranslation();
     const popularCourses = usePopularCourses();
 
     return (
         <div className="widget">
             <h4 className="widget-title">
-                <i className="icofont-flame-torch"></i> Popular Courses
+                <i className="icofont-flame-torch"></i> {t("Popular Courses")}
             </h4>
 
             <ul className="premium-course">
@@ -29,7 +31,7 @@ const PopularCoursesWidget = () => {
                                 </Link>
                             </h5>
                             <ins className="price mt-2">
-                                {course.tag === 'Free' ? 'Free' : `$${course.price}/M`}
+                                {course.tag === 'Free' ? t("Free") : `$${course.price}/M`}
                             </ins>
                         </div>
                     </li>

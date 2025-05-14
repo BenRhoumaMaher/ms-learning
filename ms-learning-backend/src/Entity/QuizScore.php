@@ -2,8 +2,9 @@
 
 namespace App\Entity;
 
-use App\Repository\QuizScoreRepository;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\QuizScoreRepository;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: QuizScoreRepository::class)]
 class QuizScore
@@ -11,15 +12,19 @@ class QuizScore
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['quizscore:read'])]
     private ?int $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'quizScores')]
+    #[Groups(['quizscore:read'])]
     private ?User $user = null;
 
     #[ORM\ManyToOne(inversedBy: 'quizScores')]
+    #[Groups(['quizscore:read'])]
     private ?Quiz $quiz = null;
 
     #[ORM\Column]
+    #[Groups(['quizscore:read'])]
     private ?int $score = null;
 
     #[ORM\Column]

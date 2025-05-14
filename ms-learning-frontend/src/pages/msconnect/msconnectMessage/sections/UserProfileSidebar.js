@@ -1,8 +1,10 @@
 import React from 'react';
 import { useMessageContext } from '../context/MessageContext';
+import { useTranslation } from 'react-i18next';
 
 const UserProfileSidebar = () => {
     const { selectedFriend } = useMessageContext();
+    const { t } = useTranslation();
 
     if (!selectedFriend) return null;
 
@@ -28,20 +30,20 @@ const UserProfileSidebar = () => {
                     </figure>
                     <ul>
                         <li>
-                            <span>Display Name</span>
+                            <span>{t('Display Name')}</span>
                             <p>{selectedFriend.username || selectedFriend.firstname}</p>
                         </li>
                         <li>
-                            <span>Email Address</span>
+                            <span>{t('Email Address')}</span>
                             <p>{selectedFriend.email || 'Not specified'}</p>
                         </li>
                         <li>
-                            <span>Phone Number</span>
-                            <p>{selectedFriend.phone || 'Not specified'}</p>
+                            <span>{t('Phone Number')}</span>
+                            <p>{selectedFriend.phone || t('Not specified')}</p>
                         </li>
                     </ul>
                     <a className="button primary circle me-4" href={`/msconnect-profile/${selectedFriend.id}`} title="view profile">
-                        View Profile
+                        {t('View Profile')}
                     </a>
                 </div>
             </div>

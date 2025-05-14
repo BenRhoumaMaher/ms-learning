@@ -24,9 +24,9 @@ const RegisteredCourses = () => {
       <section className='section-container'>
         <StudentReviews courseId={id} />
       </section>
-      <section className='section-container'>
+      {/* <section className='section-container'>
         <CourseDiscussions courseId={id} />
-      </section>
+      </section> */}
       <Footer />
     </section>
   )

@@ -7,8 +7,10 @@ import useClickOutside from '../hooks/useClickOutside'
 import { useNavigate } from 'react-router-dom'
 import { getUserInfos } from '../helpers/api'
 import CourseSearch from '../components/search/CourseSearch';
+import { useTranslation } from "react-i18next";
 
 const Navbar = () => {
+  const { t, i18n } = useTranslation();
   const isAuthenticated =
     localStorage.getItem('token') || sessionStorage.getItem('token')
   const user = isAuthenticated
@@ -26,13 +28,13 @@ const Navbar = () => {
     if (userId) {
       getUserInfos()
         .then(data => {
-          setUsername(data.username || 'Guest')
+          setUsername(data.username || t('Guest'))
         })
         .catch(error => {
           console.error('Error fetching user info:', error)
         })
     }
-  }, [userId])
+  }, [userId, t])
 
   useClickOutside(dropdownRef, () => setShowProfileMenu(false))
 
@@ -44,9 +46,13 @@ const Navbar = () => {
             <img src={logo} alt='Logo' height='40' />
           </Link>
 
-          <Link to='/course-catalog' className='nav-link'>
-            <span className='nav-text me-3'>Explore</span>
-          </Link>
+          {!userRoles.includes('ROLE_INSTRUCTOR') && (
+            <>
+              <Link to='/course-catalog' className='nav-link'>
+                <span className='nav-text me-3'>{t('Explore')}</span>
+              </Link>
+            </>
+          )}
 
           <div className='d-none d-md-flex me-2 nav-search-container'>
             <CourseSearch compact />
@@ -61,10 +67,27 @@ const Navbar = () => {
               </Link>
               <div className='nav-separator'></div>
 
+              {userRoles.includes('ROLE_INSTRUCTOR') && (
+                <>
+                  <Link to={`/instructor-iot-dashboard/${userId}`} className='nav-link'>
+                    <i class="bi bi-clipboard-data"></i>
+                  </Link>
+                  <div className='nav-separator'></div>
+                </>
+              )}
+
               {!userRoles.includes('ROLE_INSTRUCTOR') && (
                 <>
                   <Link to='/become-instructor' className='nav-link'>
-                    Careers
+                    {t('Careers')}
+                  </Link>
+                  <div className='nav-separator'></div>
+                </>
+              )}
+              {userRoles.includes('ROLE_INSTRUCTOR') && (
+                <>
+                  <Link to={`/msconnect-forum/${userId}`} className='nav-link'>
+                    <i class="bi bi-newspaper"></i>
                   </Link>
                   <div className='nav-separator'></div>
                 </>
@@ -113,11 +136,11 @@ const Navbar = () => {
                         to='/instructor-dashboard'
                         className='dropdown-item'
                       >
-                        Dashboard
+                        {t('Dashboard')}
                       </Link>
                     ) : (
                       <Link to='/student-dashboard' className='dropdown-item'>
-                        Dashboard
+                        {t('Dashboard')}
                       </Link>
                     )}
                     {userRoles.includes('ROLE_INSTRUCTOR') ? (
@@ -125,42 +148,44 @@ const Navbar = () => {
                         to={`/msconnect-profile/${userId}`}
                         className='dropdown-item'
                       >
-                        MS-CONNECT Profile
+                        {t('MS-CONNECT Profile')}
                       </Link>
                     ) : (
                       <Link to={`/msconnect-profile/${userId}`}
                         className='dropdown-item'>
-                        MS-CONNECT Profile
+                        {t('MS-CONNECT Profile')}
                       </Link>
                     )}
                     {userRoles.includes('ROLE_INSTRUCTOR') ? (
                       <Link to='/' className='dropdown-item'>
-                        Notifications
+                        {t('Notifications')}
                       </Link>
                     ) : (
                       <Link
                         to={`/student-notifications/${userId}`}
                         className='dropdown-item'
                       >
-                        Notifications
+                        {t('Notifications')}
                       </Link>
                     )}
                     {userRoles.includes('ROLE_INSTRUCTOR') ? (
                       <Link to='/instructor-calendar' className='dropdown-item'>
-                        Calendar
+                        {t('Calendar')}
                       </Link>
                     ) : (
                       <Link to='/student-calendar' className='dropdown-item'>
-                        Calendar
+                        {t('Calendar')}
                       </Link>
                     )}
                     {userRoles.includes('ROLE_INSTRUCTOR') ? (
                       <Link to='/create-course' className='dropdown-item'>
-                        Create Course
+                        {t('Create Course')}
                       </Link>
                     ) : (
-                      <Link to='/registered-courses' className='dropdown-item'>
-                        Registered Courses
+                      <Link
+                        to={`/user-enrollements/${userId}`}
+                        className='dropdown-item'>
+                        {t('My Enrolled Courses')}
                       </Link>
                     )}
                     {userRoles.includes('ROLE_INSTRUCTOR') ? (
@@ -169,7 +194,7 @@ const Navbar = () => {
                       </Link>
                     ) : (
                       <Link to='/student-payment' className='dropdown-item'>
-                        Payment Portal
+                        {t('Payment Portal')}
                       </Link>
                     )}
                     {userRoles.includes('ROLE_INSTRUCTOR') ? (
@@ -177,11 +202,11 @@ const Navbar = () => {
                         to='/account-settings-instructor'
                         className='dropdown-item'
                       >
-                        Account Settings
+                        {t('Account Settings')}
                       </Link>
                     ) : (
                       <Link to='/account-settings' className='dropdown-item'>
-                        Account Settings
+                        {t('Account Settings')}
                       </Link>
                     )}
                     <button
@@ -193,7 +218,7 @@ const Navbar = () => {
                       }}
                       className='dropdown-item logout'
                     >
-                      Logout
+                      {t('Logout')}
                     </button>
                   </div>
                 )}
@@ -209,12 +234,12 @@ const Navbar = () => {
               <div className='nav-separator'></div>
 
               <Link to='/become-instructor' className='nav-link'>
-                Careers
+                {t('Careers')}
               </Link>
               <div className='nav-separator'></div>
 
               <Link to='/login' className='nav-link'>
-                Login
+                {t('Login')}
               </Link>
               <div className='nav-separator'></div>
 
@@ -225,9 +250,15 @@ const Navbar = () => {
             </>
           )}
 
-          <Link to='#' className='nav-link'>
-            <i className='bi bi-globe'></i>
-          </Link>
+          <button
+            onClick={() => i18n.changeLanguage(i18n.language === "en" ? "fr" : "en")}
+            className='nav-link globe-btn'
+          >
+            <i className='bi bi-globe me-2'></i>
+            <span className='language-label'>
+              {i18n.language === "en" ? "FR" : "EN"}
+            </span>
+          </button>
         </div>
       </div>
     </nav>

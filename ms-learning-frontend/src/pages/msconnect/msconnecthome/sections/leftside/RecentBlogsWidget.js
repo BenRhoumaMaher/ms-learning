@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { getForumPosts } from '../../../../../helpers/api';
+import { useTranslation } from 'react-i18next';
 
 const RecentBlogsWidget = () => {
     const [randomPosts, setRandomPosts] = useState([]);
+    const { t } = useTranslation();
 
     useEffect(() => {
         const fetchPosts = async () => {
@@ -22,7 +24,7 @@ const RecentBlogsWidget = () => {
     return (
         <div className="widget">
             <h4 className="widget-title">
-                Recommended Reading <a className="see-all" href="/" title="">See All</a>
+                {t("Recommended Reading")} <a className="see-all" href="/" title="">{t("See All")}</a>
             </h4>
             <ul className="recent-links">
                 {randomPosts.map((blog, index) => (

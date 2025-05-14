@@ -16,9 +16,9 @@ const LessonPlayer = () => {
       <section className='section-container'>
         <AssignmentsSection />
       </section>
-      <section className='section-container'>
+      {/* <section className='section-container'>
         <YourProgress />
-      </section>
+      </section> */}
       <section className='section-container'>
         <KeepLearning lessonId={id} />
       </section>

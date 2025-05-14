@@ -264,6 +264,16 @@ export const getUsers = async () => {
   }
 }
 
+export const getQaInstructor = async () => {
+  try {
+    const response = await bc.get('/qa-instructor');
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching QA data:', error);
+    throw error;
+  }
+}
+
 export const getInstructors = async () => {
   try {
     const response = await bc.get('/users/instructors')
@@ -650,6 +660,15 @@ export const getTrendingCourses = async () => {
   }
 }
 
+export const getLessonQuizScores = async id => {
+  try {
+    const response = await bc.get(`${id}/scores`)
+    return response.data
+  } catch (error) {
+    console.error('Error fetching courses:', error)
+    throw error
+  }
+}
 
 export const updateUserInfos = async (userId, formData) => {
   try {

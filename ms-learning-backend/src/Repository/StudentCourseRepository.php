@@ -2,9 +2,10 @@
 
 namespace App\Repository;
 
+use App\Entity\Lesson;
 use App\Entity\StudentCourse;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
 /**
  * @extends ServiceEntityRepository<StudentCourse>
@@ -18,21 +19,57 @@ class StudentCourseRepository extends ServiceEntityRepository
 
     public function findCourseTitlesByUserId(int $userId): array
     {
+        // Get course information as before
         $qb = $this->createQueryBuilder('sc')
             ->join('sc.curse', 'c')
             ->join('sc.user', 'u')
             ->where('u.id = :userId')
             ->setParameter('userId', $userId)
-            ->select('c.id AS id, c.title AS title');
+            ->select(
+                'sc.id AS enrollmentId, c.id AS id, 
+            c.title AS title, c.image AS image'
+            );
 
         $results = $qb->getQuery()->getArrayResult();
 
         $titles = array_column($results, 'title');
+        $courseImages = array_column($results, 'image');
         $ids = array_column($results, 'id');
+        $enrollmentIds = array_column($results, 'enrollmentId');
+
+        // Get live lessons for these courses
+        $liveLessons = [];
+        if (!empty($ids)) {
+            $em = $this->getEntityManager();
+            $lessonRepo = $em->getRepository(Lesson::class);
+
+            $liveLessons = $lessonRepo->createQueryBuilder('l')
+                ->where('l.course IN (:courseIds)')
+                ->andWhere('l.type = :type')
+                ->setParameter('courseIds', $ids)
+                ->setParameter('type', 'live')
+                ->select(
+                    'l.id',
+                    'l.title',
+                    'l.content',
+                    'l.type',
+                    'l.videoUrl',
+                    'l.liveStartTime',
+                    'l.liveEndTime',
+                    'l.duration',
+                    'l.position',
+                    'IDENTITY(l.course) AS course_id'
+                )
+                ->getQuery()
+                ->getArrayResult();
+        }
 
         return [
             'titles' => $titles,
-            'ids' => $ids
+            'ids' => $ids,
+            'enrollmentIds' => $enrollmentIds,
+            'courseImages' => $courseImages,
+            'liveLessons' => $liveLessons
         ];
     }
 

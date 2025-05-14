@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { getEnrolledCourse } from "../../../helpers/api";
+import { getCourses } from '../../../helpers/api';
 import { useNavigate } from 'react-router-dom';
 
 const CourseContent = ({ courseId }) => {
@@ -10,8 +10,14 @@ const CourseContent = ({ courseId }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const data = await getEnrolledCourse(courseId);
-        setCourseData(data);
+        const allCourses = await getCourses();
+        // Find the specific course by courseId
+        const course = allCourses.find(c => c.id.toString() === courseId.toString());
+        if (course) {
+          setCourseData({ course }); // Format to match the expected structure
+        } else {
+          console.error("Course not found");
+        }
       } catch (err) {
         console.error("Error loading course:", err);
       }

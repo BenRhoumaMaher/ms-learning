@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import { Chart, registerables } from "chart.js";
 import { useNavigate, useParams } from "react-router-dom";
-import { getLessonInfo } from "../../../helpers/api";
+import { getLessonInfo, getLessonQuizScores } from "../../../helpers/api";
 
 Chart.register(...registerables);
 
@@ -10,6 +10,10 @@ const AssignmentsSection = () => {
   const navigate = useNavigate();
   const { id: lessonId } = useParams();
   const [quizData, setQuizData] = React.useState(null);
+
+  const token = localStorage.getItem("token") || sessionStorage.getItem("token");
+  const user = token ? JSON.parse(atob(token.split(".")[1])) : null;
+  const userId = user?.user_id;
 
   useEffect(() => {
     const fetchLessonInfo = async () => {
@@ -31,40 +35,65 @@ const AssignmentsSection = () => {
   };
 
   useEffect(() => {
-    const ctx = document.getElementById("rankChart").getContext("2d");
+    const fetchScoresAndRenderChart = async () => {
+      try {
+        const scores = await getLessonQuizScores(lessonId);
 
-    if (chartRef.current) {
-      chartRef.current.destroy();
-    }
+        if (!scores || scores.length === 0) return;
 
-    chartRef.current = new Chart(ctx, {
-      type: "bar",
-      data: {
-        labels: ["A", "B", "C", "D", "E", "F", "G"],
-        datasets: [
-          { label: "Low", backgroundColor: "blue", data: [20, 40, 60, 10, 30, 50, 70] },
-          { label: "Medium", backgroundColor: "red", data: [30, 50, 40, 20, 60, 30, 40] },
-          { label: "High", backgroundColor: "gold", data: [60, 80, 70, 90, 70, 60, 90] },
-        ],
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: { display: false },
-        },
-        scales: {
-          y: { beginAtZero: true },
-        },
-      },
-    });
+        const userScores = scores
+          .filter(score => score.user_id === userId)
+          .map(score => score.score);
 
-    return () => {
-      if (chartRef.current) {
-        chartRef.current.destroy();
+        const userHighestScore = userScores.length > 0 ? Math.max(...userScores) : 0;
+
+        const othersScores = scores
+          .filter(score => score.user_id !== userId)
+          .slice(-9)
+          .map(score => score.score);
+
+        const chartLabels = ["You", ...Array(9).fill().map((_, i) => `User ${i + 1}`)];
+        const chartData = [userHighestScore, ...othersScores];
+
+        const ctx = document.getElementById("rankChart").getContext("2d");
+        if (chartRef.current) chartRef.current.destroy();
+
+        chartRef.current = new Chart(ctx, {
+          type: "bar",
+          data: {
+            labels: chartLabels,
+            datasets: [
+              {
+                label: "Quiz Scores",
+                backgroundColor: [
+                  "#dc3545",
+                  ...Array(9).fill("#6c757d")
+                ],
+                data: chartData,
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { display: false },
+            },
+            scales: {
+              y: {
+                beginAtZero: true,
+                suggestedMax: 10,
+              },
+            },
+          },
+        });
+      } catch (error) {
+        console.error("Error fetching quiz scores:", error);
       }
     };
-  }, []);
+
+    fetchScoresAndRenderChart();
+  }, [lessonId, userId]);
 
   return (
     <section className="container mt-5">

@@ -6,6 +6,7 @@ import AddContentModal from '../../../components/instructor-dashboard/AddContent
 import AddResourceModal from '../../../components/instructor-dashboard/AddResourceModal';
 import AddLessonModal from '../../../components/instructor-dashboard/AddLessonModal';
 import useInstructorCourses from '../../../hooks/useInstructorCourses';
+import { useTranslation } from 'react-i18next';
 
 const InstructorCourses = () => {
   const {
@@ -28,8 +29,7 @@ const InstructorCourses = () => {
     coursesWithLessonsNoResources,
     selectedCourseForLesson,
     selectedModuleForLesson,
-    
-    // Functions
+
     handleCourseChange,
     handleInputChange,
     handleUpdateCourse,
@@ -52,11 +52,12 @@ const InstructorCourses = () => {
     setFormData,
     validateLessonData
   } = useInstructorCourses();
+  const { t } = useTranslation();
 
   return (
     <div className='container insctrucours-container'>
-      <h2 className='insctrucours-title'>Manage Courses</h2>
-      <p className='insctrucours-subtitle'>Easily manage your existing ones</p>
+      <h2 className='insctrucours-title'>{t('Manage Courses')}</h2>
+      <p className='insctrucours-subtitle'>{t('Easily manage your existing ones')}</p>
 
       {successMessage && (
         <div className='alert alert-success' role='alert'>
@@ -64,7 +65,7 @@ const InstructorCourses = () => {
         </div>
       )}
 
-      <CourseActions 
+      <CourseActions
         setDeleteModalOpen={setDeleteModalOpen}
         setShowContentModal={setShowContentModal}
       />

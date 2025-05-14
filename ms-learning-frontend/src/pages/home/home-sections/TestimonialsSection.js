@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { getTestimonials, createTestimonial } from "../../../helpers/api";
 import { Form, Button } from "react-bootstrap";
+import { useTranslation } from "react-i18next";
 
 const TestimonialsSection = () => {
+  const { t } = useTranslation();
   const [testimonials, setTestimonials] = useState([]);
   const [activePage, setActivePage] = useState(1);
   const [showForm, setShowForm] = useState(false);
@@ -21,10 +23,10 @@ const TestimonialsSection = () => {
         setCurrentUser(user);
       } catch (error) {
         console.error('Error parsing token:', error);
-        setError('Failed to authenticate user');
+        setError(t('Failed to load testimonials'));
       }
     }
-  }, []);
+  }, [t]);
 
   useEffect(() => {
     const fetchTestimonials = async () => {
@@ -35,13 +37,13 @@ const TestimonialsSection = () => {
         setTestimonials(data);
       } catch (error) {
         console.error('Error fetching testimonials:', error);
-        setError('Failed to load testimonials');
+        setError(t('Failed to load testimonials'));
       } finally {
         setIsLoading(false);
       }
     };
     fetchTestimonials();
-  }, []);
+  }, [t]);
 
   const handlePageChange = (page) => {
     if (page >= 1 && page <= totalPages) {
@@ -51,12 +53,12 @@ const TestimonialsSection = () => {
 
   const handleSubmitTestimonial = async () => {
     if (!currentUser) {
-      setError('Please login to share your testimonial');
+      setError(t('Please login to share your testimonial'));
       return;
     }
 
     if (!newTestimonial.trim()) {
-      setError('Testimonial content cannot be empty');
+      setError(t('Testimonial content cannot be empty'));
       return;
     }
 
@@ -72,7 +74,7 @@ const TestimonialsSection = () => {
       setActivePage(1);
     } catch (error) {
       console.error('Error creating testimonial:', error);
-      setError('Failed to submit testimonial. Please try again.');
+      setError(t('Failed to submit testimonial. Please try again.'));
     }
   };
 
@@ -139,10 +141,10 @@ const TestimonialsSection = () => {
     <section className="testimonials-section">
       <div className="container text-center">
         <h3 className="section-title">
-          <strong>Voices of Success: What Our Learners Say</strong>
+          <strong>{t("Voices of Success: What Our Learners Say")}</strong>
         </h3>
         <p className="section-subtitle">
-          Real stories. Real impact. Hear from our thriving community of learners.
+          {t("Real stories. Real impact. Hear from our thriving community of learners.")}
         </p>
 
         {error && (
@@ -154,7 +156,7 @@ const TestimonialsSection = () => {
         {isLoading ? (
           <div className="testimonial-card">
             <div className="spinner-border text-primary" role="status">
-              <span className="visually-hidden">Loading...</span>
+              <span className="visually-hidden">{t("Loading")}...</span>
             </div>
           </div>
         ) : testimonials.length > 0 ? (
@@ -180,7 +182,7 @@ const TestimonialsSection = () => {
           </div>
         ) : (
           <div className="testimonial-card">
-            <p>No testimonials yet. Be the first to share!</p>
+            <p>{t("No testimonials yet. Be the first to share!")}</p>
           </div>
         )}
 
@@ -211,7 +213,7 @@ const TestimonialsSection = () => {
             className="btn btn-info"
             onClick={toggleForm}
           >
-            {showForm ? 'Cancel' : 'Share your opinion'}
+            {showForm ? t("Cancel") : t("Share your opinion")}
           </button>
 
           {showForm && (
@@ -222,17 +224,17 @@ const TestimonialsSection = () => {
             }}>
               {!currentUser && (
                 <div className="alert alert-warning">
-                  Please login to share your testimonial
+                  {t("Please login to share your testimonial")}
                 </div>
               )}
               <Form.Group controlId="testimonialContent" className="mb-3">
-                <Form.Label><strong>Your Testimonial</strong></Form.Label>
+                <Form.Label><strong>{t("Your Testimonial")}</strong></Form.Label>
                 <Form.Control
                   as="textarea"
                   rows={5}
                   value={newTestimonial}
                   onChange={(e) => setNewTestimonial(e.target.value)}
-                  placeholder="Share your learning experience..."
+                  placeholder={t("Share your learning experience...")}
                   disabled={!currentUser}
                 />
               </Form.Group>
@@ -241,7 +243,7 @@ const TestimonialsSection = () => {
                 onClick={handleSubmitTestimonial}
                 disabled={!newTestimonial.trim() || !currentUser}
               >
-                Submit
+                {t("Submit")}
               </Button>
             </div>
           )}

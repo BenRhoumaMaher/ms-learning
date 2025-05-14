@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { MDBAccordion, MDBAccordionItem } from "mdb-react-ui-kit";
 import { getFAQs } from "../../../helpers/api";
+import { useTranslation } from "react-i18next";
 
 const FAQSection = () => {
+  const { t } = useTranslation();
   const [faqData, setFaqData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -26,10 +28,10 @@ const FAQSection = () => {
     <section className="faq-section">
       <div className="container text-center">
         <h3 className="section-title">
-          <strong>Frequently Asked Questions</strong>
+          <strong>{t("Frequently Asked Questions")}</strong>
         </h3>
         <p className="section-subtitle">
-          Have questions? We've got answers!
+          {t("Have questions? We've got answers!")}
         </p>
 
         {isLoading ? (

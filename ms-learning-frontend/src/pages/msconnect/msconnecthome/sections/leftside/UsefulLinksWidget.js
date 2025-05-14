@@ -1,7 +1,9 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 const UsefulLinksWidget = () => {
+    const { t } = useTranslation();
     const isAuthenticated =
         localStorage.getItem('token') || sessionStorage.getItem('token');
     const user = isAuthenticated
@@ -10,17 +12,17 @@ const UsefulLinksWidget = () => {
     const userId = user?.user_id || null;
 
     const links = [
-        { label: 'explore', to: '/' },
-        { label: 'career', to: '/become-instructor' },
-        { label: 'notfications', to: '/notifications' },
-        { label: 'settings', to: '/account-settings' },
-        { label: 'profile', to: `/msconnect/profile/${userId}` },
+        { label: t('explore'), to: '/' },
+        { label: t('career'), to: '/become-instructor' },
+        { label: t('notifications'), to: '/notifications' },
+        { label: t('settings'), to: '/account-settings' },
+        { label: t('profile'), to: `/msconnect/profile/${userId}` },
     ];
 
     return (
         <div className="widget web-links stick-widget">
             <h4 className="widget-title">
-                Useful Links <Link to="/" className="see-all">See All</Link>
+                {t("Useful Links")}{' '} <Link to="/" className="see-all">{t("See All")}</Link>
             </h4>
             <ul>
                 {links.map((link, index) => (
@@ -30,7 +32,7 @@ const UsefulLinksWidget = () => {
                     </li>
                 ))}
             </ul>
-            <p>&copy; MS-LEARNING {new Date().getFullYear()} All Rights Reserved.</p>
+            <p>&copy; MS-LEARNING {new Date().getFullYear()} {t("All Rights Reserved")}.</p>
         </div>
     );
 };

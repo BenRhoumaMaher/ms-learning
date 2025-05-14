@@ -1,7 +1,9 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { fetchSuggestedUsers, followUser, unfollowUser } from '../../../../../helpers/api';
+import { useTranslation } from 'react-i18next';
 
 const SuggestedPeopleBox = ({ currentUserId }) => {
+    const { t } = useTranslation();
     const scrollRef = useRef(null);
     const [suggestedUsers, setSuggestedUsers] = useState([]);
     const [followingIds, setFollowingIds] = useState([]);
@@ -41,8 +43,8 @@ const SuggestedPeopleBox = ({ currentUserId }) => {
             <div className="friend-info">
                 <figure><i className="fa fa-users"></i></figure>
                 <div className="friend-name">
-                    <ins><a href="/" title="Suggested">Suggested</a></ins>
-                    <span><i className="fa fa-globe"></i> Our MS-LEARNING Family</span>
+                    <ins><a href="/" title="Suggested">{t("Suggested")}</a></ins>
+                    <span><i className="fa fa-globe"></i> {t("Our MS-LEARNING Family")}</span>
                 </div>
 
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
@@ -85,7 +87,7 @@ const SuggestedPeopleBox = ({ currentUserId }) => {
                                     style={{ fontSize: '12px', padding: '4px 10px', marginTop: '2px' }}
                                 >
                                     <i className={`fa ${followingIds.includes(user.id) ? 'fa-minus' : 'fa-plus'}`}></i>{' '}
-                                    {followingIds.includes(user.id) ? 'Unfollow' : 'Follow'}
+                                    {followingIds.includes(user.id) ? t("Unfollow") :  t("Follow")}
                                 </button>
                             </li>
                         ))}

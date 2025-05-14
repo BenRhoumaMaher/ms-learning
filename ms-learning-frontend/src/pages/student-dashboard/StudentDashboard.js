@@ -3,9 +3,6 @@ import '../../styles/styles.css'
 import HeroSection from './sections/HeroSection'
 import LiveUpcomingSession from './sections/LiveUpcomingSession'
 import CourseSection from './sections/CourseSection'
-import BrainyStatsSection from './sections/BrainyStatsSection'
-import QuizzesCertificatesSection from './sections/QuizzesCertificatesSection'
-import QuickAccessSection from './sections/QuickAccessSection'
 import DontStopNowSection from './sections/DontStopNowSection'
 import Footer from '../../layouts/Footer'
 
@@ -21,7 +18,7 @@ const StudentDashboard = () => {
       <section className='section-container'>
         <CourseSection />
       </section>
-      <section className='section-container'>
+      {/* <section className='section-container'>
         <BrainyStatsSection />
       </section>
       <section className='section-container'>
@@ -29,7 +26,7 @@ const StudentDashboard = () => {
       </section>
       <section className='section-container'>
         <QuickAccessSection />
-      </section>
+      </section> */}
       <section className='section-container'>
         <DontStopNowSection />
       </section>

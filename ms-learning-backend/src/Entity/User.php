@@ -20,7 +20,7 @@ class User implements
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups('user:read', 'forum:read')]
+    #[Groups('user:read', 'forum:read', 'quizscore:read')]
     private ?int $id = null;
 
     #[ORM\Column(length: 50, type: 'string')]

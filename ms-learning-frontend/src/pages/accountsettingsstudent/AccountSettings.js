@@ -28,9 +28,9 @@ const AccoyntSettings = () => {
         <section className='section-container' ref={passwordRef}>
           <PasswordSecurity />
         </section>
-        <section className='section-container'>
+        {/* <section className='section-container'>
           <NotificationPreferences />
-        </section>
+        </section> */}
         <Foot />
       </section>
     </div>

@@ -148,9 +148,65 @@ class CourseService implements CourseServiceInterface
     }
     public function getAllCourses(): array
     {
-        return $this->entityManager->getRepository(
-            Courses::class
-        )->findAll();
+        $courses = $this->entityManager->getRepository(Courses::class)->findAll();
+        $result = [];
+
+        foreach ($courses as $course) {
+            $courseData = [
+                'id' => $course->getId(),
+                'title' => $course->getTitle(),
+                'description' => $course->getDescription(),
+                'price' => $course->getPrice(),
+                'duration' => $course->getDuration(),
+                'level' => $course->getLevel(),
+                'category' => [
+                    'name' => $course->getCategory()?->getName()
+                ],
+                'image' => $course->getImage(),
+            ];
+
+            $firstEnrollment = $course->getEnrollments()->first();
+            if ($firstEnrollment) {
+                $courseData['instructor'] = [
+                    'id' => $firstEnrollment->getId(),
+                    'name' => $firstEnrollment->getUsername(),
+                    'expertise' => $firstEnrollment->getExpertise(),
+                    'x' => $firstEnrollment->getX(),
+                    'linkedin' => $firstEnrollment->getLinkedin(),
+                    'instagram' => $firstEnrollment->getInstagram(),
+                    'facebook' => $firstEnrollment->getFacebook(),
+                    'picture' => $firstEnrollment->getPicture(),
+                ];
+            }
+
+            $modules = [];
+            foreach ($course->getModules() as $module) {
+                $lessons = [];
+                foreach ($module->getLessons() as $lesson) {
+                    $lessons[] = [
+                        'id' => $lesson->getId(),
+                        'title' => $lesson->getTitle(),
+                        'type' => $lesson->getType(),
+                        'livestarttime' => $lesson->getLiveStartTime(),
+                        'video_url' => $lesson->getVideoUrl(),
+                        'content' => $lesson->getContent(),
+                        'duration' => $lesson->getDuration(),
+                        'ressources' => $lesson->getRessources(),
+                    ];
+                }
+
+                $modules[] = [
+                    'id' => $module->getId(),
+                    'title' => $module->getTitle(),
+                    'lessons' => $lessons
+                ];
+            }
+
+            $courseData['modules'] = $modules;
+            $result[] = $courseData;
+        }
+
+        return $result;
     }
 
     public function getCourseById(

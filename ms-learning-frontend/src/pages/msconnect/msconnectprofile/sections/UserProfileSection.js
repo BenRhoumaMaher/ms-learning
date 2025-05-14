@@ -2,7 +2,9 @@ import React, { useEffect, useState } from 'react';
 import UserProfileNav from '../reused/UserProfileNav';
 import { getUserInfos, getUserCourses, getUserEnrollements } from '../../../../helpers/api';
 import { useParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 const UserProfileSection = () => {
+    const { t } = useTranslation();
     const { id: userId } = useParams();
     const [userInfo, setUserInfo] = useState(null);
     const [courses, setCourses] = useState([]);
@@ -49,7 +51,7 @@ const UserProfileSection = () => {
                         <div className="profile--item">
                             <div className="profile--heading">
                                 <h3 className="h4 fw--700">
-                                    <span className="mr--4">About Me</span>
+                                    <span className="mr--4">{t('About Me')}</span>
                                     <i className="ml--10 text-primary fa fa-caret-right"></i>
                                 </h3>
                             </div>
@@ -57,12 +59,12 @@ const UserProfileSection = () => {
                                 <table className="table">
                                     <tbody>
                                         <tr>
-                                            <th className="fw--700 text-darkest">Full Name</th>
+                                            <th className="fw--700 text-darkest">{t('Full Name')}</th>
                                             <td>{userInfo?.username}</td>
                                         </tr>
                                         <tr>
                                             <th className="fw--700 text-darkest">
-                                                {isInstructor ? 'My Courses' : 'My Enrollments'}
+                                                {isInstructor ? t('My Courses') : t('My Enrollments')}
                                             </th>
                                             <td>
                                                 <ul className='list-unstyled'>
@@ -73,13 +75,13 @@ const UserProfileSection = () => {
                                                             </li>
                                                         ))
                                                     ) : (
-                                                        <li>No courses available</li>
+                                                        <li>{t('No courses available')}</li>
                                                     )}
                                                 </ul>
                                             </td>
                                         </tr>
                                         <tr>
-                                            <th className="fw--700 text-darkest">Member Since</th>
+                                            <th className="fw--700 text-darkest">{t('Member Since')}</th>
                                             <td>{new Date(userInfo?.member_since).toLocaleDateString()}</td>
                                         </tr>
                                     </tbody>
@@ -91,7 +93,7 @@ const UserProfileSection = () => {
                             <div className="profile--item">
                                 <div className="profile--heading">
                                     <h3 className="h4 fw--700">
-                                        <span className="mr--4">Biography</span>
+                                        <span className="mr--4">{t('Biography')}</span>
                                         <i className="ml--10 text-primary fa fa-caret-right"></i>
                                     </h3>
                                 </div>
@@ -105,7 +107,7 @@ const UserProfileSection = () => {
                             <div className="profile--item">
                                 <div className="profile--heading">
                                     <h3 className="h4 fw--700">
-                                        <span className="mr--4">Experience</span>
+                                        <span className="mr--4">{t('Experience')}</span>
                                         <i className="ml--10 text-primary fa fa-caret-right"></i>
                                     </h3>
                                 </div>
@@ -126,19 +128,19 @@ const UserProfileSection = () => {
                                 <table className="table">
                                     <tbody>
                                         <tr>
-                                            <th className="fw--700 text-darkest">Phone</th>
+                                            <th className="fw--700 text-darkest">{t('Phone')}</th>
                                             <td><a href={`tel:${userInfo?.phone}`}>{userInfo?.phone}</a></td>
                                         </tr>
                                         <tr>
-                                            <th className="fw--700 text-darkest">E-mail</th>
+                                            <th className="fw--700 text-darkest">{t('E-mail')}</th>
                                             <td><a href={`mailto:${userInfo?.email}`}>{userInfo?.email}</a></td>
                                         </tr>
                                         <tr>
-                                            <th className="fw--700 text-darkest">LinkedIn</th>
+                                            <th className="fw--700 text-darkest">{t('LinkedIn')}</th>
                                             <td><a href={userInfo?.linkedin} target="_blank" rel="noopener noreferrer">{userInfo?.linkedin}</a></td>
                                         </tr>
                                         <tr>
-                                            <th className="fw--700 text-darkest">Address</th>
+                                            <th className="fw--700 text-darkest">{t('Address')}</th>
                                             <td>{userInfo?.address}</td>
                                         </tr>
                                     </tbody>

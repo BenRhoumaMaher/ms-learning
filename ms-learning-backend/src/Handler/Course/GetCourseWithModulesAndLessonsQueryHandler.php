@@ -2,7 +2,6 @@
 
 namespace App\Handler\Course;
 
-use App\Repository\CourseRepository;
 use App\Repository\CoursesRepository;
 use App\Query\Course\GetCourseWithModulesAndLessonsQuery;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;

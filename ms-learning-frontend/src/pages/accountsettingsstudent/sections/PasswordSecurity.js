@@ -60,7 +60,7 @@ const PasswordSecurity = () => {
   }
 
   return (
-    <section className='container text-center my-5'>
+    <section className='container text-center my-5 text-center'>
       <h2 className='fw-bold'>Password & Security</h2>
       <p className='text-danger fw-semibold'>
         Keep your account safe and secure with a strong password
@@ -68,15 +68,15 @@ const PasswordSecurity = () => {
 
       <form
         onSubmit={handleSubmit}
-        className='settinpass-container mx-auto p-4'
+        className='stac-password-section mx-auto p-4'
       >
         <div className='mb-3 text-start'>
-          <label className='settinpass-label'>New Password</label>
-          <div className='settinpass-input-group'>
-            <i className='bi bi-lock settinpass-icon'></i>
+          <label className='stac-password-label'>New Password</label>
+          <div className='stac-password-input-group'>
+            <i className='bi bi-lock stac-password-icon'></i>
             <input
               type={showPassword.new ? 'text' : 'password'}
-              className='form-control settinpass-input'
+              className='form-control stac-password-input'
               placeholder='Enter new password'
               value={passwords.newPassword}
               onChange={e => handleChange('newPassword', e.target.value)}
@@ -85,19 +85,19 @@ const PasswordSecurity = () => {
             <i
               className={`bi ${
                 showPassword.new ? 'bi-eye-slash' : 'bi-eye'
-              } settinpass-eye`}
+              } stac-password-eye`}
               onClick={() => togglePassword('new')}
             ></i>
           </div>
         </div>
 
         <div className='mb-4 text-start'>
-          <label className='settinpass-label'>Confirm New Password</label>
-          <div className='settinpass-input-group'>
-            <i className='bi bi-lock settinpass-icon'></i>
+          <label className='stac-password-label'>Confirm New Password</label>
+          <div className='stac-password-input-group'>
+            <i className='bi bi-lock stac-password-icon'></i>
             <input
               type={showPassword.confirm ? 'text' : 'password'}
-              className='form-control settinpass-input'
+              className='form-control stac-password-input'
               placeholder='Confirm new password'
               value={passwords.confirmPassword}
               onChange={e => handleChange('confirmPassword', e.target.value)}
@@ -106,13 +106,13 @@ const PasswordSecurity = () => {
             <i
               className={`bi ${
                 showPassword.confirm ? 'bi-eye-slash' : 'bi-eye'
-              } settinpass-eye`}
+              } stac-password-eye`}
               onClick={() => togglePassword('confirm')}
             ></i>
           </div>
         </div>
 
-        <button className='btn settinpass-btn' type='submit' disabled={loading}>
+        <button className='btn stac-password-btn' type='submit' disabled={loading}>
           {loading ? 'Saving...' : 'Save Changes'}
         </button>
       </form>

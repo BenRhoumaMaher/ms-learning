@@ -522,6 +522,44 @@ class CoursesController extends AbstractController
         );
     }
 
+    public function getQuizScoresForLesson(
+        int $id,
+        LessonRepository $lessonRepository,
+        QuizScoreRepository $quizScoreRepository
+    ): JsonResponse {
+        $lesson = $lessonRepository->find($id);
+
+        if (!$lesson) {
+            return $this->json(['error' => 'Lesson not found'], 404);
+        }
+
+        $course = $lesson->getCourse();
+        if (!$course) {
+            return $this->json(['error' => 'No course associated with lesson'], 404);
+        }
+
+        $quiz = $course->getQuiz();
+        if (!$quiz) {
+            return $this->json(['error' => 'No quiz associated with course'], 404);
+        }
+
+        $quizScores = $quizScoreRepository->findBy(['quiz' => $quiz]);
+
+        $data = array_map(
+            function ($score) {
+                return [
+                    'id' => $score->getId(),
+                    'user_id' => $score->getUser()?->getId(),
+                    'quiz_id' => $score->getQuiz()?->getId(),
+                    'score' => $score->getScore(),
+                ];
+            },
+            $quizScores
+        );
+
+        return $this->json($data);
+    }
+
     // public function create(
     //     Request $request,
     //     ValidatorInterface $validator

@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from "react";
-import { Container, Row, Col, Card, Button, Modal, Form } from "react-bootstrap";
+import { Container, Row, Col, Card, Button, Form, Collapse } from "react-bootstrap";
 import { getCourseReviews, createCourseReview } from "../../../helpers/api";
 
 const StudentReviews = ({ courseId }) => {
   const [reviews, setReviews] = useState([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isFormOpen, setIsFormOpen] = useState(false);
   const [reviewText, setReviewText] = useState("");
   const [rating, setRating] = useState(5);
 
   const token = localStorage.getItem("token") || sessionStorage.getItem("token");
   const user = token ? JSON.parse(atob(token.split(".")[1])) : null;
-  const userId = user?.user_id
+  const userId = user?.user_id;
 
   useEffect(() => {
     const fetchReviews = async () => {
@@ -41,7 +41,7 @@ const StudentReviews = ({ courseId }) => {
 
       setReviewText("");
       setRating(5);
-      setIsModalOpen(false);
+      setIsFormOpen(false);
     } catch (error) {
       console.error("Error creating review", error);
       alert("Failed to create review");
@@ -77,22 +77,17 @@ const StudentReviews = ({ courseId }) => {
                   {"⭐".repeat(review.rating)}
                 </div>
               </Card.Body>
-
             </Card>
           </Col>
         ))}
       </Row>
 
-
-      <Button variant="primary" onClick={() => setIsModalOpen(true)}>
-        Add Review
+      <Button variant="primary" onClick={() => setIsFormOpen(!isFormOpen)} aria-controls="reviewForm" aria-expanded={isFormOpen}>
+        {isFormOpen ? "Close Review Form" : "Add Review"}
       </Button>
 
-      <Modal show={isModalOpen} onHide={() => setIsModalOpen(false)}>
-        <Modal.Header closeButton>
-          <Modal.Title>Submit Your Review</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
+      <Collapse in={isFormOpen}>
+        <div id="reviewForm" className="mt-4">
           <Form>
             <Form.Group controlId="formReviewRating" className="mb-3">
               <Form.Label>Rating</Form.Label>
@@ -108,7 +103,7 @@ const StudentReviews = ({ courseId }) => {
                 <option value={5}>5 - Excellent</option>
               </Form.Control>
             </Form.Group>
-            <Form.Group controlId="formReviewText">
+            <Form.Group controlId="formReviewText" className="mb-3">
               <Form.Label>Review</Form.Label>
               <Form.Control
                 as="textarea"
@@ -118,17 +113,17 @@ const StudentReviews = ({ courseId }) => {
                 onChange={(e) => setReviewText(e.target.value)}
               />
             </Form.Group>
+            <div className="d-flex justify-content-end">
+              <Button variant="secondary" className="me-2" onClick={() => setIsFormOpen(false)}>
+                Cancel
+              </Button>
+              <Button variant="primary" onClick={handleSubmitReview}>
+                Submit Review
+              </Button>
+            </div>
           </Form>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={() => setIsModalOpen(false)}>
-            Cancel
-          </Button>
-          <Button variant="primary" onClick={handleSubmitReview}>
-            Submit Review
-          </Button>
-        </Modal.Footer>
-      </Modal>
+        </div>
+      </Collapse>
     </Container>
   );
 };

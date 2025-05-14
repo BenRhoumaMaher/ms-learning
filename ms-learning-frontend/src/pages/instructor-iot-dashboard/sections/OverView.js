@@ -7,6 +7,8 @@ import { CoursesTable } from '../../../components/instructor-iot-dashboard/overv
 import { ModulesTable } from '../../../components/instructor-iot-dashboard/overview/ModulesTable';
 import { LessonsTable } from '../../../components/instructor-iot-dashboard/overview/LessonsTable';
 import { ForumPostsTable } from '../../../components/instructor-iot-dashboard/overview/ForumPostsTable';
+import { ViewCourseForm, EditCourseForm, DeleteCourseForm } from '../overview/CourseForms';
+import { ViewLessonForm, EditLessonForm, DeleteLessonForm } from '../overview/LessonForms';
 
 const Overview = () => {
     const {
@@ -16,7 +18,8 @@ const Overview = () => {
         forumPosts,
         loading,
         error,
-        instructorStats
+        instructorStats,
+        refreshData
     } = useInstructorDashboard();
 
     const [coursesPage, setCoursesPage] = useState(1);
@@ -25,16 +28,66 @@ const Overview = () => {
     const [forumPostsPage, setForumPostsPage] = useState(1);
     const itemsPerPage = 10;
 
-    const handleView = (id, type) => {
-        console.log(`View ${type} with ID: ${id}`);
+    const [activeCourseForm, setActiveCourseForm] = useState({
+        type: null,
+        courseId: null
+    });
+
+    const [activeLessonForm, setActiveLessonForm] = useState({
+        type: null,
+        lessonId: null
+    });
+
+    const handleCourseView = (id) => {
+        setActiveCourseForm({ type: 'view', courseId: id });
     };
 
-    const handleEdit = (id, type) => {
-        console.log(`Edit ${type} with ID: ${id}`);
+    const handleCourseEdit = (id) => {
+        setActiveCourseForm({ type: 'edit', courseId: id });
     };
 
-    const handleDelete = (id, type) => {
-        console.log(`Delete ${type} with ID: ${id}`);
+    const handleCourseDelete = (id) => {
+        setActiveCourseForm({ type: 'delete', courseId: id });
+    };
+
+    const closeCourseForm = () => {
+        setActiveCourseForm({ type: null, courseId: null });
+    };
+
+    const handleCourseUpdated = (updatedCourse) => {
+        refreshData();
+        closeCourseForm();
+    };
+
+    const handleCourseDeleted = (deletedCourseId) => {
+        refreshData();
+        closeCourseForm();
+    };
+
+    const handleLessonView = (id) => {
+        setActiveLessonForm({ type: 'view', lessonId: id });
+    };
+
+    const handleLessonEdit = (id) => {
+        setActiveLessonForm({ type: 'edit', lessonId: id });
+    };
+
+    const handleLessonDelete = (id) => {
+        setActiveLessonForm({ type: 'delete', lessonId: id });
+    };
+
+    const closeLessonForm = () => {
+        setActiveLessonForm({ type: null, lessonId: null });
+    };
+
+    const handleLessonUpdated = (updatedLesson) => {
+        refreshData();
+        closeLessonForm();
+    };
+
+    const handleLessonDeleted = (deletedLessonId) => {
+        refreshData();
+        closeLessonForm();
     };
 
     if (loading) {
@@ -75,19 +128,40 @@ const Overview = () => {
                 currentPage={coursesPage}
                 itemsPerPage={itemsPerPage}
                 onPageChange={setCoursesPage}
-                onView={handleView}
-                onEdit={handleEdit}
-                onDelete={handleDelete}
+                onView={handleCourseView}
+                onEdit={handleCourseEdit}
+                onDelete={handleCourseDelete}
             />
+
+            {/* Course Forms */}
+            {activeCourseForm.type === 'view' && (
+                <ViewCourseForm
+                    courseId={activeCourseForm.courseId}
+                    onClose={closeCourseForm}
+                />
+            )}
+
+            {activeCourseForm.type === 'edit' && (
+                <EditCourseForm
+                    courseId={activeCourseForm.courseId}
+                    onClose={closeCourseForm}
+                    onUpdate={handleCourseUpdated}
+                />
+            )}
+
+            {activeCourseForm.type === 'delete' && (
+                <DeleteCourseForm
+                    courseId={activeCourseForm.courseId}
+                    onClose={closeCourseForm}
+                    onDelete={handleCourseDeleted}
+                />
+            )}
 
             <ModulesTable
                 modules={modules}
                 currentPage={modulesPage}
                 itemsPerPage={itemsPerPage}
                 onPageChange={setModulesPage}
-                onView={handleView}
-                onEdit={handleEdit}
-                onDelete={handleDelete}
             />
 
             <LessonsTable
@@ -95,19 +169,40 @@ const Overview = () => {
                 currentPage={lessonsPage}
                 itemsPerPage={itemsPerPage}
                 onPageChange={setLessonsPage}
-                onView={handleView}
-                onEdit={handleEdit}
-                onDelete={handleDelete}
+                onView={handleLessonView}
+                onEdit={handleLessonEdit}
+                onDelete={handleLessonDelete}
             />
+
+            {/* Lesson Forms */}
+            {activeLessonForm.type === 'view' && (
+                <ViewLessonForm
+                    lessonId={activeLessonForm.lessonId}
+                    onClose={closeLessonForm}
+                />
+            )}
+
+            {activeLessonForm.type === 'edit' && (
+                <EditLessonForm
+                    lessonId={activeLessonForm.lessonId}
+                    onClose={closeLessonForm}
+                    onUpdate={handleLessonUpdated}
+                />
+            )}
+
+            {activeLessonForm.type === 'delete' && (
+                <DeleteLessonForm
+                    lessonId={activeLessonForm.lessonId}
+                    onClose={closeLessonForm}
+                    onDelete={handleLessonDeleted}
+                />
+            )}
 
             <ForumPostsTable
                 forumPosts={forumPosts}
                 currentPage={forumPostsPage}
                 itemsPerPage={itemsPerPage}
                 onPageChange={setForumPostsPage}
-                onView={handleView}
-                onEdit={handleEdit}
-                onDelete={handleDelete}
             />
         </div>
     );

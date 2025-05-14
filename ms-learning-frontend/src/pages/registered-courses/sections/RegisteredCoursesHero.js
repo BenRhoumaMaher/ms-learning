@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getEnrolledCourse } from '../../../helpers/api';
+import { getCourses } from '../../../helpers/api';
 
 const RegisteredCoursesHero = ({ courseId }) => {
   const [courseData, setCourseData] = useState(null);
@@ -13,8 +13,21 @@ const RegisteredCoursesHero = ({ courseId }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const data = await getEnrolledCourse(courseId);
-        setCourseData(data);
+        const courses = await getCourses();
+        const course = courses.find(c => c.id === parseInt(courseId));
+        if (course) {
+          setCourseData({
+            course: {
+              title: course.title,
+              image: course.image
+            },
+            user: {
+              name: course.instructor.name
+            }
+          });
+        } else {
+          setError('Course not found');
+        }
       } catch (err) {
         setError(err.message);
       } finally {

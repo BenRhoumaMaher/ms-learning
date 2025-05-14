@@ -1,7 +1,9 @@
 import React from 'react';
 import { Link, useParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 const UserProfileNav = () => {
+    const { t } = useTranslation();
     const { id } = useParams();
 
     const token = localStorage.getItem('token') || sessionStorage.getItem('token');
@@ -27,12 +29,12 @@ const UserProfileNav = () => {
         <div className="content--nav pb--30">
             <ul className="nav ff--primary fs--14 fw--500 bg-lighter">
                 {isCurrentUser && (
-                    <li><Link to={`/msconnect-profile/${id}/activity`}>Activity</Link></li>
+                    <li><Link to={`/msconnect-profile/${id}/activity`}>{t('Activity')}</Link></li>
                 )}
-                <li><Link to={`/msconnect-profile/${id}/profile`}>Profile</Link></li>
-                <li><Link to={`/msconnect-profile/${id}/friends`}>Friends</Link></li>
+                <li><Link to={`/msconnect-profile/${id}/profile`}>{t('Profile')}</Link></li>
+                <li><Link to={`/msconnect-profile/${id}/friends`}>{t('Friends')}</Link></li>
                 {isCurrentUser && (
-                    <li><Link to={`/msconnect-profile/${id}/forum`}>Forum</Link></li>
+                    <li><Link to={`/msconnect-profile/${id}/forum`}>{t('Forum')}</Link></li>
                 )}             
             </ul>
         </div>

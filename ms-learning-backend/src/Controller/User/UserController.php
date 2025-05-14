@@ -17,6 +17,7 @@ use App\Query\User\GetUserCoursesQuery;
 use App\Query\User\ShowInstructorQuery;
 use App\Service\UserService\UserService;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Repository\QAInstructorRepository;
 use App\Repository\StudentCourseRepository;
 use App\Query\Course\GetEnrolledCourseQuery;
 use App\Command\Course\EnrollInCourseCommand;
@@ -245,11 +246,9 @@ final class UserController extends AbstractController
         ReviewRepository $reviewRepository,
         CoursesRepository $coursesRepository
     ): JsonResponse {
-        $course = $this->queryBusService->handle(
-            new GetEnrolledCourseQuery($courseId)
-        );
-        $currentcourseId = $course->getCurse()->getId();
-        $course = $coursesRepository->find($currentcourseId);
+
+        $course = $coursesRepository->find($courseId);
+
         if (!$course) {
             return $this->json(['error' => 'Course not found'], 404);
         }
@@ -312,9 +311,12 @@ final class UserController extends AbstractController
 
         return $this->json(
             [
-            'student' => $user->getId(),
-            'course_titles' => $enrollmentData['titles'],
-            'course_ids' => $enrollmentData['ids'],
+                'student' => $user->getId(),
+                'course_titles' => $enrollmentData['titles'],
+                'course_ids' => $enrollmentData['ids'],
+                'enrollment_ids' => $enrollmentData['enrollmentIds'],
+                'course_images' => $enrollmentData['courseImages'],
+                'live_lessons' => $enrollmentData['liveLessons']
             ]
         );
     }
@@ -526,6 +528,20 @@ final class UserController extends AbstractController
             'analytics' => $analytics['posts']
             ]
             ]
+        );
+    }
+
+    public function getQaInstructor(
+        QAInstructorRepository $qainstructorRepository
+    ): JsonResponse {
+        $qaItems = $qainstructorRepository
+            ->findAll();
+
+        return $this->json(
+            $qaItems,
+            200,
+            [],
+            ['groups' => 'qainstructor:read']
         );
     }
 

@@ -1,9 +1,17 @@
-import React from 'react'
-import DeleteAccountModal from '../../../components/accountsettingsinstructor/DeleteAccountModal'
+import React, { useState } from 'react'
 import { useUserAuth } from '../../../hooks/useUserAuth'
 
 const AccountSettingsHero = ({ onEditProfileClick, onChangePasswordClick }) => {
-  const { userId, error, handleDeleteAccount } = useUserAuth()
+  const { userId, username, error, success, handleDeleteAccount } = useUserAuth()
+  const [showDeleteForm, setShowDeleteForm] = useState(false)
+
+  const handleConfirmDelete = async (e) => {
+    e.preventDefault()
+    const confirmed = await handleDeleteAccount()
+    if (confirmed) {
+      setShowDeleteForm(false)
+    }
+  }
 
   return (
     <section className='accset-hero'>
@@ -12,10 +20,10 @@ const AccountSettingsHero = ({ onEditProfileClick, onChangePasswordClick }) => {
           <div className='col-md-6 accset-left'>
             <h2 className='accset-title'>Your Account, Your Way</h2>
             <p className='accset-subtitle'>
-              <span className='accset-highlight'>Take Control</span>, Student’s
-              Name Customize Your Learning Experience.
+              <span className='accset-highlight'>Take Control</span>, {username} — Customize Your Learning Experience.
             </p>
             {error && <div className='alert alert-danger mt-3'>{error}</div>}
+            {success && <div className='alert alert-success mt-3'>{success}</div>}
             <div className='accset-buttons'>
               <button
                 className='accset-btn accset-edit-btn'
@@ -34,30 +42,38 @@ const AccountSettingsHero = ({ onEditProfileClick, onChangePasswordClick }) => {
 
           <div className='col-md-6 accset-right'>
             <div className='accset-profile d-flex align-items-center justify-content-end'>
-              <div className='accset-avatar'>
-                <i className='fas fa-user fa-4x text-info'></i>
-              </div>
               <div className='accset-info text-center'>
-                <h4 className='accset-name'>Name & email</h4>
-                <p className='accset-membership'>
-                  Membership type (Free/Premium)
-                </p>
+                <h4 className='accset-name'>{username}</h4>
+
+                {/* Toggle Delete Form */}
                 <button
                   className='accset-btn accset-delete-btn'
-                  data-bs-toggle='modal'
-                  data-bs-target='#deleteAccountModal'
+                  onClick={() => setShowDeleteForm(!showDeleteForm)}
                 >
-                  Delete account ?
+                  Delete account?
                 </button>
+
+                {/* Delete Confirmation Form */}
+                {showDeleteForm && (
+                  <form onSubmit={handleConfirmDelete} className='mt-3'>
+                    <p>Are you sure you want to delete your account?</p>
+                    <button type='submit' className='btn btn-danger btn-sm'>
+                      Yes, delete
+                    </button>{' '}
+                    <button
+                      type='button'
+                      className='btn btn-secondary btn-sm'
+                      onClick={() => setShowDeleteForm(false)}
+                    >
+                      Cancel
+                    </button>
+                  </form>
+                )}
               </div>
             </div>
           </div>
         </div>
       </div>
-      <DeleteAccountModal
-        error={error}
-        handleDeleteAccount={handleDeleteAccount}
-      />
     </section>
   )
 }

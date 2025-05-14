@@ -1,10 +1,10 @@
 import React from "react";
 import { Link, useParams } from "react-router-dom";
+import { useTranslation } from 'react-i18next'
 
 const Sidebar = () => {
-    // Get the instructor ID from URL parameters
     const { id } = useParams();
-
+    const { t } = useTranslation()
     return (
         <div
             className="d-flex flex-column p-3 bg-white"
@@ -12,7 +12,7 @@ const Sidebar = () => {
         >
             <h4 className="text-center mb-4" style={{ color: "#00b4d8" }}>
                 <i className="fa fa-graduation-cap me-2"></i>
-                <span className="text-dark">Instructor</span>
+                <span className="text-dark">{t('Instructor')}</span>
             </h4>
 
             <ul className="nav nav-pills flex-column">
@@ -24,7 +24,7 @@ const Sidebar = () => {
                         style={{ color: "#0077b6" }}
                     >
                         <i className="fa fa-tachometer me-2"></i>
-                        <span className="text-dark">Overview</span>
+                        <span className="text-dark">{t('Overview')}</span>
                     </Link>
                 </li>
 
@@ -35,7 +35,7 @@ const Sidebar = () => {
                         style={{ color: "#0077b6" }}
                     >
                         <i className="fa fa-users me-2"></i>
-                        <span className="text-dark">Student Management</span>
+                        <span className="text-dark">{t('Student Management')}</span>
                     </Link>
                 </li>
 
@@ -46,7 +46,7 @@ const Sidebar = () => {
                         style={{ color: "#0077b6" }}
                     >
                         <i className="fa fa-bar-chart me-2"></i>
-                        <span className="text-dark">Engagement Analytics</span>
+                        <span className="text-dark">{t('Engagement Analytics')}</span>
                     </Link>
                 </li>
 
@@ -68,7 +68,7 @@ const Sidebar = () => {
                         style={{ color: "#0077b6" }}
                     >
                         <i className="fa fa-comments me-2"></i>
-                        <span className="text-dark">Feedback & Sentiment</span>
+                        <span className="text-dark">{t('Feedback & Sentiment')}</span>
                     </Link>
                 </li>
 

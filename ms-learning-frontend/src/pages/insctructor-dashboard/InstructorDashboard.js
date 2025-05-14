@@ -26,9 +26,6 @@ const InstructorDashboard= () => {
       <section className='section-container'>
         <InsctructorCourses />
       </section>
-      <section className='section-container'>
-        <InsctructorCommunity />
-      </section>
       <Footer />
     </section>
   )

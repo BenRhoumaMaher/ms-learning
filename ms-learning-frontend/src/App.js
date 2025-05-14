@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom'
 import SignupContainer from './components/containers/auth/SignupContainer'
 import LoginContainer from './components/containers/auth/LoginContainer'
 import ResetPasswordContainer from './components/containers/auth/ResetPasswordContainer'
@@ -44,8 +44,11 @@ import StudentManagement from './pages/instructor-iot-dashboard/sections/Student
 import EngagementAnalytics from './pages/instructor-iot-dashboard/sections/EngagementAnalytics'
 import OverView from './pages/instructor-iot-dashboard/sections/OverView'
 import FeedbackAndSentiment from './pages/instructor-iot-dashboard/sections/FeedbackAndSentiment'
+import UserEnrollements from './pages/studentenrollements/UserEnrollements'
+
 
 function App() {
+
   return (
     <div className='App'>
       <Router>
@@ -61,6 +64,7 @@ function App() {
           <Route path='/student-payment' element={<StudentPayment />} />
           <Route path='/student-calendar' element={<StudentCalendar />} />
           <Route path='/registered-courses/:id' element={<RegisteredCourses />} />
+          <Route path='/user-enrollements/:id' element={<UserEnrollements />} />
           <Route path="/quiz/:id" element={<Quiz />} />
           <Route path="/quiz/:id/question/:questionId" element={<QuizQuestion />} />
           <Route path='/instructor-public/:id' element={<InstructorPublic />} />
@@ -104,10 +108,23 @@ function App() {
             <Route path="forum" element={<UserForumSection />} />
           </Route>
         </Routes>
-        <ChatbotWidget />
+        <ChatbotConditional />
       </Router>
     </div>
   )
+
+  function ChatbotConditional() {
+    const location = useLocation();
+    const excludedPaths = [
+      '/signup',
+      '/login',
+      '/forgot-password',
+      '/reset-password'
+    ];
+    const shouldShowChatbot = !excludedPaths.includes(location.pathname);
+
+    return shouldShowChatbot ? <ChatbotWidget /> : null;
+  }
 }
 
 export default App

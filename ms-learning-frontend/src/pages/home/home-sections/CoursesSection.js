@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { getCategories } from '../../../helpers/api';
+import { useTranslation } from "react-i18next";
 
 const CoursesSection = () => {
+  const { t } = useTranslation();
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [courses, setCourses] = useState([]);
@@ -43,8 +45,8 @@ const CoursesSection = () => {
   return (
     <section className='courses-section'>
       <div className='container text-center'>
-        <h2 className='fw-bold'>Transform Your Skills with Courses Designed for You</h2>
-        <p className='text-muted'>From AI to Art, Learn Anything, Anytime, in Any Language</p>
+        <h2 className='fw-bold'>{t("Transform Your Skills with Courses Designed for You")}</h2>
+        <p className='text-muted'>{t("From AI to Art, Learn Anything, Anytime, in Any Language")}</p>
 
         <div className='categories-container d-flex justify-content-center flex-wrap mt-4'>
           {categories.length > 0 ? (
@@ -58,7 +60,7 @@ const CoursesSection = () => {
               </button>
             ))
           ) : (
-            <p>Loading categories...</p>
+            <p>{t("Loading categories...")}</p>
           )}
         </div>
 
@@ -73,16 +75,16 @@ const CoursesSection = () => {
                   <div className='course-info'>
                     <h5 className='text-danger'>{course.title}</h5>
                     <p className='text-primary'>{course.description}</p>
-                    <p className='text-success'>Price: ${course.price}</p>
-                    <div className='rating'>★ ★ ★ ☆ ☆</div>
+                    <p className='text-success'>{t("Price")}: ${course.price}</p>
+                    <div className='rating'>{t("Rating")}: ★ ★ ★ ☆ ☆</div>
                   </div>
                 </div>
               </div>
             ))
           ) : selectedCategory ? (
-            <p>No courses available for this category.</p>
+            <p>{t("No courses available for this category.")}</p>
           ) : (
-            <p>Select a category to see courses.</p>
+            <p>{t("Select a category to see courses.")}</p>
           )}
         </div>
 
@@ -93,14 +95,14 @@ const CoursesSection = () => {
               onClick={handlePrev}
               disabled={currentPage === 0}
             >
-              Previous
+              {t("Previous")}
             </button>
             <button
               className='btn btn-outline-primary ms-2'
               onClick={handleNext}
               disabled={currentPage === Math.ceil(courses.length / coursesPerPage) - 1}
             >
-              Next
+              {t("Next")}
             </button>
           </div>
         )}

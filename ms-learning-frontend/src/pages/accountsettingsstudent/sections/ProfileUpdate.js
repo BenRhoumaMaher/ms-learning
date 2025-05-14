@@ -77,19 +77,19 @@ const ProfileUpdate = () => {
   }
 
   return (
-    <section className='profile-update mt-5'>
+    <section className='stac-profile-update mt-5'>
       <Container>
         <Row className='justify-content-center'>
-          <Col md={8}>
+          <Col md={12}>
             <div className='text-center'>
-              <h2 className='profile-title'>Your Profile</h2>
-              <p className='profile-subtitle'>
+              <h2 className='stac-profile-title'>Your Profile</h2>
+              <p className='stac-profile-subtitle'>
                 Keep your information up to date, it’s how we personalize your
                 experience
               </p>
             </div>
 
-            <div className='profile-box'>
+            <div className='stac-profile-box'>
               <Form onSubmit={handleSubmit}>
                 <Row>
                   <Col md={6}>
@@ -230,7 +230,7 @@ const ProfileUpdate = () => {
                 </Row>
 
                 <div className='text-center'>
-                  <Button type='submit' className='save-btn mt-2'>
+                  <Button type='submit' className='stac-save-btn mt-2'>
                     Save Changes
                   </Button>
                 </div>

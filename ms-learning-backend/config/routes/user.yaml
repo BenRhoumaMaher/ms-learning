@@ -78,6 +78,11 @@ suggested_people:
   controller: App\Controller\User\UserController::suggested
   methods: GET
 
+qainstructors:
+  path: /qa-instructor
+  controller: App\Controller\User\UserController::getQaInstructor
+  methods: GET  
+
 followers:
   path: /followers/{userId}
   controller: App\Controller\User\UserController::followers

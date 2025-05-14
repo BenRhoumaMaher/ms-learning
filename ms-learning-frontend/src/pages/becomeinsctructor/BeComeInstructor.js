@@ -28,9 +28,9 @@ const BecomeInstructor = () => {
       <section className='section-container'>
         <HowToBecomeInstructor />
       </section>
-      <section className='section-container'>
+      {/* <section className='section-container'>
         <InstructorSuccessStories />
-      </section>
+      </section> */}
       <section className='section-container'>
         <FaqSection />
       </section>

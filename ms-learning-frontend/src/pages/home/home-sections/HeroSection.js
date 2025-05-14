@@ -1,7 +1,9 @@
 import React from 'react'
 import heroImage from '../../../assets/hero-image.jpg'
+import { useTranslation } from "react-i18next";
 
 const HeroSection = ({ faqRef }) => {
+  const { t } = useTranslation();
   const handleLearnMoreClick = () => {
     faqRef.current.scrollIntoView({ behavior: 'smooth' })
   }
@@ -13,9 +15,9 @@ const HeroSection = ({ faqRef }) => {
             <h1 className='home-title'>
               MS-<span className='text-danger'>LEARNING</span>
             </h1>
-            <p className='home-subtitle'>Learn Smarter, Not Harder...</p>
-            <p>Anytime, Anywhere</p>
-            <button className='btn btn-success mt-3' onClick={handleLearnMoreClick}>Learn More</button>
+            <p className='home-subtitle'>{t("Learn Smarter, Not Harder")}...</p>
+            <p>{t("Anytime, Anywhere")}</p>
+            <button className='btn btn-success mt-3' onClick={handleLearnMoreClick}>{t("Learn More")}</button>
           </div>
 
           <div className='col-lg-5 text-center'>

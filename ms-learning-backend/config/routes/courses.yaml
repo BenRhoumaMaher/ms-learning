@@ -6,7 +6,12 @@ index:
 quiz_questions:
   path: /quizzes/lesson/{lessonId}/questions
   controller: App\Controller\Course\CoursesController::getQuizQuestions
-  methods: GET  
+  methods: GET 
+
+lesson_quiz_scores:
+  path: /{id}/scores
+  controller: App\Controller\Course\CoursesController::getQuizScoresForLesson
+  methods: GET    
 
 latestCourses:
   path: /courses/latest

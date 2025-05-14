@@ -5,7 +5,263 @@
 .sticky-navbar {
   position: sticky;
   top: 0;
-  z-index: 1000; /* Ensure the navbar stays above other content */
+  z-index: 1030;
+}
+
+/* General section spacing */
+.stac-profile-update {
+  padding: 60px 0;
+  background-color: #f9f9f9;
+}
+
+/* Title styles */
+.stac-profile-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #2c3e50;
+}
+
+.stac-profile-subtitle {
+  font-size: 1.1rem;
+  color: #7f8c8d;
+  margin-bottom: 40px;
+}
+
+/* Form box styling */
+.stac-profile-box {
+  background-color: #ffffff;
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
+}
+
+/* Label style */
+.stac-profile-box .form-label {
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+/* Input group style */
+.stac-profile-box .input-group-text {
+  background-color: #ecf0f1;
+  border: none;
+  color: #2980b9;
+}
+
+.stac-profile-box .form-control {
+  border-left: none;
+  border-radius: 0 6px 6px 0;
+}
+
+/* Save button */
+.stac-save-btn {
+  background-color: #2980b9;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 6px;
+  font-weight: 600;
+  color: white;
+  transition: background-color 0.3s ease;
+}
+
+.stac-save-btn:hover {
+  background-color: #1c5985;
+}
+/* Section container */
+.stac-password-section {
+  max-width: 600px;
+  background-color: #ffffff;
+  padding: 40px;
+  margin-top: 40px;
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
+}
+
+/* Headings */
+.stac-password-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #2c3e50;
+}
+
+.stac-password-subtitle {
+  color: #e74c3c;
+  font-weight: 600;
+  margin-bottom: 30px;
+}
+
+/* Label style */
+.stac-password-label {
+  font-weight: 600;
+  color: #34495e;
+  margin-bottom: 6px;
+  display: block;
+}
+
+/* Input group */
+.stac-password-input-group {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.stac-password-input {
+  flex: 1;
+  padding-left: 38px;
+  padding-right: 38px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  height: 44px;
+}
+
+.stac-password-icon {
+  position: absolute;
+  left: 12px;
+  color: #3498db;
+  font-size: 1.2rem;
+}
+
+.stac-password-eye {
+  position: absolute;
+  right: 12px;
+  color: #7f8c8d;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+/* Submit button */
+.stac-password-btn {
+  background-color: #2980b9;
+  color: white;
+  border: none;
+  font-weight: 600;
+  padding: 10px 24px;
+  border-radius: 6px;
+  transition: background-color 0.3s ease;
+}
+
+.stac-password-btn:hover {
+  background-color: #1c5985;
+}
+
+.stdc-calendar-container {
+  width: 100%;
+  max-width: 600px;
+  margin: auto;
+  font-family: Arial, sans-serif;
+}
+
+.stdc-calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.stdc-nav-btn {
+  background: none;
+  border: none;
+  font-size: 1.5em;
+  cursor: pointer;
+}
+
+.stdc-calendar-weekdays,
+.stdc-calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+}
+
+.stdc-weekday,
+.stdc-calendar-day,
+.stdc-calendar-empty {
+  padding: 10px;
+  text-align: center;
+}
+
+.stdc-calendar-day {
+  position: relative;
+  cursor: pointer;
+  border: 1px solid #ccc;
+  margin: 2px;
+  border-radius: 4px;
+  transition: background-color 0.3s;
+}
+
+.stdc-calendar-day:hover {
+  background-color: #f0f0f0;
+}
+
+.stdc-calendar-day.stdc-selected {
+  background-color: #007bff;
+  color: white;
+}
+
+.stdc-calendar-day.stdc-has-lesson {
+  background-color: #ffeeba;
+  border-color: #ffc107;
+}
+
+.stdc-tooltip {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #343a40;
+  color: #fff;
+  padding: 8px;
+  border-radius: 4px;
+  white-space: nowrap;
+  z-index: 10;
+  margin-top: 5px;
+  font-size: 0.9em;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.stdc-calendar-day.stdc-has-lesson:hover .stdc-tooltip {
+  display: block;
+}
+
+.stdc-tooltip-item {
+  margin-bottom: 5px;
+}
+
+.stdc-tooltip-item:last-child {
+  margin-bottom: 0;
+}
+
+
+/* User Enrollments Page Styles */
+.enrcard {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border-radius: 10px;
+  overflow: hidden;
+  border: none;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.enrcard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+}
+
+.enrcard-img-top {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+}
+
+.enrcard-body {
+  padding: 1.5rem;
+}
+
+.enrcard-title {
+  font-weight: 600;
+  margin-bottom: 1rem;
+  min-height: 3rem;
+}
+
+.enrbadge {
+  font-size: 0.75rem;
+  padding: 0.5em 0.75em;
 }
 
 .navbar-brand img {
@@ -71,7 +327,7 @@
   border-radius: 50%;
   cursor: pointer;
   font-size: 24px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
 }
 
 .chatbot-modal {
@@ -81,7 +337,7 @@
   width: 300px;
   background: white;
   border-radius: 8px;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
   display: flex;
   flex-direction: column;
   overflow: hidden;

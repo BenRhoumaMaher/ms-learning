@@ -2,8 +2,10 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useMessageContext } from '../context/MessageContext';
 import Picker from 'emoji-picker-react';
 import happy from '../../../../assets/happy.png';
+import { useTranslation } from 'react-i18next';
 
 const MessageBox = () => {
+    const { t } = useTranslation();
     const {
         messages,
         joinRoom,
@@ -138,7 +140,7 @@ const MessageBox = () => {
                                         value={targetLang}
                                         onChange={(e) => setTargetLang(e.target.value)}
                                     >
-                                        <option selected>Select A Language</option>
+                                        <option selected>{t('Select A Language')}</option>
                                         {supportedLanguages.map((lang) => (
                                             <option key={lang.code} value={lang.code}>
                                                 {lang.name}
@@ -205,7 +207,7 @@ const MessageBox = () => {
                                             </span>
                                             <textarea
                                                 rows="1"
-                                                placeholder="say something..."
+                                                placeholder={t('say something...')}
                                                 value={messageInput}
                                                 onChange={(e) => setMessageInput(e.target.value)}
                                             />
@@ -218,7 +220,7 @@ const MessageBox = () => {
                             </>
                         ) : (
                             <div className="no-room-selected">
-                                <p>Select a chat to start messaging</p>
+                                <p>{t('Select a chat to start messaging')}</p>
                             </div>
                         )}
                     </div>

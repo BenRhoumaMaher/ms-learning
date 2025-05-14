@@ -4,8 +4,10 @@ import usePostListData from '../../../../../hooks/usePostListData';
 import usePostModals from '../../../../../hooks/usePostModals';
 import useLikes from '../../../../../hooks/useLikes';
 import useComments from '../../../../../hooks/useComments';
+import { useTranslation } from 'react-i18next';
 
 const PostList = ({ onTriggerModal }) => {
+    const { t } = useTranslation();
     const { posts, setPosts, comments, setComments, replies, setReplies } = usePostListData();
 
     const token = localStorage.getItem('token') || sessionStorage.getItem('token');
@@ -48,28 +50,28 @@ const PostList = ({ onTriggerModal }) => {
     return (
         <div className="post-list">
             <Modal isOpen={editModal.isOpen} onRequestClose={() => setEditModal({ isOpen: false, post: null })} style={modalStyles}>
-                <h3 className="mb-3">Edit Post</h3>
+                <h3 className="mb-3">{t("Edit Post")}</h3>
                 <input
                     type="text"
                     className="form-control mb-2"
-                    placeholder="Title"
+                    placeholder={t("Title")}
                     value={editInputs.title}
                     onChange={e => setEditInputs(prev => ({ ...prev, title: e.target.value }))}
                 />
                 <textarea
                     className="form-control mb-3"
                     rows="4"
-                    placeholder="Content"
+                    placeholder={t("Content")}
                     value={editInputs.content}
                     onChange={e => setEditInputs(prev => ({ ...prev, content: e.target.value }))}
                 ></textarea>
-                <button onClick={handleEditSubmit} className="btn btn-info">Save Changes</button>
+                <button onClick={handleEditSubmit} className="btn btn-info">{t("Save Changes")}</button>
             </Modal>
 
             <Modal isOpen={deleteModal.isOpen} onRequestClose={() => setDeleteModal({ isOpen: false, postId: null })} style={modalStyles}>
-                <h4 className="mb-4">Confirm Delete</h4>
-                <button onClick={confirmDelete} className="btn btn-danger me-3">Delete</button>
-                <button onClick={() => setDeleteModal({ isOpen: false, postId: null })} className="btn btn-secondary">Cancel</button>
+                <h4 className="mb-4">{t("Confirm Delete")}</h4>
+                <button onClick={confirmDelete} className="btn btn-danger me-3">{t("Delete")}</button>
+                <button onClick={() => setDeleteModal({ isOpen: false, postId: null })} className="btn btn-secondary">{t("Cancel")}</button>
             </Modal>
 
             {posts.map(post => (
@@ -78,7 +80,7 @@ const PostList = ({ onTriggerModal }) => {
                         <img src={`http://localhost:8080/${post.image}`} alt="Author" style={{ width: '50px', height: '50px', borderRadius: '50%' }} />
                         <div className="ms-3">
                             <h6 className="mb-0">{post.author}</h6>
-                            <small className="text-muted">Published: {post.createdAt}</small>
+                            <small className="text-muted">{t("Published")}: {post.createdAt}</small>
                         </div>
                     </div>
 
@@ -113,7 +115,7 @@ const PostList = ({ onTriggerModal }) => {
                             <input
                                 type="text"
                                 className="form-control"
-                                placeholder="Write a comment..."
+                                placeholder={t("Write a comment...")}
                                 value={commentInputs[post.id] || ''}
                                 onChange={e => handleCommentChange(post.id, e.target.value)}
                             />
@@ -133,7 +135,7 @@ const PostList = ({ onTriggerModal }) => {
                             <p className="ms-5 mb-1">{comment.content}</p>
                             <div className="ms-5">
                                 <button onClick={() => toggleReplyBox(comment.id)} className="btn btn-sm btn-link p-0 text-secondary">
-                                    Reply
+                                    {t("Reply")}
                                 </button>
 
                                 {replyingTo[comment.id] && (
@@ -141,7 +143,7 @@ const PostList = ({ onTriggerModal }) => {
                                         <input
                                             type="text"
                                             className="form-control form-control-sm"
-                                            placeholder={`Reply to ${comment.author}...`}
+                                            placeholder={`${t("Reply to")} ${comment.author}...`}
                                             value={replyInputs[comment.id] || ''}
                                             onChange={e => handleReplyChange(comment.id, e.target.value)}
                                         />

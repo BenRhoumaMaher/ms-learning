@@ -4,10 +4,12 @@ import CreatePostModal from '../../../../components/forum/modals/CreatePostModal
 import useInstructorCheck from '../../../../hooks/useInstructorCheck';
 import useForumPosts from '../../../../hooks/useForumPosts';
 import usePagination from '../../../../hooks/usePagination';
+import { useTranslation } from 'react-i18next';
 
 const POSTS_PER_PAGE = 2;
 
 const ForumPostsSection = ({ currentUserId }) => {
+    const { t } = useTranslation();
     const posts = useForumPosts();
     const isInstructor = useInstructorCheck(currentUserId);
     const { currentPage, totalPages, currentItems, goToNextPage, goToPrevPage } = usePagination(posts, POSTS_PER_PAGE);
@@ -19,10 +21,10 @@ const ForumPostsSection = ({ currentUserId }) => {
             <div className="col-lg-12">
                 <div className="main-wraper">
                     <div className="main-title d-flex justify-content-between align-items-center">
-                        Blog Posts
+                        {t("Blog Posts")}
                         {isInstructor && (
                             <button className="btn btn-primary" onClick={() => setShowModal(true)}>
-                                Create Post
+                                {t("Create Post")}
                             </button>
                         )}
                     </div>
@@ -46,15 +48,15 @@ const ForumPostsSection = ({ currentUserId }) => {
                                 disabled={currentPage === 1}
                                 onClick={goToPrevPage}
                             >
-                                Previous
+                                {t("Previous")}
                             </button>
-                            <span>Page {currentPage} of {totalPages}</span>
+                            <span>{t("Page")} {currentPage} {t("of")} {totalPages}</span>
                             <button
                                 className="btn btn-outline-primary"
                                 disabled={currentPage === totalPages}
                                 onClick={goToNextPage}
                             >
-                                Next
+                                {t("Next")}
                             </button>
                         </div>
                     )}

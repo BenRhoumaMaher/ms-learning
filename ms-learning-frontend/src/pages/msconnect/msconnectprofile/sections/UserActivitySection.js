@@ -2,8 +2,10 @@ import React, { useEffect, useState } from 'react';
 import UserProfileNav from './../reused/UserProfileNav';
 import { Link, useParams } from 'react-router-dom';
 import { fetchUserPostsWithComments, fetchUserFollowings } from '../../../../helpers/api';
+import { useTranslation } from 'react-i18next';
 
 const UserActivitySection = () => {
+    const { t } = useTranslation();
     const [posts, setPosts] = useState([]);
     const [followings, setFollowings] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -41,7 +43,7 @@ const UserActivitySection = () => {
             <div className="main--content col-md-12 pb--60">
                 <UserProfileNav />
                 <div className="alert alert-warning">
-                    Activity section is only available for your own profile.
+                     {t('Activity section is only available for your own profile.')}
                 </div>
             </div>
         );
@@ -80,7 +82,7 @@ const UserActivitySection = () => {
                                         </div>
                                         <div className="activity--info fs--14">
                                             <div className="activity--header">
-                                                <p>You posted an update</p>
+                                                <p>{t('You posted an update')}</p>
                                             </div>
                                             <div className="activity--meta fs--12">
                                                 <p><i className="fa mr--8 fa-clock-o"></i>{post.created_at}</p>
@@ -112,7 +114,7 @@ const UserActivitySection = () => {
                                                                     </div>
                                                                     <div className="acomment--info">
                                                                         <div className="acomment--header">
-                                                                            <p><Link to="#">{comment.author}</Link> Replied</p>
+                                                                            <p><Link to="#">{comment.author}</Link> {t('Replied')}</p>
                                                                         </div>
                                                                         <div className="acomment--meta">
                                                                             <p><i className="fa mr--8 fa-clock-o"></i>{comment.created_at}</p>
@@ -145,7 +147,7 @@ const UserActivitySection = () => {
                                         </div>
                                         <div className="activity--info fs--14">
                                             <div className="activity--header">
-                                                <p>You and <Link to="#">{friend.firstname} {friend.lastname}</Link> are now friends</p>
+                                                <p>{t('You and')} <Link to="#">{friend.firstname} {friend.lastname}</Link> {t('are now friends')}</p>
                                             </div>
                                             <div className="activity--meta fs--12">
                                                 <p><i className="fa mr--8 fa-envelope"></i>{friend.email}</p>

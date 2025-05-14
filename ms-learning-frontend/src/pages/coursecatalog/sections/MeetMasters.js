@@ -22,9 +22,9 @@ const MeetMasters = () => {
     fetchInstructors()
   }, [])
 
-  const handleViewProfile = () => {
-    navigate('/instructor-public/')
-  }
+  const handleViewProfile = (instructorId) => {
+    navigate(`/instructor-public/${instructorId}`);
+  };
 
   if (loading) {
     return (
@@ -86,7 +86,7 @@ const MeetMasters = () => {
                     {instructor.expertise || 'Expert Instructor'}
                   </p>
                   <button
-                    onClick={() => handleViewProfile()}
+                    onClick={() => handleViewProfile(instructor.id)}
                     className='btn meetmast-btn'
                   >
                     View Profile

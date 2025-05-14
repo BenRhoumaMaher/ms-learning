@@ -6,8 +6,10 @@ import Picker from 'emoji-picker-react';
 import useNotification from '../../../../../hooks/useNotification';
 import useFileUpload from '../../../../../hooks/useFileUpload';
 import useEmojiPicker from '../../../../../hooks/useEmojiPicker';
+import { useTranslation } from 'react-i18next';
 
 const CreatePostBox = () => {
+    const { t } = useTranslation();
     const [content, setContent] = useState('');
     const { notification, showNotification } = useNotification();
     const { fileInputRef, selectedFile, handlePhotoClick, handleFileChange, setSelectedFile } = useFileUpload();
@@ -46,7 +48,7 @@ const CreatePostBox = () => {
 
     return (
         <div>
-            <span className="new-title">Create New Post</span>
+            <span className="new-title">{t("Create New Post")}</span>
             <div className="new-post">
 
                 {notification.message && (
@@ -67,7 +69,7 @@ const CreatePostBox = () => {
                 <form onSubmit={handleSubmit} encType="multipart/form-data">
                     <input
                         type="text"
-                        placeholder="What's on your mind?"
+                        placeholder={t("What's on your mind?")}
                         value={content}
                         onChange={(e) => setContent(e.target.value)}
                     />
@@ -105,13 +107,13 @@ const CreatePostBox = () => {
                             <li style={{ listStyle: 'none' }}>
                                 <a href="/" title="" onClick={toggleEmojiPicker}>
                                     <i><img src={feelingIcon} alt="Activity" /></i>
-                                    <span>Feeling/Activity</span>
+                                    <span>{t("Feeling/Activity")}</span>
                                 </a>
                             </li>
                         </ul>
 
                         <button type="submit" className="btn btn-primary" disabled={!content.trim()}>
-                            Publish
+                            {t("Publish")}
                         </button>
                     </div>
                 </form>

@@ -1,11 +1,37 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { getUserEnrollements } from '../../../helpers/api';
+import { Link } from 'react-router-dom';
 
 const CourseSection = () => {
-  const courses = [
-    { id: 1, title: "Learn Python", progress: 88, nextLesson: "Advanced Python Functions" },
-    { id: 2, title: "Learn Python", progress: 70, nextLesson: "Advanced Python Functions" },
-    { id: 3, title: "Learn Python", progress: 52, nextLesson: "Advanced Python Functions" },
-  ];
+  const [courses, setCourses] = useState([]);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const data = await getUserEnrollements();
+
+        const enrichedCourses = data.course_ids.map((id, index) => {
+          const relatedLessons = data.live_lessons.filter(lesson => lesson.course_id === id);
+          const nextLesson = relatedLessons.length > 0
+            ? relatedLessons.sort((a, b) => new Date(a.liveStartTime) - new Date(b.liveStartTime))[0].title
+            : "No upcoming lessons";
+
+          return {
+            id,
+            title: data.course_titles[index],
+            image: data.course_images[index],
+            nextLesson
+          };
+        });
+
+        setCourses(enrichedCourses);
+      } catch (err) {
+        console.error("Error loading enrollments:", err);
+      }
+    }
+
+    fetchData();
+  }, []);
 
   return (
     <div className="container text-center my-5">
@@ -13,22 +39,16 @@ const CourseSection = () => {
       <p>Level up, and prove you’re smarter than your WiFi router</p>
 
       <div className="row mt-4">
-        {courses.map((course) => (
-          <div key={course.id} className="col-md-4">
+        {courses.map(course => (
+          <div key={course.id} className="col-md-4 mb-4">
             <div className="course-card shadow-sm">
-            <div className="col-md-6 d-flex justify-content-center bg-info p-5 w-100">
-                <i className="bi bi-image" style={{ fontSize: "4rem", color: "white" }}></i>
+              <div className="d-flex justify-content-center bg-info p-5 w-100">
+                <img src={`http://localhost:8080/${course.image}`} alt={course.title} style={{ height: "150px", objectFit: "cover" }} />
               </div>
               <h5 className="mt-3 text-danger">{course.title}</h5>
-              <div className="progress mx-4 h-100">
-                <div className="progress-bar bg-success" style={{ width: `${course.progress}%` }}>
-                  {course.progress}%
-                </div>
-              </div>
-              <p className="mt-2">Next lesson: {course.nextLesson}</p>
+              <p><strong>Next Lesson:</strong> {course.nextLesson}</p>
               <div className="d-flex justify-content-center gap-2">
-                <button className="btn btn-view px-4">View</button>
-                {course.progress < 100 && <button className="btn btn-join px-4">Join live</button>}
+                <Link to={`/registered-courses/${course.id}`} className="btn btn-view px-4 mt-3">View</Link>
               </div>
             </div>
           </div>

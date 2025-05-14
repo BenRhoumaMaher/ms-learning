@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import bgImage from '../../../../assets/bg-01.png';
 import { getUserInfos } from '../../../../helpers/api';
+import { useTranslation } from 'react-i18next';
 
 const UserProfileHeader = ({ userId }) => {
+    const { t } = useTranslation();
     const [userInfo, setUserInfo] = useState({
         username: '',
         expertise: '',
@@ -60,13 +62,13 @@ const UserProfileHeader = ({ userId }) => {
                 <div className="user-text">
                     <h2 className="user-name">{userInfo.username}</h2>
                     <p className="user-activity">
-                        <i className="fa fa-clock-o mr-2"></i> Active recently
+                        <i className="fa fa-clock-o mr-2"></i> {t('Active recently')}
                     </p>
                     <p className="user-desc">
                         <em>
                             {isInstructor && userInfo.expertise
                                 ? userInfo.expertise
-                                : "Hello everyone! Welcome To My MS-CONNECT Profile"}
+                                : t('Welcome message')}
                         </em>
                     </p>
                 </div>

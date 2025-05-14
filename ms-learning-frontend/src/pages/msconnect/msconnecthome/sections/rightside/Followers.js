@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { fetchUserFollowers } from '../../../../../helpers/api';
+import { useTranslation } from 'react-i18next';
 
 const Followers = ({ currentUserId }) => {
     const [followers, setFollowers] = useState([]);
+    const { t } = useTranslation();
 
     useEffect(() => {
         const loadFollowers = async () => {
@@ -21,7 +23,7 @@ const Followers = ({ currentUserId }) => {
 
     return (
         <div className="widget">
-            <h4 className="widget-title">Followers</h4>
+            <h4 className="widget-title">{t("Followers")}</h4>
             <ul className="followers">
                 {followers.map((follower) => (
                     <li key={follower.id} style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
@@ -36,7 +38,7 @@ const Followers = ({ currentUserId }) => {
                             <h4>
                                 <a href={`/msconnect-profile/${follower.id}`} title="">{follower.firstname} {follower.lastname}</a>
                             </h4>
-                            <a className="underline" href={`/msconnect-profile/${follower.id}`} title="View Profile">View</a>
+                            <a className="underline" href={`/msconnect-profile/${follower.id}`} title="View Profile">{t("View")}</a>
                         </div>
                     </li>
                 ))}

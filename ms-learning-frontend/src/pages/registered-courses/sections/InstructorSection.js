@@ -1,17 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Button } from 'react-bootstrap';
-import { getEnrolledCourse } from '../../../helpers/api';
+import { getCourses } from '../../../helpers/api';
 
 const InstructorSection = ({ courseId }) => {
   const [instructor, setInstructor] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchInstructor = async () => {
       try {
-        const data = await getEnrolledCourse(courseId);
-        setInstructor(data.user);
+        const courses = await getCourses();
+        const course = courses.find(c => c.id === parseInt(courseId));
+        if (course && course.instructor) {
+          setInstructor(course.instructor);
+        }
       } catch (err) {
         console.error('Failed to load instructor data', err);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -20,6 +26,7 @@ const InstructorSection = ({ courseId }) => {
     }
   }, [courseId]);
 
+  if (loading) return <div>Loading instructor...</div>;
   if (!instructor) return null;
 
   const { id, name, expertise, picture, linkedin, instagram, facebook } = instructor;

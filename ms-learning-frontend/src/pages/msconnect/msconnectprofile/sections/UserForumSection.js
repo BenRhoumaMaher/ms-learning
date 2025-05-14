@@ -2,8 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import UserProfileNav from './../reused/UserProfileNav';
 import { getForumPosts } from '../../../../helpers/api';
+import { useTranslation } from 'react-i18next';
 
 const UserForumSection = () => {
+    const { t } = useTranslation();
     const [forumTopics, setForumTopics] = useState([]);
     const { id: userIdFromUrl } = useParams();
 
@@ -30,8 +32,8 @@ const UserForumSection = () => {
                 <table className="table">
                     <thead className="ff--primary fs--14 text-darkest">
                         <tr>
-                            <th>Topics</th>
-                            <th>Views</th>
+                            <th>{t('Topics')}</th>
+                            <th>{t('Views')}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -44,7 +46,7 @@ const UserForumSection = () => {
                                         </Link>
                                     </h4>
                                     <p>
-                                        Categories:
+                                        {t('Categories')}:
                                         {topic.category && topic.category.map((cat, i) => (
                                             <span key={i}>
                                                 {' '}
@@ -64,7 +66,7 @@ const UserForumSection = () => {
                     </tbody>
                 </table>
             ) : (
-                <p className="ff--primary fs--14 text-darkest">No forum posts for this user.</p>
+                <p className="ff--primary fs--14 text-darkest">{t('No forum posts for this user.')}</p>
             )}
         </div>
     );
