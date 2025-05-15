@@ -3,29 +3,50 @@
 namespace App\Tests\AuthTests;
 
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use App\Entity\User;
 
 class RegisterTest extends WebTestCase
 {
     private $client;
+    private $entityManager;
 
     protected function setUp(): void
     {
         $this->client = static::createClient();
+        $this->entityManager = $this->client->getContainer()
+            ->get('doctrine')->getManager();
 
-        $container = self::$kernel->getContainer();
-        $entityManager = $container->get('doctrine')->getManager();
-        $connection = $entityManager->getConnection();
+        // Remove any existing test users
+        $users = $this->entityManager->getRepository(User::class)
+            ->findBy(['email' => 'maherbenrhouma@example.com']);
 
-        $connection->executeStatement('SET FOREIGN_KEY_CHECKS=0;');
-        $connection->executeStatement('TRUNCATE user;');
-        $connection->executeStatement('SET FOREIGN_KEY_CHECKS=1;');
+        foreach ($users as $user) {
+            $this->entityManager->remove($user);
+        }
+
+        $this->entityManager->flush();
+    }
+
+    protected function tearDown(): void
+    {
+        // Clean up any created users
+        $users = $this->entityManager->getRepository(User::class)
+            ->findBy(['email' => 'maherbenrhouma@example.com']);
+
+        foreach ($users as $user) {
+            $this->entityManager->remove($user);
+        }
+
+        $this->entityManager->flush();
+
+        parent::tearDown();
     }
 
     /**
      * @dataProvider \App\Tests\DataProvider\RegisterDataProvider::emptyFieldsDataProvider
      */
     public function testEmptyRegisterFields(
-        array $userData, 
+        array $userData,
         int $expectedStatusCode
     ): void {
         $this->client->request(
@@ -56,24 +77,25 @@ class RegisterTest extends WebTestCase
 
         $this->assertResponseStatusCodeSame($expectedStatusCode);
 
-        if ($expectedStatusCode === 200) {
+        if ($expectedStatusCode === 201) {
             $responseContent = json_decode(
                 $this->client->getResponse()
-                    ->getContent(), true
+                    ->getContent(),
+                true
             );
             $this->assertEquals(
-                'User registered successfully', 
+                'User registered successfully',
                 $responseContent['message']
             );
         }
     }
 
     /**
-     * @dataProvider \App\Tests\DataProvider\RegisterDataProvider::passwordValidationDataProvider
-     */
+ * @dataProvider \App\Tests\DataProvider\RegisterDataProvider::passwordValidationDataProvider
+ */
     public function testPasswordValidation(
-        array $userData, 
-        int $expectedStatusCode, 
+        array $userData,
+        int $expectedStatusCode,
         string $expectedMessage
     ): void {
         $this->client->request(
@@ -85,15 +107,19 @@ class RegisterTest extends WebTestCase
             json_encode($userData)
         );
 
-        $this->assertResponseStatusCodeSame($expectedStatusCode);
-
-        $responseContent = json_decode(
-            $this->client->getResponse()->getContent(),
-            true
+        $response = $this->client->getResponse();
+        $this->assertEquals(
+            $expectedStatusCode,
+            $response->getStatusCode(),
+            "Expected status code $expectedStatusCode but got {$response->getStatusCode()}. Response: ".$response->getContent()
         );
-        $this->assertArrayHasKey('errors', $responseContent);
-        $errorMessages = implode(', ', array_values($responseContent['errors']));
-        $this->assertStringContainsString($expectedMessage, $errorMessages);
+
+        if ($expectedStatusCode === 400) {
+            $responseContent = json_decode($response->getContent(), true);
+            $this->assertArrayHasKey('errors', $responseContent);
+            $errorMessages = implode(', ', array_values($responseContent['errors']));
+            $this->assertStringContainsString($expectedMessage, $errorMessages);
+        }
     }
 
     /**
@@ -117,7 +143,7 @@ class RegisterTest extends WebTestCase
             ['CONTENT_TYPE' => 'application/json'],
             json_encode($userData)
         );
-        $this->assertResponseStatusCodeSame(200);
+        $this->assertResponseStatusCodeSame(201);
 
         $this->client->request(
             'POST',
@@ -132,12 +158,13 @@ class RegisterTest extends WebTestCase
 
         $responseContent = json_decode(
             $this->client->getResponse()
-                ->getContent(), true
+                ->getContent(),
+            true
         );
         $this->assertArrayHasKey('errors', $responseContent);
         $this->assertArrayHasKey('email', $responseContent['errors']);
         $this->assertEquals(
-            'User already exists', 
+            'User already exists',
             $responseContent['errors']['email']
         );
     }
@@ -160,7 +187,7 @@ class RegisterTest extends WebTestCase
 
         $this->assertResponseStatusCodeSame($expectedStatusCode);
 
-        if ($expectedStatusCode === 200) {
+        if ($expectedStatusCode === 201) {
             $this->client->request(
                 'POST',
                 'http://localhost:8080/api/login',

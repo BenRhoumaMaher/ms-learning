@@ -139,9 +139,18 @@ final class UserController extends AbstractController
 
 
     public function deleteAccount(
-        User $user,
+        int $id,
         EntityManagerInterface $entityManager
     ): JsonResponse {
+        $user = $entityManager->getRepository(User::class)->find($id);
+
+        if (!$user) {
+            return $this->json(
+                ['message' => 'User not found'],
+                404
+            );
+        }
+
         $entityManager->remove($user);
         $entityManager->flush();
 

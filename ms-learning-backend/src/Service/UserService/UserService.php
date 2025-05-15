@@ -65,6 +65,10 @@ class UserService implements UserServiceInterface
             $errors['confirmPassword'] = 'Passwords do not match';
         }
 
+        if (!preg_match('/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/', $data['password'])) {
+            $errors['password'] = 'Password must contain at least one uppercase letter, one lowercase letter, one number and one special character (@$!%*?&)';
+        }
+
         $user = new User();
         $user->setFirstname($data['firstname'] ?? null);
         $user->setLastname($data['lastname'] ?? null);

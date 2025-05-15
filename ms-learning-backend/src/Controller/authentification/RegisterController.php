@@ -99,7 +99,7 @@ final class RegisterController extends AbstractController
                         ),
                         new OA\Property(
                             property: "password",
-                            type: "string0000",
+                            type: "string",
                             example: "
                             Password must contain at least 
                             one special character (@$!%*?&)"
