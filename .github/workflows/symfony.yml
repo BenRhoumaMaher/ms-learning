@@ -6,6 +6,8 @@ jobs:
   test:
     name: Run Symfony Tests
     runs-on: ubuntu-latest
+    env:
+      COMPOSER_MEMORY_LIMIT: -1
 
     steps:
       - name: Checkout Code
@@ -47,23 +49,29 @@ jobs:
         run: |
           cd ms-learning-backend
           cp .env.test .env
+          echo "APP_ENV=test" >> .env
+          echo "APP_DEBUG=0" >> .env
           echo "DATABASE_URL=mysql://root:@mslearning_db:3306/ms-learning?serverVersion=8&charset=utf8mb4" >> .env
           echo "ELASTICSEARCH_DSN=http://mslearning_elasticsearch:9200" >> .env
-          echo "MERCURE_ENABLED=false" >> .env
+          # Mercure configuration
+          echo "MERCURE_JWT_SECRET=test_secret_value" >> .env
+          echo "MERCURE_PUBLISH_URL=http://localhost:3001/.well-known/mercure" >> .env
+          echo "MERCURE_SUBSCRIBE_URL=http://localhost:3001/.well-known/mercure" >> .env
+          cat .env
           cd ..
 
       - name: Start Application Services
         run: docker-compose up -d php
 
-      - name: Install Dependencies (without scripts)
+      - name: Install Dependencies
         run: |
           docker exec mslearning-php bash -c "cd /var/www/html && composer install --prefer-dist --no-interaction --no-progress --no-scripts"
+          docker exec mslearning-php bash -c "cd /var/www/html && composer dump-autoload --optimize"
 
       - name: Run Manual Setup
         run: |
-          docker exec mslearning-php bash -c "cd /var/www/html && composer dump-autoload --optimize"
-          docker exec mslearning-php bash -c "cd /var/www/html && php bin/console cache:clear"
-          docker exec mslearning-php bash -c "cd /var/www/html && php bin/console assets:install"
+          docker exec mslearning-php bash -c "cd /var/www/html && php bin/console cache:clear --no-warmup"
+          docker exec mslearning-php bash -c "cd /var/www/html && php bin/console assets:install --symlink --relative"
           docker exec mslearning-php bash -c "cd /var/www/html && php bin/console doctrine:database:create --if-not-exists"
           docker exec mslearning-php bash -c "cd /var/www/html && php bin/console doctrine:schema:update --force"
           docker exec mslearning-php bash -c "cd /var/www/html && php bin/console elasticsearch:index:create"
