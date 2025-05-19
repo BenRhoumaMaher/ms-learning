@@ -2,7 +2,9 @@
 
 namespace App\Service\MailService;
 
-use Src\Classe\Mail;
+use App\Classe\Mail;
+
+
 
 class MailService implements MailServiceInterface
 {
