@@ -1,11 +1,13 @@
-import React, { useRef } from "react";
+import React, { useRef,useState } from "react";
 import { useLocation } from "react-router-dom";
 import useLessonPlayer from "../../../hooks/useLessonPlayer";
+import FlashcardComponent from "./FlashcardComponent";
 
 const HeroSection = ({ lessonId }) => {
   const { state } = useLocation();
   const { modules = [], courseTitle } = state || {};
   const videoRef = useRef(null);
+  const [showFlashcards, setShowFlashcards] = useState(false);
 
   const {
     notes,
@@ -91,20 +93,52 @@ const HeroSection = ({ lessonId }) => {
               overflowY: 'auto',
               textAlign: 'left'
             }}>
-              <h6>Lecture Summary:</h6>
-              <p style={{ fontSize: '0.8rem' }}>{notes.summary}</p>
+              <div className="d-flex justify-content-between mb-2">
+                <button
+                  className={`btn btn-sm ${!showFlashcards ? 'btn-primary' : 'btn-outline-primary'}`}
+                  onClick={() => setShowFlashcards(false)}
+                >
+                  Summary
+                </button>
+                {/* <button
+                  className={`btn btn-sm ${showFlashcards ? 'btn-primary' : 'btn-outline-primary'}`}
+                  onClick={() => setShowFlashcards(true)}
+                >
+                  Flashcards
+                </button> */}
+              </div>
 
-              <button
-                className="btn btn-sm btn-outline-primary mt-2"
-                onClick={() => setShowFullTranscript(!showFullTranscript)}
-              >
-                {showFullTranscript ? 'Hide Full Transcript' : 'Show Full Transcript'}
-              </button>
+              {!showFlashcards ? (
+                <>
+                  <h6>Lecture Summary:</h6>
+                  <p style={{ fontSize: '0.8rem' }}>{notes.summary}</p>
 
-              {showFullTranscript && (
-                <div className="mt-2" style={{ fontSize: '0.7rem' }}>
-                  <h6>Full Transcript:</h6>
-                  <p style={{ whiteSpace: 'pre-wrap' }}>{notes.fullTranscript}</p>
+                  <button
+                    className="btn btn-sm btn-outline-primary mt-2"
+                    onClick={() => setShowFullTranscript(!showFullTranscript)}
+                  >
+                    {showFullTranscript ? 'Hide Full Transcript' : 'Show Full Transcript'}
+                  </button>
+
+                  {showFullTranscript && (
+                    <div className="mt-2" style={{ fontSize: '0.7rem' }}>
+                      <h6>Full Transcript:</h6>
+                      <p style={{ whiteSpace: 'pre-wrap' }}>{notes.fullTranscript}</p>
+                    </div>
+                  )}
+                </>
+              ) : (
+                <div className="flashcards-container">
+                  <h6>Key Points Flashcards:</h6>
+                  {notes.flashcards && notes.flashcards.length > 0 ? (
+                    <div className="flashcard-deck">
+                      {notes.flashcards.map((card, index) => (
+                        <FlashcardComponent key={index} card={card} />
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-muted">No flashcards available for this lesson.</p>
+                  )}
                 </div>
               )}
             </div>

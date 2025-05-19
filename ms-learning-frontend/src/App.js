@@ -45,6 +45,7 @@ import EngagementAnalytics from './pages/instructor-iot-dashboard/sections/Engag
 import OverView from './pages/instructor-iot-dashboard/sections/OverView'
 import FeedbackAndSentiment from './pages/instructor-iot-dashboard/sections/FeedbackAndSentiment'
 import UserEnrollements from './pages/studentenrollements/UserEnrollements'
+import LogsDashboard from './pages/admin/LogsDashboard'
 
 
 function App() {
@@ -79,6 +80,7 @@ function App() {
           <Route path='/admin/users-list' element={<UsersList />} />
           <Route path='/admin/instructor-demands' element={<InstructorDemands />} />
           <Route path='/admin/chatbot-messages' element={<ChatbotMessagesList />} />
+          <Route path="/admin/logs" element={<LogsDashboard />} />
           <Route path='/create-course' element={<CreateCourse />} />
           <Route path='/account-settings-instructor' element={<AccoyntSettingsInstructor />} />
           <Route path='/instructor-calendar' element={<InstructorCalendar />} />

@@ -791,6 +791,16 @@ export const getInstructorForumPosts = async userId => {
   }
 }
 
+export const getLogLevelStats = async () => {
+  try {
+    const response = await bc.get('/logs/stats/levels');
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching log stats:', error);
+    throw error;
+  }
+};
+
 export const getLatestUserLiveLesson = async userId => {
   try {
     const token =

@@ -203,7 +203,8 @@ const useLessonPlayer = (modules, lessonId, videoRef) => {
             if (data.status === 'success') {
                 setNotes({
                     summary: data.summary,
-                    fullTranscript: data.full_transcript
+                    fullTranscript: data.full_transcript,
+                    flashcards: data.flashcards || []
                 });
             } else {
                 throw new Error(data.message || 'Failed to generate notes');

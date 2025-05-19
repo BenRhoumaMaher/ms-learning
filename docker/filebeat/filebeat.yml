@@ -1,0 +1,20 @@
+filebeat.inputs:
+- type: filestream
+  id: symfony-logs
+  enabled: true
+  paths:
+    - /var/www/html/var/log/dev.log
+  parsers:
+    - ndjson:
+        target: ""
+        overwrite_keys: true
+        add_error_key: true
+  fields:
+    log_type: symfony_app
+  fields_under_root: true
+
+output.logstash:
+  hosts: ["logstash:5044"]
+  ssl.enabled: false
+
+logging.level: debug

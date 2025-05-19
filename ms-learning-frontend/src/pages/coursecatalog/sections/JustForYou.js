@@ -56,7 +56,7 @@ const JustForYou = () => {
   }, []);
 
   const isCourseAccessible = (courseId) => {
-    return enrolledCourses.includes(courseId) || (userPlan && userPlan.planId !== 1);
+    return enrolledCourses.includes(courseId) || (userPlan && [2, 3].includes(userPlan.planId));
   };
 
   const handleShowMore = () => {

@@ -1,0 +1,4 @@
+logs_level:
+  path: /logs/stats/levels
+  controller: App\Controller\ElasticSearch\LogStatsController::getLogLevelStats
+  methods: GET

@@ -104,6 +104,16 @@ const Sidebar = () => {
             <FaCommentDots className='me-2' /> Chatbot Messages
           </Link>
         </li>
+
+        <li>
+          <Link
+            to='/admin/logs'
+            className='text-white text-decoration-none d-block py-2'
+          >
+            <FaCommentDots className='me-2' /> MS-LEARNING LOGS
+          </Link>
+        </li>  
+
       </ul>
     </div>
   )

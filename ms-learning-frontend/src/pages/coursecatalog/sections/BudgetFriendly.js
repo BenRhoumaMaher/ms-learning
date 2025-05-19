@@ -60,7 +60,7 @@ const BudgetFriendly = () => {
   };
 
   const isAccessible = () => {
-    return userPlan && userPlan.planId !== 1;
+    return userPlan && (userPlan && [2, 3].includes(userPlan.planId));
   };
 
   if (loading) {

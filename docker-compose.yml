@@ -114,6 +114,49 @@ services:
         limits:
           memory: 2G
 
+  logstash:
+    image: docker.elastic.co/logstash/logstash:8.12.0
+    container_name: mslearning-logstash
+    ports:
+      - "5044:5044"
+      - "9600:9600"
+    volumes:
+      - ./docker/logstash/config:/usr/share/logstash/config/:ro
+      - ./docker/logstash/pipeline:/usr/share/logstash/pipeline/:ro
+    environment:
+      LS_JAVA_OPTS: "-Xms512m -Xmx512m"
+    networks:
+      - mslearning
+    depends_on:
+      - elasticsearch
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.12.0
+    container_name: mslearning_kibana
+    ports:
+      - "5601:5601"
+    environment:
+      ELASTICSEARCH_HOSTS: '["http://mslearning_elasticsearch:9200"]'
+    networks:
+      - mslearning
+    depends_on:
+      - elasticsearch
+      - logstash
+
+  filebeat:
+    image: docker.elastic.co/beats/filebeat:8.12.0
+    container_name: mslearning-filebeat
+    user: root
+    volumes:
+      - ./docker/filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
+      - ./ms-learning-backend/var/log:/var/www/html/var/log:ro
+    networks:
+      - mslearning
+    depends_on:
+      - logstash
+      - php
+    command: filebeat -e -strict.perms=false
+
 networks:
   mslearning:
     driver: bridge

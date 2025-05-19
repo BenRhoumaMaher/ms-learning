@@ -99,6 +99,11 @@ App\Controller\Payment\PaymentController:
 App\Controller\ElasticSearch\SearchController:
   resource: routes/search.yaml
   prefix: /
-  name_prefix: "search_"  
+  name_prefix: "search_" 
+
+App\Controller\ElasticSearch\LogStatsController:
+  resource: routes/logs.yaml
+  prefix: /
+  name_prefix: "logs_"    
 
 
