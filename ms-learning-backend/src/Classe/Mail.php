@@ -1,12 +1,19 @@
 <?php
 
-namespace Src\Classe;
+namespace App\Classe;
 
 use Mailjet\Client;
 use Mailjet\Resources;
 
 class Mail
 {
+    private bool $enabled;
+
+    public function __construct(bool $enabled = true)
+    {
+        $this->enabled = $enabled;
+    }
+
     public function send(
         $to_email,
         $to_name,
@@ -20,6 +27,10 @@ class Mail
             foreach ($vars as $key => $var) {
                 $content = str_replace('{' . $key . '}', $var, $content);
             }
+        }
+
+        if (!$this->enabled) {
+            return;
         }
 
         $mj = new Client(

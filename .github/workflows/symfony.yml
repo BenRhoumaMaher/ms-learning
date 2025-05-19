@@ -51,6 +51,7 @@ jobs:
           echo "APP_DEBUG=0" >> .env
           echo "DATABASE_URL=mysql://root:@mslearning_db:3306/ms-learning?serverVersion=8&charset=utf8mb4" >> .env
           echo "ELASTICSEARCH_DSN=http://mslearning_elasticsearch:9200" >> .env
+          echo "MAIL_ENABLED=false" >> .env  # Add this line
           cd ..
 
       - name: Start Application Services
@@ -58,7 +59,8 @@ jobs:
 
       - name: Install Dependencies
         run: |
-          docker exec mslearning-php bash -c "cd /var/www/html && composer install --prefer-dist --no-interaction --no-progress --ignore-platform-reqs"
+          docker exec mslearning-php bash -c "cd /var/www/html && rm -rf var/cache/*"
+          docker exec mslearning-php bash -c "cd /var/www/html && composer install --prefer-dist --no-interaction --no-progress --no-scripts"
           docker exec mslearning-php bash -c "cd /var/www/html && composer dump-autoload --optimize"
 
       - name: Run Manual Setup
