@@ -11,18 +11,20 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Set up Docker Buildx
+      - name: Set up Docker
         uses: docker/setup-buildx-action@v3
+
+      - name: Set up Docker Compose
+        uses: docker/setup-compose-action@v3
 
       - name: Start Docker Containers
         run: |
-          docker-compose up -d
+          docker compose up -d
           docker ps  # Verify running containers
 
       - name: Wait for MySQL to be Ready
         run: |
           echo "Waiting for MySQL to be ready..."
-          # Use the correct container name from docker-compose.yml
           until docker exec mslearning_db mysqladmin ping -h localhost --silent; do
             echo "MySQL not ready yet - sleeping for 5 seconds"
             sleep 5
@@ -38,7 +40,6 @@ jobs:
       - name: Prepare .env.test.local
         run: |
           docker exec mslearning-php cp .env.test .env.test.local
-          # Use the correct container name and database name from docker-compose.yml
           docker exec mslearning-php sh -c "echo 'DATABASE_URL=mysql://root:@mslearning_db:3306/ms-learning?serverVersion=8&charset=utf8mb4' >> .env.test.local"
           docker exec mslearning-php cat .env.test.local
 
