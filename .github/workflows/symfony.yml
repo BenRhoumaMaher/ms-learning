@@ -49,13 +49,31 @@ jobs:
           cp .env.test .env
           echo "APP_ENV=test" >> .env
           echo "APP_DEBUG=0" >> .env
+          echo "APP_SECRET=2303a3dac97337d8666a0126b0bef701" >> .env
           echo "DATABASE_URL=mysql://root:@mslearning_db:3306/ms-learning?serverVersion=8&charset=utf8mb4" >> .env
           echo "ELASTICSEARCH_DSN=http://mslearning_elasticsearch:9200" >> .env
+
+          echo "MESSENGER_TRANSPORT_DSN=doctrine://default?auto_setup=0" >> .env
+
+          echo "MAILER_DSN=null://null" >> .env
           echo "MAIL_ENABLED=false" >> .env
+
+          echo "MERCURE_ENABLED=false" >> .env
           echo "MERCURE_JWT_SECRET=dummy_value_for_tests" >> .env
           echo "MERCURE_URL=http://dummy_mercure/.well-known/mercure" >> .env
           echo "MERCURE_PUBLIC_URL=http://dummy_mercure/.well-known/mercure" >> .env
-          echo "MERCURE_PUBLISH_URL=http://dummy_mercure/.well-known/mercure" >> .env
+
+          echo "JWT_SECRET_KEY=%kernel.project_dir%/config/jwt/private.pem" >> .env
+          echo "JWT_PUBLIC_KEY=%kernel.project_dir%/config/jwt/public.pem" >> .env
+          echo "JWT_PASSPHRASE=fdde6e1f5cb3ae33e99332c9f9225a1970c9ca98042ea3e070f9bf009cf8b69c" >> .env
+
+          echo "MJ_APIKEY_PUBLIC=dummy_mailjet_public" >> .env
+          echo "MJ_APIKEY_PRIVATE=dummy_mailjet_private" >> .env
+
+          echo "STRIPE_KEY=dummy_stripe_key" >> .env
+          echo "STRIPE_SECRET=dummy_stripe_secret" >> .env
+
+          cat .env  # Verify the generated .env file
           cd ..
 
       - name: Start Application Services
@@ -72,6 +90,7 @@ jobs:
           docker exec mslearning-php bash -c "cd /var/www/html && php bin/console cache:clear --no-warmup"
           docker exec mslearning-php bash -c "cd /var/www/html && php bin/console doctrine:database:create --if-not-exists"
           docker exec mslearning-php bash -c "cd /var/www/html && php bin/console doctrine:schema:update --force"
+          docker exec mslearning-php bash -c "cd /var/www/html && php bin/console messenger:setup-transports"
 
       - name: Run Tests
         run: docker exec mslearning-php bash -c "cd /var/www/html && php bin/phpunit"
