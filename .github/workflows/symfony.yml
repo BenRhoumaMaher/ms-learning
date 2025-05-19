@@ -20,36 +20,42 @@ jobs:
           sudo chmod +x /usr/local/bin/docker-compose
           docker-compose --version
 
-      - name: Start Docker Containers
+      - name: Start Docker Containers (without dependencies)
         run: |
-          docker-compose up -d
-          docker ps  # Verify running containers
+          docker-compose up -d db  # Start only DB first
+          docker ps
 
       - name: Wait for MySQL to be Ready
         run: |
           echo "Waiting for MySQL to be ready..."
           until docker exec mslearning_db mysqladmin ping -h localhost --silent; do
-            echo "MySQL not ready yet - sleeping for 5 seconds"
+            echo "MySQL not ready yet - sleeping"
             sleep 5
           done
           echo "MySQL is ready!"
 
+      - name: Copy .env file
+        run: |
+          cp .env.test .env
+          echo "DATABASE_URL=mysql://root:@mslearning_db:3306/ms-learning?serverVersion=8&charset=utf8mb4" >> .env
+
+      - name: Start remaining services
+        run: docker-compose up -d
+
       - name: Install Dependencies
         run: |
-          # Wait for PHP container to be fully up
-          sleep 10
-          docker exec mslearning-php composer install --prefer-dist --no-interaction --no-progress --optimize-autoloader
+          docker exec mslearning-php composer install --prefer-dist --no-interaction --no-progress --no-scripts
+          docker exec mslearning-php composer dump-autoload --optimize
 
-      - name: Prepare .env.test.local
+      - name: Run post-install scripts manually
         run: |
-          docker exec mslearning-php cp .env.test .env.test.local
-          docker exec mslearning-php sh -c "echo 'DATABASE_URL=mysql://root:@mslearning_db:3306/ms-learning?serverVersion=8&charset=utf8mb4' >> .env.test.local"
-          docker exec mslearning-php cat .env.test.local
+          docker exec mslearning-php php bin/console cache:clear
+          docker exec mslearning-php php bin/console assets:install
 
       - name: Create Database Schema
         run: |
-          docker exec mslearning-php php bin/console doctrine:database:create --env=test --if-not-exists
-          docker exec mslearning-php php bin/console doctrine:schema:update --force --env=test
+          docker exec mslearning-php php bin/console doctrine:database:create --if-not-exists
+          docker exec mslearning-php php bin/console doctrine:schema:update --force
 
       - name: Run Symfony Tests
         run: docker exec mslearning-php php bin/phpunit
