@@ -87,8 +87,10 @@ jobs:
 
       - name: Run Manual Setup
         run: |
-          docker exec mslearning_db mysql -uroot -e "CREATE DATABASE IF NOT EXISTS \`ms-learning_test\`;"
-          
+          echo "Checking database references:"
+          docker exec mslearning-php bash -c "cd /var/www/html && grep -r 'ms-learning' config/ tests/"
+          docker exec mslearning_db mysql -uroot -e "SHOW DATABASES;"
+
           docker exec mslearning-php bash -c "cd /var/www/html && php bin/console cache:clear --no-warmup"
           docker exec mslearning-php bash -c "cd /var/www/html && php bin/console doctrine:database:create --if-not-exists"
           docker exec mslearning-php bash -c "cd /var/www/html && php bin/console doctrine:schema:update --force"
