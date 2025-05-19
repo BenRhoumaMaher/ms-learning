@@ -53,6 +53,7 @@ jobs:
           echo "ELASTICSEARCH_DSN=http://mslearning_elasticsearch:9200" >> .env
           echo "MAIL_ENABLED=false" >> .env
           echo "MERCURE_JWT_SECRET=dummy_value_for_tests" >> .env
+          echo "MERCURE_URL=http://dummy_mercure/.well-known/mercure" >> .env
           echo "MERCURE_PUBLISH_URL=http://dummy_mercure/.well-known/mercure" >> .env
           cd ..
 
