@@ -49,10 +49,7 @@ jobs:
           cp .env.test .env
           echo "DATABASE_URL=mysql://root:@mslearning_db:3306/ms-learning?serverVersion=8&charset=utf8mb4" >> .env
           echo "ELASTICSEARCH_DSN=http://mslearning_elasticsearch:9200" >> .env
-          # Add dummy Mercure values or disable Mercure
-          echo "MERCURE_JWT_SECRET=dummy_value" >> .env
-          echo "MERCURE_PUBLISH_URL=http://localhost:3001/.well-known/mercure" >> .env
-          echo "MERCURE_SUBSCRIBE_URL=http://localhost:3001/.well-known/mercure" >> .env
+          echo "MERCURE_ENABLED=false" >> .env
           cd ..
 
       - name: Start Application Services
