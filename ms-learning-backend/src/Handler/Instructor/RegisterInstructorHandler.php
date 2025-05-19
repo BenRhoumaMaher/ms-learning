@@ -1,6 +1,6 @@
 <?php
 
-namespace App\MessageHandler\Command;
+namespace App\Handler\Instructor;
 
 use App\Service\UserService\BecomeInstructorService;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
