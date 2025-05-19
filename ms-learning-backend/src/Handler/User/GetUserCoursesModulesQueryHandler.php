@@ -3,7 +3,7 @@
 namespace App\Handler\User;
 
 use App\Repository\UserRepository;
-use App\Query\User\GetUserCoursesModulesQuery;
+use App\Query\Course\GetUserCoursesModulesQuery;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 use App\Service\ElasticSearch\VideoEngagementAnalyticsService;
 
