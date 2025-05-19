@@ -1,0 +1,51 @@
+name: Symfony CI/CD
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    name: Run Symfony Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Start Docker Containers
+        run: |
+          docker-compose up -d
+          docker ps  # Verify running containers
+
+      - name: Wait for MySQL to be Ready
+        run: |
+          echo "Waiting for MySQL to be ready..."
+          # Use the correct container name from docker-compose.yml
+          until docker exec mslearning_db mysqladmin ping -h localhost --silent; do
+            echo "MySQL not ready yet - sleeping for 5 seconds"
+            sleep 5
+          done
+          echo "MySQL is ready!"
+
+      - name: Install Dependencies
+        run: |
+          # Wait for PHP container to be fully up
+          sleep 10
+          docker exec mslearning-php composer install --prefer-dist --no-interaction --no-progress --optimize-autoloader
+
+      - name: Prepare .env.test.local
+        run: |
+          docker exec mslearning-php cp .env.test .env.test.local
+          # Use the correct container name and database name from docker-compose.yml
+          docker exec mslearning-php sh -c "echo 'DATABASE_URL=mysql://root:@mslearning_db:3306/ms-learning?serverVersion=8&charset=utf8mb4' >> .env.test.local"
+          docker exec mslearning-php cat .env.test.local
+
+      - name: Create Database Schema
+        run: |
+          docker exec mslearning-php php bin/console doctrine:database:create --env=test --if-not-exists
+          docker exec mslearning-php php bin/console doctrine:schema:update --force --env=test
+
+      - name: Run Symfony Tests
+        run: docker exec mslearning-php php bin/phpunit
