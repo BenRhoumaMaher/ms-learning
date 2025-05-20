@@ -52,6 +52,10 @@ jobs:
           echo "APP_SECRET=2303a3dac97337d8666a0126b0bef701" >> .env
           echo "DATABASE_URL=mysql://root:@mslearning_db:3306/ms-learning?serverVersion=8&charset=utf8mb4" >> .env
           echo "ELASTICSEARCH_DSN=http://mslearning_elasticsearch:9200" >> .env
+          echo "ELASTICSEARCH_HOST=http://mslearning_elasticsearch:9200" >> .env
+          echo "ELASTICSEARCH_PORT=9200" >> .env
+          echo "ELASTICSEARCH_URL=http://mslearning_elasticsearch:9200" >> .env
+
 
           echo "MESSENGER_TRANSPORT_DSN=doctrine://default?auto_setup=0" >> .env
 
