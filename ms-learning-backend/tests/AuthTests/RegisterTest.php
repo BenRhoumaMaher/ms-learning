@@ -2,12 +2,13 @@
 
 namespace App\Tests\AuthTests;
 
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use App\Entity\User;
+use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class RegisterTest extends WebTestCase
 {
     private $client;
+
     private $entityManager;
 
     protected function setUp(): void
@@ -18,7 +19,9 @@ class RegisterTest extends WebTestCase
 
         // Remove any existing test users
         $users = $this->entityManager->getRepository(User::class)
-            ->findBy(['email' => 'maherbenrhouma@example.com']);
+            ->findBy([
+                'email' => 'maherbenrhouma@example.com',
+            ]);
 
         foreach ($users as $user) {
             $this->entityManager->remove($user);
@@ -31,7 +34,9 @@ class RegisterTest extends WebTestCase
     {
         // Clean up any created users
         $users = $this->entityManager->getRepository(User::class)
-            ->findBy(['email' => 'maherbenrhouma@example.com']);
+            ->findBy([
+                'email' => 'maherbenrhouma@example.com',
+            ]);
 
         foreach ($users as $user) {
             $this->entityManager->remove($user);
@@ -54,7 +59,9 @@ class RegisterTest extends WebTestCase
             'http://localhost:8080/api/register',
             [],
             [],
-            ['CONTENT_TYPE' => 'application/json'],
+            [
+                'CONTENT_TYPE' => 'application/json',
+            ],
             json_encode($userData)
         );
 
@@ -71,7 +78,9 @@ class RegisterTest extends WebTestCase
             'http://localhost:8080/api/register',
             [],
             [],
-            ['CONTENT_TYPE' => 'application/json'],
+            [
+                'CONTENT_TYPE' => 'application/json',
+            ],
             json_encode($userData)
         );
 
@@ -91,8 +100,8 @@ class RegisterTest extends WebTestCase
     }
 
     /**
- * @dataProvider \App\Tests\DataProvider\RegisterDataProvider::passwordValidationDataProvider
- */
+     * @dataProvider \App\Tests\DataProvider\RegisterDataProvider::passwordValidationDataProvider
+     */
     public function testPasswordValidation(
         array $userData,
         int $expectedStatusCode,
@@ -103,7 +112,9 @@ class RegisterTest extends WebTestCase
             'http://localhost:8080/api/register',
             [],
             [],
-            ['CONTENT_TYPE' => 'application/json'],
+            [
+                'CONTENT_TYPE' => 'application/json',
+            ],
             json_encode($userData)
         );
 
@@ -111,7 +122,7 @@ class RegisterTest extends WebTestCase
         $this->assertEquals(
             $expectedStatusCode,
             $response->getStatusCode(),
-            "Expected status code $expectedStatusCode but got {$response->getStatusCode()}. Response: ".$response->getContent()
+            "Expected status code {$expectedStatusCode} but got {$response->getStatusCode()}. Response: ".$response->getContent()
         );
 
         if ($expectedStatusCode === 400) {
@@ -140,7 +151,9 @@ class RegisterTest extends WebTestCase
             'http://localhost:8080/api/register',
             [],
             [],
-            ['CONTENT_TYPE' => 'application/json'],
+            [
+                'CONTENT_TYPE' => 'application/json',
+            ],
             json_encode($userData)
         );
         $this->assertResponseStatusCodeSame(201);
@@ -150,7 +163,9 @@ class RegisterTest extends WebTestCase
             'http://localhost:8080/api/register',
             [],
             [],
-            ['CONTENT_TYPE' => 'application/json'],
+            [
+                'CONTENT_TYPE' => 'application/json',
+            ],
             json_encode($userData)
         );
 
@@ -181,7 +196,9 @@ class RegisterTest extends WebTestCase
             'http://localhost:8080/api/register',
             [],
             [],
-            ['CONTENT_TYPE' => 'application/json'],
+            [
+                'CONTENT_TYPE' => 'application/json',
+            ],
             json_encode($userData)
         );
 
@@ -193,11 +210,13 @@ class RegisterTest extends WebTestCase
                 'http://localhost:8080/api/login',
                 [],
                 [],
-                ['CONTENT_TYPE' => 'application/json'],
+                [
+                    'CONTENT_TYPE' => 'application/json',
+                ],
                 json_encode(
                     [
-                    'email' => $userData['email'],
-                    'password' => $userData['password']
+                        'email' => $userData['email'],
+                        'password' => $userData['password'],
                     ]
                 )
             );

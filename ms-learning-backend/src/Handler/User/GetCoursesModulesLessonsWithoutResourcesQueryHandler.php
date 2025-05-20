@@ -2,11 +2,10 @@
 
 namespace App\Handler\User;
 
-use App\Repository\UserRepository;
-use App\Repository\LessonRepository;
-use Symfony\Component\Messenger\Attribute\AsMessageHandler;
-use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
 use App\Query\Course\GetCoursesModulesLessonsWithoutResourcesQuery;
+use App\Repository\LessonRepository;
+use App\Repository\UserRepository;
+use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
 #[AsMessageHandler]
 
@@ -22,7 +21,7 @@ class GetCoursesModulesLessonsWithoutResourcesQueryHandler
     {
         $user = $this->userRepository->find($query->id);
 
-        if (!$user) {
+        if (! $user) {
             throw new \Exception('User not found');
         }
 
@@ -53,14 +52,14 @@ class GetCoursesModulesLessonsWithoutResourcesQueryHandler
             $courseData = [
                 'id' => $course->getId(),
                 'title' => $course->getTitle(),
-                'modules' => []
+                'modules' => [],
             ];
 
             foreach ($course->getModules() as $module) {
                 $moduleData = [
                     'id' => $module->getId(),
                     'title' => $module->getTitle(),
-                    'lessons' => []
+                    'lessons' => [],
                 ];
 
                 foreach ($module->getLessons() as $lesson) {
@@ -72,12 +71,12 @@ class GetCoursesModulesLessonsWithoutResourcesQueryHandler
                     }
                 }
 
-                if (!empty($moduleData['lessons'])) {
+                if (! empty($moduleData['lessons'])) {
                     $courseData['modules'][] = $moduleData;
                 }
             }
 
-            if (!empty($courseData['modules'])) {
+            if (! empty($courseData['modules'])) {
                 $result[] = $courseData;
             }
         }

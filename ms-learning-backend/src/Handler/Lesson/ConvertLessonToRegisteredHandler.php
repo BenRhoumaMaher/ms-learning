@@ -2,11 +2,10 @@
 
 namespace App\Handler\Lesson;
 
+use App\Command\Lesson\ConvertLessonToRegisteredCommand;
 use App\Repository\LessonRepository;
 use App\Service\LessonService\LessonService;
-use App\Command\Lesson\ConvertLessonToRegisteredCommand;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
-use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
 
 #[AsMessageHandler]
 class ConvertLessonToRegisteredHandler
@@ -21,19 +20,23 @@ class ConvertLessonToRegisteredHandler
     {
         $lesson = $this->lessonService->getLessonById($command->lessonId);
 
-        if (!$lesson) {
+        if (! $lesson) {
             throw new \Exception('Lesson not found');
         }
 
         $this->lessonService->convertLessonToRegistered($lesson, $command->videoUrl);
         $errors = $this->lessonService->validateLesson($lesson);
 
-        if (!empty($errors)) {
-            return ['errors' => $errors];
+        if (! empty($errors)) {
+            return [
+                'errors' => $errors,
+            ];
         }
 
         $this->lessonService->saveLesson($lesson);
 
-        return ['message' => 'Lesson converted to registered successfully'];
+        return [
+            'message' => 'Lesson converted to registered successfully',
+        ];
     }
 }

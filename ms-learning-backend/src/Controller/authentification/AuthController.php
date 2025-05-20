@@ -2,10 +2,10 @@
 
 namespace App\Controller\authentification;
 
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use App\Service\OAuthService\OAuthServiceInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 
 final class AuthController extends AbstractController
 {
@@ -13,6 +13,7 @@ final class AuthController extends AbstractController
         private OAuthServiceInterface $oauthService
     ) {
     }
+
     public function check(
         Request $request
     ): JsonResponse {

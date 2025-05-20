@@ -2,21 +2,21 @@
 
 namespace App\Service\ElasticSearch;
 
+use App\Entity\Courses;
 use App\Repository\CoursesRepository;
 use App\Repository\UserRepository;
+use Doctrine\ORM\EntityManagerInterface;
+use Elastica\Aggregation\Filters;
+use Elastica\Aggregation\Terms;
 use Elastica\Query;
-use Elastica\Search;
-use App\Entity\Courses;
-use Elastica\Query\Term;
-use Elastica\Query\Nested;
 use Elastica\Query\BoolQuery;
 use Elastica\Query\MatchPhrase;
 use Elastica\Query\MultiMatch;
-use Elastica\Aggregation\Terms;
-use Elastica\Aggregation\Filters;
+use Elastica\Query\Nested;
+use Elastica\Query\Term;
 use Elastica\Query\Terms as TermsQuery;
+use Elastica\Search;
 use FOS\ElasticaBundle\Elastica\Client;
-use Doctrine\ORM\EntityManagerInterface;
 
 class ContentAnalyticsService
 {
@@ -32,7 +32,7 @@ class ContentAnalyticsService
     {
         return [
             'reviews' => $this->getReviewAnalytics($instructorId),
-            'posts' => $this->getPostAnalytics($instructorId)
+            'posts' => $this->getPostAnalytics($instructorId),
         ];
     }
 
@@ -43,9 +43,13 @@ class ContentAnalyticsService
 
         if (empty($courseIds)) {
             return [
-                'sentiment' => ['positive' => 0, 'neutral' => 0, 'negative' => 0],
+                'sentiment' => [
+                    'positive' => 0,
+                    'neutral' => 0,
+                    'negative' => 0,
+                ],
                 'frequent_terms' => [],
-                'total_reviews' => 0
+                'total_reviews' => 0,
             ];
         }
 
@@ -66,7 +70,7 @@ class ContentAnalyticsService
         $positiveQuery = new BoolQuery();
         foreach (
             ['good', 'great', 'excellent', 'awesome',
-            'perfect', 'amazing'] as $term) {
+                'perfect', 'amazing'] as $term) {
             $positiveQuery->addShould(new MatchPhrase('comment', $term));
         }
         $sentimentFilters->addFilter($positiveQuery, 'positive');
@@ -79,7 +83,7 @@ class ContentAnalyticsService
 
         $negativeQuery = new BoolQuery();
         foreach (['bad', 'poor', 'terrible', 'awful',
-        'horrible', 'disappointing'] as $term) {
+            'horrible', 'disappointing'] as $term) {
             $negativeQuery->addShould(new MatchPhrase('comment', $term));
         }
         $sentimentFilters->addFilter($negativeQuery, 'negative');
@@ -104,7 +108,7 @@ class ContentAnalyticsService
             'frequent_terms' => $this->processTerms(
                 $aggregations['frequent_terms']['buckets'] ?? []
             ),
-            'total_reviews' => $result->getTotalHits()
+            'total_reviews' => $result->getTotalHits(),
         ];
     }
 
@@ -122,7 +126,7 @@ class ContentAnalyticsService
 
         $boolQuery = new BoolQuery();
 
-        if (!empty($instructorUsername)) {
+        if (! empty($instructorUsername)) {
             $fields = ['content', 'title', 'tags'];
             $nameQuery = new MultiMatch();
             $nameQuery->setQuery($instructorUsername);
@@ -156,10 +160,14 @@ class ContentAnalyticsService
         $positiveBool = new BoolQuery();
         foreach ($positiveTerms as $term) {
             $positiveBool->addShould(
-                new Term(['content.words' => $term])
+                new Term([
+                    'content.words' => $term,
+                ])
             );
             $positiveBool->addShould(
-                new Term(['content.raw_words' => $term])
+                new Term([
+                    'content.raw_words' => $term,
+                ])
             );
         }
         $sentimentFilters->addFilter(
@@ -170,10 +178,14 @@ class ContentAnalyticsService
         $neutralBool = new BoolQuery();
         foreach ($neutralTerms as $term) {
             $neutralBool->addShould(
-                new Term(['content.words' => $term])
+                new Term([
+                    'content.words' => $term,
+                ])
             );
             $neutralBool->addShould(
-                new Term(['content.raw_words' => $term])
+                new Term([
+                    'content.raw_words' => $term,
+                ])
             );
         }
         $sentimentFilters->addFilter(
@@ -184,10 +196,14 @@ class ContentAnalyticsService
         $negativeBool = new BoolQuery();
         foreach ($negativeTerms as $term) {
             $negativeBool->addShould(
-                new Term(['content.words' => $term])
+                new Term([
+                    'content.words' => $term,
+                ])
             );
             $negativeBool->addShould(
-                new Term(['content.raw_words' => $term])
+                new Term([
+                    'content.raw_words' => $term,
+                ])
             );
         }
         $sentimentFilters->addFilter(
@@ -217,7 +233,7 @@ class ContentAnalyticsService
             'frequent_terms' => $this->processTerms(
                 $aggregations['frequent_terms']['buckets'] ?? []
             ),
-            'total_posts' => $result->getTotalHits()
+            'total_posts' => $result->getTotalHits(),
         ];
     }
 
@@ -234,7 +250,7 @@ class ContentAnalyticsService
             return [
                 'positive' => 0,
                 'neutral' => 0,
-                'negative' => 0
+                'negative' => 0,
             ];
         }
 
@@ -256,7 +272,7 @@ class ContentAnalyticsService
                     $sentimentData['buckets']['negative']['doc_count'] ?? 0
                 ) / $total * 100,
                 2
-            )
+            ),
         ];
     }
 
@@ -266,7 +282,7 @@ class ContentAnalyticsService
             function ($term) {
                 return [
                     'term' => $term['key'],
-                    'count' => $term['doc_count']
+                    'count' => $term['doc_count'],
                 ];
             },
             $termsData

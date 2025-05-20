@@ -2,20 +2,21 @@
 
 namespace App\Service\ElasticSearch;
 
-use Elastica\Query;
-use Elastica\Search;
-use Elastica\Query\Term;
-use Elastica\Query\Nested;
 use Elastica\Aggregation\Avg;
 use Elastica\Aggregation\Sum;
-use Elastica\Query\BoolQuery;
 use Elastica\Aggregation\Terms;
+use Elastica\Query;
+use Elastica\Query\BoolQuery;
+use Elastica\Query\Nested;
+use Elastica\Query\Term;
+use Elastica\Search;
 use FOS\ElasticaBundle\Elastica\Client;
 
 class VideoEngagementAnalyticsService
 {
-    public function __construct(private Client $elasticaClient)
-    {
+    public function __construct(
+        private Client $elasticaClient
+    ) {
     }
 
     public function getInstructorVideoAnalytics(int $instructorId): array
@@ -27,12 +28,16 @@ class VideoEngagementAnalyticsService
         $instructorQuery = new Nested();
         $instructorQuery->setPath('instructor');
         $instructorQuery->setQuery(
-            new Term(['instructor.id' => $instructorId])
+            new Term([
+                'instructor.id' => $instructorId,
+            ])
         );
 
         $boolQuery = new BoolQuery();
         $boolQuery->addMust($instructorQuery);
-        $boolQuery->addMust(new Term(['type' => 'registered']));
+        $boolQuery->addMust(new Term([
+            'type' => 'registered',
+        ]));
 
         $query = new Query($boolQuery);
 
@@ -88,7 +93,7 @@ class VideoEngagementAnalyticsService
                 'averageCompletion' => round(
                     $bucket['avg_completion']['value'] ?? 0,
                     2
-                )
+                ),
             ];
         }
 
@@ -112,7 +117,9 @@ class VideoEngagementAnalyticsService
         $search = new Search($this->elasticaClient);
         $search->addIndex($this->elasticaClient->getIndex('lessons'));
 
-        $termQuery = new Term(['id' => $lessonId]);
+        $termQuery = new Term([
+            'id' => $lessonId,
+        ]);
         $query = new Query($termQuery);
 
         $result = $search->search($query);
@@ -128,7 +135,7 @@ class VideoEngagementAnalyticsService
             'totalWatchTime' => $lesson['totalWatchTime'] ?? 0,
             'averageCompletion' => $lesson['averageCompletion'] ?? 0,
             'totalPauses' => $lesson['totalPauses'] ?? 0,
-            'totalReplays' => $lesson['totalReplays'] ?? 0
+            'totalReplays' => $lesson['totalReplays'] ?? 0,
         ];
     }
 }

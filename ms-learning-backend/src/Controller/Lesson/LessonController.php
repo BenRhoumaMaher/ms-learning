@@ -2,22 +2,22 @@
 
 namespace App\Controller\Lesson;
 
-use App\Repository\LessonRepository;
-use App\Service\UserService\UserService;
-use Doctrine\ORM\EntityManagerInterface;
-use App\Command\Lesson\EditLessonCommand;
+use App\Command\Lesson\AddResourceToLessonCommand;
+use App\Command\Lesson\ConvertLessonToRegisteredCommand;
 use App\Command\Lesson\CreateLessonCommand;
 use App\Command\Lesson\DeleteLessonCommand;
-use App\Query\Lesson\GetLiveLessonInfoQuery;
-use Symfony\Component\HttpFoundation\Request;
-use App\Query\Lesson\GetUserLiveSessionsQuery;
-use App\Service\QueryBusService\QueryBusService;
-use App\Command\Lesson\AddResourceToLessonCommand;
+use App\Command\Lesson\EditLessonCommand;
 use App\Query\Lesson\GetLatestUserLiveLessonQuery;
-use Symfony\Component\HttpFoundation\JsonResponse;
+use App\Query\Lesson\GetLiveLessonInfoQuery;
+use App\Query\Lesson\GetUserLiveSessionsQuery;
+use App\Repository\LessonRepository;
 use App\Service\CommandBusService\CommandBusService;
-use App\Command\Lesson\ConvertLessonToRegisteredCommand;
+use App\Service\QueryBusService\QueryBusService;
+use App\Service\UserService\UserService;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 
 final class LessonController extends AbstractController
 {
@@ -39,10 +39,14 @@ final class LessonController extends AbstractController
                 $lesson,
                 200,
                 [],
-                ['groups' => 'lesson:read']
+                [
+                    'groups' => 'lesson:read',
+                ]
             );
         } catch (\Exception $e) {
-            return $this->json(['error' => $e->getMessage()], 404);
+            return $this->json([
+                'error' => $e->getMessage(),
+            ], 404);
         }
     }
 
@@ -54,7 +58,9 @@ final class LessonController extends AbstractController
 
             return $this->json($sessions);
         } catch (\Exception $e) {
-            return $this->json(['error' => $e->getMessage()], 400);
+            return $this->json([
+                'error' => $e->getMessage(),
+            ], 400);
         }
     }
 
@@ -67,7 +73,9 @@ final class LessonController extends AbstractController
             $lessons,
             200,
             [],
-            ['groups' => 'lesson:read']
+            [
+                'groups' => 'lesson:read',
+            ]
         );
     }
 
@@ -81,10 +89,14 @@ final class LessonController extends AbstractController
                 $lesson,
                 200,
                 [],
-                ['groups' => 'lesson:read']
+                [
+                    'groups' => 'lesson:read',
+                ]
             );
         } catch (\Exception $e) {
-            return $this->json(['error' => $e->getMessage()], 404);
+            return $this->json([
+                'error' => $e->getMessage(),
+            ], 404);
         }
     }
 
@@ -98,14 +110,20 @@ final class LessonController extends AbstractController
 
             if (isset($result['errors'])) {
                 return $this->json(
-                    ['errors' => $result['errors']],
+                    [
+                        'errors' => $result['errors'],
+                    ],
                     400
                 );
             }
 
-            return $this->json($result, 200, [], ['groups' => 'lesson:read']);
+            return $this->json($result, 200, [], [
+                'groups' => 'lesson:read',
+            ]);
         } catch (\Exception $e) {
-            return $this->json(['error' => $e->getMessage()], 400);
+            return $this->json([
+                'error' => $e->getMessage(),
+            ], 400);
         }
     }
 
@@ -113,8 +131,10 @@ final class LessonController extends AbstractController
     {
         $data = json_decode($request->getContent(), true);
 
-        if (!isset($data['videoUrl'])) {
-            return $this->json(['error' => 'Video URL is required'], 400);
+        if (! isset($data['videoUrl'])) {
+            return $this->json([
+                'error' => 'Video URL is required',
+            ], 400);
         }
 
         try {
@@ -122,22 +142,27 @@ final class LessonController extends AbstractController
             $result = $this->commandBusService->handle($command);
 
             if (isset($result['errors'])) {
-                return $this->json(['errors' => $result['errors']], 400);
+                return $this->json([
+                    'errors' => $result['errors'],
+                ], 400);
             }
 
             return $this->json($result, 200);
         } catch (\Exception $e) {
-            return $this->json(['error' => $e->getMessage()], 400);
+            return $this->json([
+                'error' => $e->getMessage(),
+            ], 400);
         }
     }
-
 
     public function addResourceToLesson(int $id, Request $request): JsonResponse
     {
         $resourceFile = $request->files->get('resource');
 
-        if (!$resourceFile) {
-            return $this->json(['error' => 'No resource file provided'], 400);
+        if (! $resourceFile) {
+            return $this->json([
+                'error' => 'No resource file provided',
+            ], 400);
         }
 
         try {
@@ -146,7 +171,9 @@ final class LessonController extends AbstractController
 
             return $this->json($result, 200);
         } catch (\Exception $e) {
-            return $this->json(['error' => $e->getMessage()], 500);
+            return $this->json([
+                'error' => $e->getMessage(),
+            ], 500);
         }
     }
 
@@ -161,14 +188,18 @@ final class LessonController extends AbstractController
 
             if (isset($result['error'])) {
                 return $this->json(
-                    ['error' => $result['error']],
+                    [
+                        'error' => $result['error'],
+                    ],
                     400
                 );
             }
 
             return $this->json($result, 201);
         } catch (\Exception $e) {
-            return $this->json(['error' => $e->getMessage()], 500);
+            return $this->json([
+                'error' => $e->getMessage(),
+            ], 500);
         }
     }
 
@@ -180,7 +211,9 @@ final class LessonController extends AbstractController
 
             return $this->json($result, 200);
         } catch (\Exception $e) {
-            return $this->json(['error' => $e->getMessage()], 404);
+            return $this->json([
+                'error' => $e->getMessage(),
+            ], 404);
         }
     }
 
@@ -192,20 +225,24 @@ final class LessonController extends AbstractController
         $data = json_decode($request->getContent(), true);
         $lesson = $lessonRepository->find($id);
 
-        if (!$lesson) {
-            return $this->json(['error' => 'Lesson not found'], 404);
+        if (! $lesson) {
+            return $this->json([
+                'error' => 'Lesson not found',
+            ], 404);
         }
 
         $lesson
-            ->addWatchTime((int)($data['watchTime'] ?? 0))
+            ->addWatchTime((int) ($data['watchTime'] ?? 0))
             ->incrementPauses(($data['pauseCount'] ?? 0))
             ->incrementReplays(($data['replayCount'] ?? 0))
-            ->updateAverageCompletion((float)($data['completionPercentage'] ?? 0));
+            ->updateAverageCompletion((float) ($data['completionPercentage'] ?? 0));
 
         $this->entityManager->persist($lesson);
         $this->entityManager->flush();
 
-        return $this->json(['status' => 'success']);
+        return $this->json([
+            'status' => 'success',
+        ]);
     }
 
     public function trackLessonView(
@@ -214,14 +251,17 @@ final class LessonController extends AbstractController
     ): JsonResponse {
         $lesson = $lessonRepository->find($id);
 
-        if (!$lesson) {
-            return $this->json(['error' => 'Lesson not found'], 404);
+        if (! $lesson) {
+            return $this->json([
+                'error' => 'Lesson not found',
+            ], 404);
         }
 
         $lesson->incrementTotalViews();
         $this->entityManager->flush();
 
-        return $this->json(['status' => 'view tracked']);
+        return $this->json([
+            'status' => 'view tracked',
+        ]);
     }
-
 }

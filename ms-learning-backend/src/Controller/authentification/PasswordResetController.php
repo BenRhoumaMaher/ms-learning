@@ -2,10 +2,10 @@
 
 namespace App\Controller\authentification;
 
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use App\Service\PasswordResetService\PasswordResetServiceInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 
 class PasswordResetController extends AbstractController
 {
@@ -13,6 +13,7 @@ class PasswordResetController extends AbstractController
         private PasswordResetServiceInterface $passwordResetService
     ) {
     }
+
     public function forgotPassword(
         Request $request
     ): JsonResponse {

@@ -4,8 +4,6 @@ namespace App\Service\MailService;
 
 use App\Classe\Mail;
 
-
-
 class MailService implements MailServiceInterface
 {
     private Mail $mail;

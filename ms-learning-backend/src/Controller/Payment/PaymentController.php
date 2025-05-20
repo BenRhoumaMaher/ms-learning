@@ -2,26 +2,24 @@
 
 namespace App\Controller\Payment;
 
-use DateTime;
-use App\Entity\User;
-use DateTimeImmutable;
 use App\Entity\Payment;
 use App\Entity\StudentCourse;
-use App\Entity\SubscriptionPlan;
+use App\Entity\User;
 use App\Entity\UserSubscription;
-use App\Repository\UserRepository;
 use App\Repository\CoursesRepository;
 use App\Repository\PaymentRepository;
-use App\Service\Payment\StripePayment;
-use App\Service\Payment\PaymentService;
-use App\Service\MailService\MailService;
-use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\HttpFoundation\Request;
 use App\Repository\SubscriptionPlanRepository;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use App\Repository\UserRepository;
+use App\Service\MailService\MailService;
+use App\Service\Payment\StripePayment;
+use DateTime;
+use DateTimeImmutable;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class PaymentController extends AbstractController
 {
@@ -42,9 +40,11 @@ class PaymentController extends AbstractController
         $userId = $data['userId'] ?? null;
 
         // Validation
-        if (!$courseId || !$userId) {
+        if (! $courseId || ! $userId) {
             return $this->json(
-                ['error' => 'Course ID and User ID are required'],
+                [
+                    'error' => 'Course ID and User ID are required',
+                ],
                 400
             );
         }
@@ -52,12 +52,16 @@ class PaymentController extends AbstractController
         $course = $this->coursesRepository->find($courseId);
         $user = $this->entityManager->getRepository(User::class)->find($userId);
 
-        if (!$course) {
-            return $this->json(['error' => 'Course not found'], 400);
+        if (! $course) {
+            return $this->json([
+                'error' => 'Course not found',
+            ], 400);
         }
 
-        if (!$user) {
-            return $this->json(['error' => 'User not found'], 400);
+        if (! $user) {
+            return $this->json([
+                'error' => 'User not found',
+            ], 400);
         }
 
         try {
@@ -81,7 +85,9 @@ class PaymentController extends AbstractController
             );
             $cancelUrl = $this->generateUrl(
                 'app_payment_cancel',
-                ['courseId' => $courseId],
+                [
+                    'courseId' => $courseId,
+                ],
                 UrlGeneratorInterface::ABSOLUTE_URL
             );
 
@@ -109,11 +115,15 @@ class PaymentController extends AbstractController
             $this->entityManager->flush();
 
             return $this->json(
-                ['paymentUrl' => $this->stripePayment->getRedirectUrl()]
+                [
+                    'paymentUrl' => $this->stripePayment->getRedirectUrl(),
+                ]
             );
 
         } catch (\Exception $e) {
-            return $this->json(['error' => $e->getMessage()], 500);
+            return $this->json([
+                'error' => $e->getMessage(),
+            ], 500);
         }
     }
 
@@ -123,7 +133,7 @@ class PaymentController extends AbstractController
         $userId = $request->query->get('userId');
         $user = $this->userRepository->find($userId);
 
-        if (!$user instanceof User || !$course) {
+        if (! $user instanceof User || ! $course) {
             return $this->redirect('http://localhost:3000');
         }
 
@@ -145,7 +155,9 @@ class PaymentController extends AbstractController
                 $user->getUsername(),
                 'Course Purchase Confirmation',
                 'PurchaseCourse.html',
-                ['username' => $user->getUsername()]
+                [
+                    'username' => $user->getUsername(),
+                ]
             );
 
         } catch (\Exception $e) {
@@ -154,7 +166,6 @@ class PaymentController extends AbstractController
 
         return $this->redirect('http://localhost:3000/registered-courses/' . $courseId);
     }
-
 
     public function cancel(string $courseId): Response
     {
@@ -192,8 +203,12 @@ class PaymentController extends AbstractController
         PaymentRepository $paymentRepository
     ): JsonResponse {
         $payments = $paymentRepository->findBy(
-            ['user' => $userId],
-            ['paymentDate' => 'DESC']
+            [
+                'user' => $userId,
+            ],
+            [
+                'paymentDate' => 'DESC',
+            ]
         );
 
         $transactions = array_map(
@@ -204,20 +219,20 @@ class PaymentController extends AbstractController
                     'paymentDate' => $payment->getPaymentDate()
                         ->format('Y-m-d H:i:s'),
                     'type' => null,
-                    'item' => null
+                    'item' => null,
                 ];
 
                 if ($payment->getCourse()) {
                     $transaction['type'] = 'course';
                     $transaction['item'] = [
                         'id' => $payment->getCourse()->getId(),
-                        'title' => $payment->getCourse()->getTitle()
+                        'title' => $payment->getCourse()->getTitle(),
                     ];
                 } elseif ($payment->getSubscriptionPlan()) {
                     $transaction['type'] = 'subscription';
                     $transaction['item'] = [
                         'id' => $payment->getSubscriptionPlan()->getId(),
-                        'title' => $payment->getSubscriptionPlan()->getName()
+                        'title' => $payment->getSubscriptionPlan()->getName(),
                     ];
                 }
 
@@ -237,15 +252,19 @@ class PaymentController extends AbstractController
         $planId = $data['planId'] ?? null;
         $userId = $data['userId'] ?? null;
 
-        if (!$planId || !$userId) {
-            return $this->json(['error' => 'Plan ID and User ID are required'], 400);
+        if (! $planId || ! $userId) {
+            return $this->json([
+                'error' => 'Plan ID and User ID are required',
+            ], 400);
         }
 
         $plan = $planRepository->find($planId);
         $user = $this->userRepository->find($userId);
 
-        if (!$plan || !$user) {
-            return $this->json(['error' => 'Invalid user or plan'], 400);
+        if (! $plan || ! $user) {
+            return $this->json([
+                'error' => 'Invalid user or plan',
+            ], 400);
         }
 
         try {
@@ -257,8 +276,8 @@ class PaymentController extends AbstractController
             $successUrl = $this->generateUrl(
                 'app_subscription_success',
                 [
-                'planId' => $planId,
-                'userId' => $userId,
+                    'planId' => $planId,
+                    'userId' => $userId,
                 ],
                 UrlGeneratorInterface::ABSOLUTE_URL
             );
@@ -266,7 +285,7 @@ class PaymentController extends AbstractController
             $cancelUrl = $this->generateUrl(
                 'app_subscription_cancel',
                 [
-                'planId' => $planId,
+                    'planId' => $planId,
                 ],
                 UrlGeneratorInterface::ABSOLUTE_URL
             );
@@ -292,12 +311,15 @@ class PaymentController extends AbstractController
             $this->entityManager->flush();
 
             return $this->json(
-                ['paymentUrl' => $this->stripePayment->getRedirectUrl()
+                [
+                    'paymentUrl' => $this->stripePayment->getRedirectUrl(),
                 ]
             );
 
         } catch (\Exception $e) {
-            return $this->json(['error' => $e->getMessage()], 500);
+            return $this->json([
+                'error' => $e->getMessage(),
+            ], 500);
         }
     }
 
@@ -307,7 +329,7 @@ class PaymentController extends AbstractController
         $user = $this->userRepository->find($userId);
         $plan = $planRepository->find($planId);
 
-        if (!$user || !$plan) {
+        if (! $user || ! $plan) {
             return $this->redirect('http://localhost:3000');
         }
 
@@ -329,7 +351,9 @@ class PaymentController extends AbstractController
                 $user->getUsername(),
                 'Subscription Activated',
                 'SubscriptionConfirmation.html',
-                ['username' => $user->getUsername()]
+                [
+                    'username' => $user->getUsername(),
+                ]
             );
         } catch (\Exception $e) {
             error_log('Subscription error: ' . $e->getMessage());
@@ -342,6 +366,4 @@ class PaymentController extends AbstractController
     {
         return $this->redirect('http://localhost:3000/plans/' . $planId . '?payment=cancelled');
     }
-
-
 }

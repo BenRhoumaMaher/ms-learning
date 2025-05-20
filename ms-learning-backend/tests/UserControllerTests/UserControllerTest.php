@@ -9,6 +9,7 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 class UserControllerTest extends WebTestCase
 {
     private $client;
+
     private $entityManager;
 
     protected function setUp(): void
@@ -41,7 +42,7 @@ class UserControllerTest extends WebTestCase
             ->findBy(
                 [
                     'email' => ['testuser0@example.com', 'testuser1@example.com',
-                     'testuser2@example.com']
+                        'testuser2@example.com'],
                 ]
             );
 
@@ -65,7 +66,9 @@ class UserControllerTest extends WebTestCase
             'http://localhost:8080/users',
             [],
             [],
-            ['CONTENT_TYPE' => 'application/json']
+            [
+                'CONTENT_TYPE' => 'application/json',
+            ]
         );
 
         $this->assertResponseStatusCodeSame($expectedStatusCode);
@@ -90,7 +93,9 @@ class UserControllerTest extends WebTestCase
         string $expectedMessage
     ): void {
         $user = $this->entityManager->getRepository(User::class)
-            ->findOneBy(['email' => 'testuser0@example.com']);
+            ->findOneBy([
+                'email' => 'testuser0@example.com',
+            ]);
 
         $this->assertNotNull($user, 'Test user not found');
 
@@ -102,7 +107,9 @@ class UserControllerTest extends WebTestCase
             'http://localhost:8080/user/' . $userId,
             [],
             [],
-            ['CONTENT_TYPE' => 'application/json']
+            [
+                'CONTENT_TYPE' => 'application/json',
+            ]
         );
 
         $this->assertResponseStatusCodeSame($expectedStatusCode);
@@ -148,8 +155,8 @@ class UserControllerTest extends WebTestCase
             [],
             [
                 'CONTENT_TYPE' => 'application/json',
-                'HTTP_ACCEPT' => 'application/json'
-                ]
+                'HTTP_ACCEPT' => 'application/json',
+            ]
         );
 
         $this->assertResponseStatusCodeSame($expectedStatusCode);
@@ -189,5 +196,4 @@ class UserControllerTest extends WebTestCase
             $responseData['message']
         );
     }
-
 }

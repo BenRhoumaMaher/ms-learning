@@ -2,11 +2,10 @@
 
 namespace App\Handler\Lesson;
 
-use App\Repository\UserRepository;
-use App\Repository\LessonRepository;
 use App\Query\Lesson\GetLatestUserLiveLessonQuery;
+use App\Repository\LessonRepository;
+use App\Repository\UserRepository;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
-use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
 
 #[AsMessageHandler]
 class GetLatestUserLiveLessonHandler
@@ -20,14 +19,14 @@ class GetLatestUserLiveLessonHandler
     public function __invoke(GetLatestUserLiveLessonQuery $query)
     {
         $user = $this->userRepository->find($query->id);
-        if (!$user) {
+        if (! $user) {
             throw new \Exception('User not found');
         }
 
         $lesson = $this->lessonRepository->findLatestLiveLessonForUser(
             $query->id
         );
-        if (!$lesson) {
+        if (! $lesson) {
             throw new \Exception('No upcoming live lessons for this user');
         }
 

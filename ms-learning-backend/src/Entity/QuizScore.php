@@ -2,8 +2,8 @@
 
 namespace App\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
 use App\Repository\QuizScoreRepository;
+use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: QuizScoreRepository::class)]
@@ -89,16 +89,6 @@ class QuizScore
         return $this;
     }
 
-    private function updatePercentage(): void
-    {
-        if ($this->totalQuestions > 0) {
-            $this->percentage = round(
-                ($this->score / $this->totalQuestions) * 100,
-                2
-            );
-        }
-    }
-
     public function getCompletedAt(): ?\DateTimeImmutable
     {
         return $this->completedAt;
@@ -129,5 +119,15 @@ class QuizScore
         $this->percentage = $percentage;
 
         return $this;
+    }
+
+    private function updatePercentage(): void
+    {
+        if ($this->totalQuestions > 0) {
+            $this->percentage = round(
+                ($this->score / $this->totalQuestions) * 100,
+                2
+            );
+        }
     }
 }

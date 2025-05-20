@@ -2,10 +2,10 @@
 
 namespace App\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
 use App\Repository\CategoryRepository;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: CategoryRepository::class)]
@@ -18,7 +18,7 @@ class Category
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['category:read','course:read', 'forum:read'])]
+    #[Groups(['category:read', 'course:read', 'forum:read'])]
     private ?string $name = null;
 
     /**
@@ -74,7 +74,7 @@ class Category
 
     public function addCourse(Courses $course): static
     {
-        if (!$this->courses->contains($course)) {
+        if (! $this->courses->contains($course)) {
             $this->courses->add($course);
             $course->setCategory($this);
         }
@@ -104,7 +104,7 @@ class Category
 
     public function addUser(User $user): static
     {
-        if (!$this->users->contains($user)) {
+        if (! $this->users->contains($user)) {
             $this->users->add($user);
             $user->addInterest($this);
         }
@@ -131,7 +131,7 @@ class Category
 
     public function addForumPost(ForumPost $forumPost): static
     {
-        if (!$this->forumPosts->contains($forumPost)) {
+        if (! $this->forumPosts->contains($forumPost)) {
             $this->forumPosts->add($forumPost);
             $forumPost->addCategory($this);
         }

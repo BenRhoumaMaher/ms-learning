@@ -5,15 +5,15 @@ namespace App\Controller\User;
 use App\Entity\User;
 use App\Form\UserType;
 use App\Repository\UserRepository;
+use App\Service\MailService\MailServiceInterface;
 use App\Service\UserService\BecomeInstructorService;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
-use App\Service\MailService\MailServiceInterface;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 final class InstructorDemands extends AbstractController
 {
@@ -22,6 +22,7 @@ final class InstructorDemands extends AbstractController
         private MailServiceInterface $mailService
     ) {
     }
+
     public function index(
         UserRepository $userRepository,
         SerializerInterface $serializer
@@ -32,10 +33,11 @@ final class InstructorDemands extends AbstractController
             $instructors,
             200,
             [],
-            ['groups' => 'user:read']
+            [
+                'groups' => 'user:read',
+            ]
         );
     }
-
 
     public function acceptInstructor(
         User $user,
@@ -46,16 +48,17 @@ final class InstructorDemands extends AbstractController
             $user->getEmail(),
             $user->getUsername(),
             'Instructor Approval',
-            "Approval.html",
+            'Approval.html',
             [
                 'username' => $user->getUsername(),
                 'email' => $user->getEmail(),
-                'password' => $user->getPassword()]
+                'password' => $user->getPassword(),
+            ]
         );
 
         return $this->json(
             [
-            'message' => 'Instructor approved and email sent'
+                'message' => 'Instructor approved and email sent',
             ],
             201
         );
@@ -73,21 +76,25 @@ final class InstructorDemands extends AbstractController
         $form = $this->createForm(UserType::class, $user);
         $form->submit($data);
 
-        if (!$form->isValid()) {
+        if (! $form->isValid()) {
             return $this->json([
-                'errors' => $this->getErrorsFromForm($form)
+                'errors' => $this->getErrorsFromForm($form),
             ], JsonResponse::HTTP_BAD_REQUEST);
         }
 
         $entityManager->persist($user);
         $entityManager->flush();
 
-        return $this->json($user, JsonResponse::HTTP_CREATED, [], ['groups' => 'user:read']);
+        return $this->json($user, JsonResponse::HTTP_CREATED, [], [
+            'groups' => 'user:read',
+        ]);
     }
 
     public function show(User $user): JsonResponse
     {
-        return $this->json($user, JsonResponse::HTTP_OK, [], ['groups' => 'user:read']);
+        return $this->json($user, JsonResponse::HTTP_OK, [], [
+            'groups' => 'user:read',
+        ]);
     }
 
     #[Route('/{id}', name: 'edit', methods: ['PUT', 'PATCH'])]
@@ -100,17 +107,19 @@ final class InstructorDemands extends AbstractController
     ): JsonResponse {
         $data = json_decode($request->getContent(), true);
         $form = $this->createForm(UserType::class, $user);
-        $form->submit($data, 'PATCH' !== $request->getMethod());
+        $form->submit($data, $request->getMethod() !== 'PATCH');
 
-        if (!$form->isValid()) {
+        if (! $form->isValid()) {
             return $this->json([
-                'errors' => $this->getErrorsFromForm($form)
+                'errors' => $this->getErrorsFromForm($form),
             ], JsonResponse::HTTP_BAD_REQUEST);
         }
 
         $entityManager->flush();
 
-        return $this->json($user, JsonResponse::HTTP_OK, [], ['groups' => 'user:read']);
+        return $this->json($user, JsonResponse::HTTP_OK, [], [
+            'groups' => 'user:read',
+        ]);
     }
 
     public function delete(
@@ -122,7 +131,9 @@ final class InstructorDemands extends AbstractController
         $entityManager->flush();
 
         return $this->json(
-            ['message' => 'User deleted'],
+            [
+                'message' => 'User deleted',
+            ],
             200
         );
     }

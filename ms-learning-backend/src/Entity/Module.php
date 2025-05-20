@@ -121,7 +121,7 @@ class Module
 
     public function addLesson(Lesson $lesson): static
     {
-        if (!$this->lessons->contains($lesson)) {
+        if (! $this->lessons->contains($lesson)) {
             $this->lessons->add($lesson);
             $lesson->setModule($this);
         }

@@ -154,7 +154,7 @@ class SubscriptionPlan
 
     public function addUserSubscription(UserSubscription $userSubscription): static
     {
-        if (!$this->userSubscriptions->contains($userSubscription)) {
+        if (! $this->userSubscriptions->contains($userSubscription)) {
             $this->userSubscriptions->add($userSubscription);
             $userSubscription->setPlan($this);
         }
@@ -184,7 +184,7 @@ class SubscriptionPlan
 
     public function addPayment(Payment $payment): static
     {
-        if (!$this->payments->contains($payment)) {
+        if (! $this->payments->contains($payment)) {
             $this->payments->add($payment);
             $payment->setSubscriptionPlan($this);
         }

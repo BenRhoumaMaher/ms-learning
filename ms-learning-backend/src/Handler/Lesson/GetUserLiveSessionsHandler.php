@@ -2,10 +2,9 @@
 
 namespace App\Handler\Lesson;
 
-use App\Repository\LessonRepository;
 use App\Query\Lesson\GetUserLiveSessionsQuery;
+use App\Repository\LessonRepository;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
-use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
 
 #[AsMessageHandler]
 
@@ -32,7 +31,7 @@ class GetUserLiveSessionsHandler
                 'duration' => $session->getDuration(),
                 'course' => $session->getCourse()->getTitle(),
                 'instructor' => $session->getUser()->getUserName(),
-                'image'  => $session->getCourse()->getImage(),
+                'image' => $session->getCourse()->getImage(),
             ],
             $liveSessions
         );

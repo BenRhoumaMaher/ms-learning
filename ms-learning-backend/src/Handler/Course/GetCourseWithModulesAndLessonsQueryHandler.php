@@ -2,22 +2,23 @@
 
 namespace App\Handler\Course;
 
-use App\Repository\CoursesRepository;
 use App\Query\Course\GetCourseWithModulesAndLessonsQuery;
+use App\Repository\CoursesRepository;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
 #[AsMessageHandler]
 class GetCourseWithModulesAndLessonsQueryHandler
 {
-    public function __construct(private CoursesRepository $courseRepository)
-    {
+    public function __construct(
+        private CoursesRepository $courseRepository
+    ) {
     }
 
     public function __invoke(GetCourseWithModulesAndLessonsQuery $query): array
     {
         $course = $this->courseRepository->find($query->courseId);
 
-        if (!$course) {
+        if (! $course) {
             throw new \Exception('Course not found');
         }
 
@@ -42,7 +43,7 @@ class GetCourseWithModulesAndLessonsQueryHandler
             $modules[] = [
                 'id' => $module->getId(),
                 'title' => $module->getTitle(),
-                'lessons' => $lessons
+                'lessons' => $lessons,
             ];
         }
 
@@ -51,7 +52,7 @@ class GetCourseWithModulesAndLessonsQueryHandler
             // 'user' => $course->getEnrollments()->first()?->getUsername(),
             'title' => $course->getTitle(),
             'image' => $course->getImage(),
-            'modules' => $modules
+            'modules' => $modules,
         ];
     }
 }

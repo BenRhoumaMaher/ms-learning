@@ -4,8 +4,8 @@ namespace App\Repository;
 
 use App\Entity\Post;
 use App\Entity\User;
-use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * @extends ServiceEntityRepository<Post>
@@ -28,10 +28,10 @@ class PostRepository extends ServiceEntityRepository
 
         foreach ($courseTitles as $i => $title) {
             $qb->orWhere(
-                "p.title LIKE :courseTitle$i 
-                OR p.content LIKE :courseTitle$i OR p.tags LIKE :courseTitle$i"
+                "p.title LIKE :courseTitle{$i} 
+                OR p.content LIKE :courseTitle{$i} OR p.tags LIKE :courseTitle{$i}"
             )
-                ->setParameter("courseTitle$i", '%' . $title . '%');
+                ->setParameter("courseTitle{$i}", '%' . $title . '%');
         }
 
         return $qb->getQuery()->getResult();

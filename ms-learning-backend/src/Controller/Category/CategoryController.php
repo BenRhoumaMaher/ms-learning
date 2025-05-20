@@ -2,11 +2,11 @@
 
 namespace App\Controller\Category;
 
-use Symfony\Component\HttpFoundation\Request;
 use App\Service\Category\CategoryServiceInterface;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class CategoryController extends AbstractController
 {
@@ -22,7 +22,9 @@ class CategoryController extends AbstractController
             $categories,
             200,
             [],
-            ['groups' => 'category:read']
+            [
+                'groups' => 'category:read',
+            ]
         );
     }
 
@@ -33,7 +35,9 @@ class CategoryController extends AbstractController
             $category,
             200,
             [],
-            ['groups' => 'category:read']
+            [
+                'groups' => 'category:read',
+            ]
         );
     }
 
@@ -42,9 +46,11 @@ class CategoryController extends AbstractController
         ValidatorInterface $validator
     ): JsonResponse {
         $data = json_decode($request->getContent(), true);
-        if (!isset($data['name'])) {
+        if (! isset($data['name'])) {
             return new JsonResponse(
-                ['error' => 'Category name is required'],
+                [
+                    'error' => 'Category name is required',
+                ],
                 400
             );
         }
@@ -62,9 +68,11 @@ class CategoryController extends AbstractController
         Request $request
     ): JsonResponse {
         $data = json_decode($request->getContent(), true);
-        if (!isset($data['name'])) {
+        if (! isset($data['name'])) {
             return new JsonResponse(
-                ['error' => 'Category name is required'],
+                [
+                    'error' => 'Category name is required',
+                ],
                 400
             );
         }
@@ -85,7 +93,9 @@ class CategoryController extends AbstractController
         $this->categoryService->deleteCategory($category);
 
         return new JsonResponse(
-            ['message' => 'Category deleted successfully'],
+            [
+                'message' => 'Category deleted successfully',
+            ],
             204
         );
     }

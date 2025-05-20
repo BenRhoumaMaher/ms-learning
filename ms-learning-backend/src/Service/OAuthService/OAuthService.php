@@ -3,11 +3,11 @@
 namespace App\Service\OAuthService;
 
 use App\Repository\UserRepository;
-use App\Service\UserService\UserService;
-use App\Service\MailService\MailServiceInterface;
 use App\Service\GoogleService\GoogleTokenVerifier;
-use Symfony\Component\HttpFoundation\JsonResponse;
+use App\Service\MailService\MailServiceInterface;
+use App\Service\UserService\UserService;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 class OAuthService implements OAuthServiceInterface
 {
@@ -23,9 +23,11 @@ class OAuthService implements OAuthServiceInterface
     public function authenticateGoogleUser(
         ?string $googleToken
     ): JsonResponse {
-        if (!$googleToken) {
+        if (! $googleToken) {
             return new JsonResponse(
-                ['error' => 'Missing Google token'],
+                [
+                    'error' => 'Missing Google token',
+                ],
                 400
             );
         }
@@ -34,9 +36,11 @@ class OAuthService implements OAuthServiceInterface
             $googleToken
         );
 
-        if (!$googleUser || !isset($googleUser['email'], $googleUser['sub'])) {
+        if (! $googleUser || ! isset($googleUser['email'], $googleUser['sub'])) {
             return new JsonResponse(
-                ['error' => 'Invalid Google token'],
+                [
+                    'error' => 'Invalid Google token',
+                ],
                 401
             );
         }
@@ -48,10 +52,12 @@ class OAuthService implements OAuthServiceInterface
         $profilePicture = $googleUser['picture'] ?? '/profile/avatar.png';
 
         $user = $this->userRepository->findOneBy(
-            ['email' => $email]
+            [
+                'email' => $email,
+            ]
         );
 
-        if (!$user) {
+        if (! $user) {
             $user = $this->userService->createUser(
                 $email,
                 $firstname,
@@ -62,8 +68,10 @@ class OAuthService implements OAuthServiceInterface
                 $user->getEmail(),
                 $user->getUsername(),
                 'Welcome',
-                "Welcome.html",
-                ['username' => $user->getUsername()]
+                'Welcome.html',
+                [
+                    'username' => $user->getUsername(),
+                ]
             );
         }
 
@@ -78,11 +86,11 @@ class OAuthService implements OAuthServiceInterface
 
         return new JsonResponse(
             [
-            'token' => $token,
-            'username' => $user->getUsername(),
-            'picture' => $user->getPicture(),
-            'user_id' => $user->getId(),
-            'user_role' => $user->getRoles(),
+                'token' => $token,
+                'username' => $user->getUsername(),
+                'picture' => $user->getPicture(),
+                'user_id' => $user->getId(),
+                'user_role' => $user->getRoles(),
             ]
         );
     }

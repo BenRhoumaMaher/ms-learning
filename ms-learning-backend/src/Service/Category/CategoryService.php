@@ -23,8 +23,8 @@ class CategoryService implements CategoryServiceInterface
     public function getCategoryById(int $id): Category
     {
         $category = $this->categoryRepository->find($id);
-        if (!$category) {
-            throw new NotFoundHttpException("Category not found");
+        if (! $category) {
+            throw new NotFoundHttpException('Category not found');
         }
         return $category;
     }

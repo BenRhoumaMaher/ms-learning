@@ -2,20 +2,20 @@
 
 namespace App\Service\Course;
 
-use DateTime;
+use App\Entity\Courses;
 use App\Entity\Lesson;
 use App\Entity\Module;
-use DateTimeImmutable;
-use GuzzleHttp\Client;
-use App\Entity\Courses;
 use App\Entity\StudentCourse;
-use App\Repository\UserRepository;
 use App\Repository\LessonRepository;
+use App\Repository\UserRepository;
+use DateTime;
+use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use GuzzleHttp\Client;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class CourseService implements CourseServiceInterface
 {
@@ -33,7 +33,7 @@ class CourseService implements CourseServiceInterface
     {
         $lesson = $this->lessonRepository->find($lessonId);
 
-        if (!$lesson) {
+        if (! $lesson) {
             throw new NotFoundHttpException('Lesson not found');
         }
 
@@ -41,14 +41,14 @@ class CourseService implements CourseServiceInterface
             return [
                 'status' => 'success',
                 'from_cache' => true,
-                'segments' => $lesson->getTranslation($language)
+                'segments' => $lesson->getTranslation($language),
             ];
         }
 
         $videoPath = $this->parameterBag->get(
             'kernel.project_dir'
         ) . '/public/' . $lesson->getVideoUrl();
-        if (!file_exists($videoPath)) {
+        if (! file_exists($videoPath)) {
             throw new \RuntimeException('Video file not found');
         }
 
@@ -60,20 +60,20 @@ class CourseService implements CourseServiceInterface
                     [
                         'name' => 'video',
                         'contents' => fopen($videoPath, 'r'),
-                        'filename' => 'video.mp4'
+                        'filename' => 'video.mp4',
                     ],
                     [
                         'name' => 'lang',
-                        'contents' => $language
-                    ]
+                        'contents' => $language,
+                    ],
                 ],
-                'timeout' => 60
+                'timeout' => 60,
             ]
         );
 
         $subtitles = json_decode($response->getBody(), true);
 
-        if (!isset($subtitles['segments'])) {
+        if (! isset($subtitles['segments'])) {
             throw new \RuntimeException('Invalid response from translation service');
         }
 
@@ -84,7 +84,7 @@ class CourseService implements CourseServiceInterface
         return [
             'status' => 'success',
             'from_cache' => false,
-            'segments' => $subtitles['segments']
+            'segments' => $subtitles['segments'],
         ];
     }
 
@@ -92,7 +92,7 @@ class CourseService implements CourseServiceInterface
     {
         $lesson = $this->lessonRepository->find($lessonId);
 
-        if (!$lesson) {
+        if (! $lesson) {
             throw new NotFoundHttpException('Lesson not found');
         }
 
@@ -101,14 +101,14 @@ class CourseService implements CourseServiceInterface
                 'status' => 'success',
                 'from_cache' => true,
                 'summary' => $lesson->getGeneratedNotes(),
-                'full_transcript' => $lesson->getFullTranscript()
+                'full_transcript' => $lesson->getFullTranscript(),
             ];
         }
 
         $videoPath = $this->parameterBag->get(
             'kernel.project_dir'
         ) . '/public/' . $lesson->getVideoUrl();
-        if (!file_exists($videoPath)) {
+        if (! file_exists($videoPath)) {
             throw new \RuntimeException('Video file not found');
         }
 
@@ -120,16 +120,16 @@ class CourseService implements CourseServiceInterface
                     [
                         'name' => 'video',
                         'contents' => fopen($videoPath, 'r'),
-                        'filename' => 'video.mp4'
-                    ]
+                        'filename' => 'video.mp4',
+                    ],
                 ],
-                'timeout' => 60
+                'timeout' => 60,
             ]
         );
 
         $result = json_decode($response->getBody(), true);
 
-        if (!isset($result['summary']) || !isset($result['full_transcript'])) {
+        if (! isset($result['summary']) || ! isset($result['full_transcript'])) {
             throw new \RuntimeException('Invalid response from notes service');
         }
 
@@ -143,9 +143,10 @@ class CourseService implements CourseServiceInterface
             'status' => 'success',
             'from_cache' => false,
             'summary' => $result['summary'],
-            'full_transcript' => $result['full_transcript']
+            'full_transcript' => $result['full_transcript'],
         ];
     }
+
     public function getAllCourses(): array
     {
         $courses = $this->entityManager->getRepository(Courses::class)->findAll();
@@ -160,7 +161,7 @@ class CourseService implements CourseServiceInterface
                 'duration' => $course->getDuration(),
                 'level' => $course->getLevel(),
                 'category' => [
-                    'name' => $course->getCategory()?->getName()
+                    'name' => $course->getCategory()?->getName(),
                 ],
                 'image' => $course->getImage(),
             ];
@@ -198,7 +199,7 @@ class CourseService implements CourseServiceInterface
                 $modules[] = [
                     'id' => $module->getId(),
                     'title' => $module->getTitle(),
-                    'lessons' => $lessons
+                    'lessons' => $lessons,
                 ];
             }
 
@@ -216,8 +217,8 @@ class CourseService implements CourseServiceInterface
             Courses::class
         )->find($id);
 
-        if (!$course) {
-            throw new NotFoundHttpException("Course not found");
+        if (! $course) {
+            throw new NotFoundHttpException('Course not found');
         }
 
         return $course;
@@ -230,8 +231,8 @@ class CourseService implements CourseServiceInterface
             StudentCourse::class
         )->find($id);
 
-        if (!$course) {
-            throw new NotFoundHttpException("Course not found");
+        if (! $course) {
+            throw new NotFoundHttpException('Course not found');
         }
 
         return $course;
@@ -317,29 +318,43 @@ class CourseService implements CourseServiceInterface
         Request $request
     ): array {
         $jsonData = $request->request->get('data');
-        if (!$jsonData) {
-            return ['error' => 'Invalid request, missing data', 'status' => 400];
+        if (! $jsonData) {
+            return [
+                'error' => 'Invalid request, missing data',
+                'status' => 400,
+            ];
         }
 
         $data = json_decode($jsonData, true);
-        if (!$data || !isset($data['user_id'], $data['course'], $data['modules'])) {
-            return ['error' => 'Missing required fields', 'status' => 400];
+        if (! $data || ! isset($data['user_id'], $data['course'], $data['modules'])) {
+            return [
+                'error' => 'Missing required fields',
+                'status' => 400,
+            ];
         }
 
-        $user = $this->userRepository->findOneBy(['id' => $data['user_id']]);
-        if (!$user) {
-            return ['error' => 'User not found', 'status' => 404];
+        $user = $this->userRepository->findOneBy([
+            'id' => $data['user_id'],
+        ]);
+        if (! $user) {
+            return [
+                'error' => 'User not found',
+                'status' => 404,
+            ];
         }
 
         $course = $this->entityManager->getRepository(
             Courses::class
         )->find($data['course']);
-        if (!$course) {
-            return ['error' => 'Course not found', 'status' => 404];
+        if (! $course) {
+            return [
+                'error' => 'Course not found',
+                'status' => 404,
+            ];
         }
 
         foreach ($data['modules'] as $moduleIndex => $moduleData) {
-            if (!isset($moduleData['title'], $moduleData['position'])) {
+            if (! isset($moduleData['title'], $moduleData['position'])) {
                 continue;
             }
 
@@ -352,7 +367,7 @@ class CourseService implements CourseServiceInterface
             $this->entityManager->persist($module);
 
             foreach ($moduleData['lessons'] as $lessonIndex => $lessonData) {
-                if (!isset($lessonData['title'], $lessonData['content'])) {
+                if (! isset($lessonData['title'], $lessonData['content'])) {
                     continue;
                 }
 
@@ -398,12 +413,15 @@ class CourseService implements CourseServiceInterface
 
         $this->entityManager->flush();
 
-        return ['message' => 'Course created successfully', 'status' => 201];
+        return [
+            'message' => 'Course created successfully',
+            'status' => 201,
+        ];
     }
 
     public function uploadFile(?UploadedFile $file): ?string
     {
-        if (!$file) {
+        if (! $file) {
             return null;
         }
 
@@ -411,6 +429,4 @@ class CourseService implements CourseServiceInterface
         $file->move($this->lessonResourceDirectory, $filename);
         return $this->baseUrl . '/images/courseressources/' . $filename;
     }
-
-
 }

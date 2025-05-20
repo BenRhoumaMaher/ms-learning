@@ -2,8 +2,8 @@
 
 namespace App\Handler\Lesson;
 
-use App\Repository\LessonRepository;
 use App\Query\Lesson\GetLiveLessonInfoQuery;
+use App\Repository\LessonRepository;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
 #[AsMessageHandler]
@@ -18,7 +18,7 @@ class GetLiveLessonInfoHandler
     {
         $lesson = $this->lessonRepository->find($query->id);
 
-        if (!$lesson) {
+        if (! $lesson) {
             throw new \Exception('Lesson not found');
         }
 
@@ -39,7 +39,7 @@ class GetLiveLessonInfoHandler
                     'time_limit' => $lesson->getCourse()->getQuiz()->getTimeLimit(),
                     'questions' => count($lesson->getCourse()->getQuiz()->getQuestions()),
                     'passing_score' => $lesson->getCourse()->getQuiz()->getPassingScore(),
-                ]
+                ],
             ],
             'category' => $lesson->getCourse()->getCategory()->getId(),
         ];

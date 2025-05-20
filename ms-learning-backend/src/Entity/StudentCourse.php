@@ -2,9 +2,9 @@
 
 namespace App\Entity;
 
+use App\Repository\StudentCourseRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use App\Repository\StudentCourseRepository;
 use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: StudentCourseRepository::class)]
@@ -15,7 +15,6 @@ class StudentCourse
     #[ORM\Column]
     #[Groups(['enrolledCourse:read'])]
     private ?int $id = null;
-
 
     #[ORM\ManyToOne(inversedBy: 'studentCourses')]
     #[Groups(['enrolledCourse:read'])]

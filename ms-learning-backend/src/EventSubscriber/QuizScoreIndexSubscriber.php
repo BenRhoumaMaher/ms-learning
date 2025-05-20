@@ -40,7 +40,7 @@ class QuizScoreIndexSubscriber implements EventSubscriber
     {
         $entity = $args->getObject();
 
-        if (!$entity instanceof QuizScore) {
+        if (! $entity instanceof QuizScore) {
             return;
         }
 
@@ -51,7 +51,7 @@ class QuizScoreIndexSubscriber implements EventSubscriber
     {
         $entity = $args->getObject();
 
-        if (!$entity instanceof QuizScore) {
+        if (! $entity instanceof QuizScore) {
             return;
         }
 

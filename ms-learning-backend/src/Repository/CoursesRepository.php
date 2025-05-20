@@ -2,10 +2,9 @@
 
 namespace App\Repository;
 
-use App\Entity\User;
 use App\Entity\Courses;
-use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * @extends ServiceEntityRepository<Courses>
@@ -53,8 +52,6 @@ class CoursesRepository extends ServiceEntityRepository
     //            ->getResult()
     //        ;
     //    }
-
-
 
     //    public function findOneBySomeField($value): ?Courses
     //    {

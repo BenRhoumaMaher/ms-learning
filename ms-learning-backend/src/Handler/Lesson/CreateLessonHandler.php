@@ -5,7 +5,6 @@ namespace App\Handler\Lesson;
 use App\Command\Lesson\CreateLessonCommand;
 use App\Service\LessonService\LessonService;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
-use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
 
 #[AsMessageHandler]
 
@@ -23,13 +22,17 @@ class CreateLessonHandler
         );
 
         if ($validationError) {
-            return ['error' => $validationError];
+            return [
+                'error' => $validationError,
+            ];
         }
 
         $entities = $this->lessonService->getEntitiesForLesson($command->lessonData);
 
         if (isset($entities['error'])) {
-            return ['error' => $entities['error']];
+            return [
+                'error' => $entities['error'],
+            ];
         }
 
         $lesson = $this->lessonService->createLessonEntity($command->lessonData, $entities);
@@ -46,7 +49,7 @@ class CreateLessonHandler
         return [
             'message' => 'Lesson created successfully',
             'lesson_id' => $lesson->getId(),
-            'resources_path' => $lesson->getRessources()
+            'resources_path' => $lesson->getRessources(),
         ];
     }
 }

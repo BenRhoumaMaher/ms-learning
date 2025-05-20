@@ -3,10 +3,10 @@
 namespace App\Service\PasswordResetService;
 
 use App\Entity\PasswordReset;
-use App\Repository\UserRepository;
-use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\PasswordResetRepository;
+use App\Repository\UserRepository;
 use App\Service\MailService\MailServiceInterface;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 class PasswordResetService implements PasswordResetServiceInterface
@@ -22,20 +22,26 @@ class PasswordResetService implements PasswordResetServiceInterface
     public function handleForgotPassword(
         ?string $email
     ): JsonResponse {
-        if (!$email) {
+        if (! $email) {
             return new JsonResponse(
-                ['message' => 'Email is required'],
+                [
+                    'message' => 'Email is required',
+                ],
                 400
             );
         }
 
         $user = $this->userRepository->findOneBy(
-            ['email' => $email]
+            [
+                'email' => $email,
+            ]
         );
 
-        if (!$user) {
+        if (! $user) {
             return new JsonResponse(
-                ['message' => 'User not found'],
+                [
+                    'message' => 'User not found',
+                ],
                 404
             );
         }
@@ -51,17 +57,22 @@ class PasswordResetService implements PasswordResetServiceInterface
         $this->entityManager->persist($passwordReset);
         $this->entityManager->flush();
 
-        $resetUrl = "http://localhost:3000/reset-password?token=" . $token;
+        $resetUrl = 'http://localhost:3000/reset-password?token=' . $token;
         $this->mailService->sendEmail(
             $user->getEmail(),
             $user->getUsername(),
             'Reset Password',
-            "Reset.html",
-            ['username' => $user->getUsername(), 'resetUrl' => $resetUrl]
+            'Reset.html',
+            [
+                'username' => $user->getUsername(),
+                'resetUrl' => $resetUrl,
+            ]
         );
 
         return new JsonResponse(
-            ['message' => 'Reset link sent']
+            [
+                'message' => 'Reset link sent',
+            ]
         );
     }
 
@@ -69,30 +80,40 @@ class PasswordResetService implements PasswordResetServiceInterface
         ?string $token,
         ?string $newPassword
     ): JsonResponse {
-        if (!$token || !$newPassword) {
+        if (! $token || ! $newPassword) {
             return new JsonResponse(
-                ['message' => 'Invalid request'],
+                [
+                    'message' => 'Invalid request',
+                ],
                 400
             );
         }
 
         $passwordReset = $this->passwordResetRepository->findOneBy(
-            ['token' => $token]
+            [
+                'token' => $token,
+            ]
         );
 
-        if (!$passwordReset || new \DateTime() > $passwordReset->getExpiredAt()) {
+        if (! $passwordReset || new \DateTime() > $passwordReset->getExpiredAt()) {
             return new JsonResponse(
-                ['message' => 'Token expired or invalid'],
+                [
+                    'message' => 'Token expired or invalid',
+                ],
                 400
             );
         }
 
         $user = $this->userRepository->findOneBy(
-            ['email' => $passwordReset->getEmail()]
+            [
+                'email' => $passwordReset->getEmail(),
+            ]
         );
-        if (!$user) {
+        if (! $user) {
             return new JsonResponse(
-                ['message' => 'User not found'],
+                [
+                    'message' => 'User not found',
+                ],
                 404
             );
         }
@@ -106,7 +127,9 @@ class PasswordResetService implements PasswordResetServiceInterface
         $this->entityManager->flush();
 
         return new JsonResponse(
-            ['message' => 'Password reset successful']
+            [
+                'message' => 'Password reset successful',
+            ]
         );
     }
 }

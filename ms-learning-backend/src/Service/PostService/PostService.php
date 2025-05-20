@@ -3,17 +3,19 @@
 namespace App\Service\PostService;
 
 use App\Entity\Post;
+use App\Entity\PostLike;
 use App\Entity\User;
 use DateTimeImmutable;
-use App\Entity\PostLike;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class PostService
 {
-    public function __construct(private EntityManagerInterface $em, private ParameterBagInterface $params)
-    {
+    public function __construct(
+        private EntityManagerInterface $em,
+        private ParameterBagInterface $params
+    ) {
     }
 
     public function create(array $data, ?UploadedFile $file): Post
@@ -22,12 +24,12 @@ class PostService
         $title = $data['title'] ?? null;
         $content = $data['content'] ?? '';
 
-        if (!$userId) {
+        if (! $userId) {
             throw new \InvalidArgumentException('User ID is required');
         }
 
         $user = $this->em->getRepository(User::class)->find($userId);
-        if (!$user) {
+        if (! $user) {
             throw new \InvalidArgumentException('Invalid user ID');
         }
 
@@ -48,29 +50,13 @@ class PostService
         return $post;
     }
 
-    private function extractTags(string $content): array
-    {
-        preg_match_all('/#(\w+)/', $content, $matches);
-        return array_unique($matches[1]);
-    }
-
-    private function uploadPostImages(?UploadedFile $file): array
-    {
-        $paths = [];
-        if ($file instanceof UploadedFile) {
-            $uploadDir = $this->params->get('post_upload_dir');
-            $filename = uniqid() . '.' . $file->guessExtension();
-            $file->move($uploadDir, $filename);
-            $paths[] = '/images/posts/' . $filename;
-        }
-        return $paths;
-    }
-
     public function getAllPosts(): array
     {
         $posts = $this->em->getRepository(
             Post::class
-        )->findBy([], ['createdAt' => 'DESC']);
+        )->findBy([], [
+            'createdAt' => 'DESC',
+        ]);
         $data = [];
 
         foreach ($posts as $post) {
@@ -96,15 +82,21 @@ class PostService
             Post::class
         )->find($id);
 
-        if (!$post) {
-            return ['error' => 'Post not found', 'code' => 404];
+        if (! $post) {
+            return [
+                'error' => 'Post not found',
+                'code' => 404,
+            ];
         }
 
         $title = $data['title'] ?? null;
         $content = $data['content'] ?? null;
 
-        if (!$title || !$content) {
-            return ['error' => 'Title and content are required', 'code' => 400];
+        if (! $title || ! $content) {
+            return [
+                'error' => 'Title and content are required',
+                'code' => 400,
+            ];
         }
 
         $post->setTitle($title);
@@ -112,7 +104,10 @@ class PostService
 
         $this->em->flush();
 
-        return ['message' => 'Post updated', 'code' => 200];
+        return [
+            'message' => 'Post updated',
+            'code' => 200,
+        ];
     }
 
     public function toggleLike(
@@ -122,15 +117,21 @@ class PostService
         $post = $this->em->getRepository(
             Post::class
         )->find($postId);
-        if (!$post) {
-            return ['error' => 'Post not found', 'code' => 404];
+        if (! $post) {
+            return [
+                'error' => 'Post not found',
+                'code' => 404,
+            ];
         }
 
         $user = $this->em->getRepository(
             User::class
         )->find($userId);
-        if (!$user) {
-            return ['error' => 'Invalid user', 'code' => 404];
+        if (! $user) {
+            return [
+                'error' => 'Invalid user',
+                'code' => 404,
+            ];
         }
 
         foreach ($post->getLikes() as $like) {
@@ -139,9 +140,15 @@ class PostService
                 $this->em->flush();
                 $likesCount = $this->em->getRepository(
                     PostLike::class
-                )->count(['post' => $post]);
+                )->count([
+                    'post' => $post,
+                ]);
 
-                return ['liked' => false, 'likesCount' => $likesCount, 'code' => 200];
+                return [
+                    'liked' => false,
+                    'likesCount' => $likesCount,
+                    'code' => 200,
+                ];
             }
         }
 
@@ -152,23 +159,35 @@ class PostService
         $this->em->persist($like);
         $this->em->flush();
 
-        $likesCount = $this->em->getRepository(PostLike::class)->count(['post' => $post]);
+        $likesCount = $this->em->getRepository(PostLike::class)->count([
+            'post' => $post,
+        ]);
 
-        return ['liked' => true, 'likesCount' => $likesCount, 'code' => 200];
+        return [
+            'liked' => true,
+            'likesCount' => $likesCount,
+            'code' => 200,
+        ];
     }
 
     public function delete(int $postId): array
     {
         $post = $this->em->getRepository(Post::class)->find($postId);
 
-        if (!$post) {
-            return ['error' => 'Post not found', 'code' => 404];
+        if (! $post) {
+            return [
+                'error' => 'Post not found',
+                'code' => 404,
+            ];
         }
 
         $this->em->remove($post);
         $this->em->flush();
 
-        return ['message' => 'Post deleted', 'code' => 200];
+        return [
+            'message' => 'Post deleted',
+            'code' => 200,
+        ];
     }
 
     public function show(Post $post): array
@@ -207,5 +226,23 @@ class PostService
             ),
             'createdAt' => $post->getCreatedAt()->format('Y-m-d H:i:s'),
         ];
+    }
+
+    private function extractTags(string $content): array
+    {
+        preg_match_all('/#(\w+)/', $content, $matches);
+        return array_unique($matches[1]);
+    }
+
+    private function uploadPostImages(?UploadedFile $file): array
+    {
+        $paths = [];
+        if ($file instanceof UploadedFile) {
+            $uploadDir = $this->params->get('post_upload_dir');
+            $filename = uniqid() . '.' . $file->guessExtension();
+            $file->move($uploadDir, $filename);
+            $paths[] = '/images/posts/' . $filename;
+        }
+        return $paths;
     }
 }

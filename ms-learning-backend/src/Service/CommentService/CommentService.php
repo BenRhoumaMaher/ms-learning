@@ -2,12 +2,12 @@
 
 namespace App\Service\CommentService;
 
-use DateTimeImmutable;
 use App\Entity\Comment;
 use App\Entity\CommentReply;
+use App\Repository\CommentRepository;
 use App\Repository\PostRepository;
 use App\Repository\UserRepository;
-use App\Repository\CommentRepository;
+use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 
 class CommentService
@@ -27,12 +27,12 @@ class CommentService
         $content = $data['content'] ?? null;
 
         $user = $this->userRepository->find($userId);
-        if (!$user) {
+        if (! $user) {
             throw new \InvalidArgumentException('User not found');
         }
 
         $post = $this->postRepository->find($postId);
-        if (!$post) {
+        if (! $post) {
             throw new \InvalidArgumentException('Post not found');
         }
 
@@ -54,12 +54,12 @@ class CommentService
         $content = $data['content'] ?? null;
 
         $user = $this->userRepository->find($userId);
-        if (!$user) {
+        if (! $user) {
             throw new \InvalidArgumentException('User not found');
         }
 
         $comment = $this->commentRepository->find($commentId);
-        if (!$comment) {
+        if (! $comment) {
             throw new \InvalidArgumentException('Comment not found');
         }
 
@@ -77,13 +77,17 @@ class CommentService
     public function listRepliesByComment(int $commentId): array
     {
         $comment = $this->commentRepository->find($commentId);
-        if (!$comment) {
+        if (! $comment) {
             throw new \InvalidArgumentException('Comment not found');
         }
 
         $replies = $this->em->getRepository(CommentReply::class)->findBy(
-            ['comment' => $commentId],
-            ['createdAt' => 'ASC']
+            [
+                'comment' => $commentId,
+            ],
+            [
+                'createdAt' => 'ASC',
+            ]
         );
 
         $data = [];
@@ -102,8 +106,12 @@ class CommentService
     public function listByPost(int $postId): array
     {
         $comments = $this->commentRepository->findBy(
-            ['post' => $postId],
-            ['createdAt' => 'ASC']
+            [
+                'post' => $postId,
+            ],
+            [
+                'createdAt' => 'ASC',
+            ]
         );
 
         $data = [];
@@ -124,7 +132,7 @@ class CommentService
     {
         $comment = $this->commentRepository->find($id);
 
-        if (!$comment) {
+        if (! $comment) {
             throw new \InvalidArgumentException('Comment not found');
         }
 
@@ -136,5 +144,4 @@ class CommentService
             'postId' => $comment->getPost()->getId(),
         ];
     }
-
 }

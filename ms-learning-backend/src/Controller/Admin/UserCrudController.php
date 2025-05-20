@@ -4,11 +4,9 @@ namespace App\Controller\Admin;
 
 use App\Entity\User;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
-use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 
 class UserCrudController extends AbstractCrudController
 {
@@ -35,9 +33,9 @@ class UserCrudController extends AbstractCrudController
                 ->setHelp('Permissions of the user')
                 ->setChoices(
                     [
-                    'ROLE_STUDENT' => 'ROLE_STUDENT',
-                    'ROLE_TEACHER' => 'ROLE_INSTRUCTOR',
-                    'ROLE_ADMIN' => 'ROLE_ADMIN',
+                        'ROLE_STUDENT' => 'ROLE_STUDENT',
+                        'ROLE_TEACHER' => 'ROLE_INSTRUCTOR',
+                        'ROLE_ADMIN' => 'ROLE_ADMIN',
                     ]
                 )
                 ->allowMultipleChoices(),

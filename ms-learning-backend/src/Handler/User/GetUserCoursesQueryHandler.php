@@ -2,8 +2,8 @@
 
 namespace App\Handler\User;
 
-use App\Repository\UserRepository;
 use App\Query\User\GetUserCoursesQuery;
+use App\Repository\UserRepository;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
 #[AsMessageHandler]
@@ -18,7 +18,7 @@ class GetUserCoursesQueryHandler
     {
         $user = $this->userRepository->find($query->id);
 
-        if (!$user) {
+        if (! $user) {
             throw new \Exception('User not found');
         }
 
@@ -34,7 +34,7 @@ class GetUserCoursesQueryHandler
                 'category' => $course->getCategory()?->getName(),
                 'created_at' => $course->getCreatedAt()->format('Y-m-d H:i:s'),
                 'students' => [],
-                'quiz' => null
+                'quiz' => null,
             ];
 
             $quiz = $course->getQuiz();
@@ -46,7 +46,7 @@ class GetUserCoursesQueryHandler
                     'timeLimit' => $quiz->getTimeLimit(),
                     'passingScore' => $quiz->getPassingScore(),
                     'createdAt' => $quiz->getCreatedAt()->format('Y-m-d H:i:s'),
-                    'questions' => []
+                    'questions' => [],
                 ];
 
                 foreach ($quiz->getQuestions() as $question) {
@@ -71,7 +71,7 @@ class GetUserCoursesQueryHandler
                     'name' => $student->getFirstname() . ' ' . $student->getLastName(),
                     'email' => $student->getEmail(),
                     'image' => $student->getPicture(),
-                    'quizScores' => []
+                    'quizScores' => [],
                 ];
 
                 if ($quiz) {
@@ -98,7 +98,7 @@ class GetUserCoursesQueryHandler
 
                 $courseData['students'][] = $studentData;
 
-                if (!isset($allStudents[$student->getId()])) {
+                if (! isset($allStudents[$student->getId()])) {
                     $allStudents[$student->getId()] = $studentData;
                 }
             }

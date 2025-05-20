@@ -8,16 +8,25 @@ class LoginDataProvider
     {
         return [
             [
-                ['email' => '', 'password' => ''],
-                400
+                [
+                    'email' => '',
+                    'password' => '',
+                ],
+                400,
             ],
             [
-                ['email' => 'testuser@example.com', 'password' => ''],
-                400
+                [
+                    'email' => 'testuser@example.com',
+                    'password' => '',
+                ],
+                400,
             ],
             [
-                ['email' => '', 'password' => 'Test@1234'],
-                400
+                [
+                    'email' => '',
+                    'password' => 'Test@1234',
+                ],
+                400,
             ],
         ];
     }
@@ -26,16 +35,20 @@ class LoginDataProvider
     {
         return [
             [
-                ['email' => 'nonexistent@example.com', 
-                'password' => 'WrongPassword123!'],
+                [
+                    'email' => 'nonexistent@example.com',
+                    'password' => 'WrongPassword123!',
+                ],
                 401,
-                'Invalid credentials.'
+                'Invalid credentials.',
             ],
             [
-                ['email' => 'testuser@example.com', 
-                'password' => 'WrongPassword123!'],
+                [
+                    'email' => 'testuser@example.com',
+                    'password' => 'WrongPassword123!',
+                ],
                 401,
-                'Invalid credentials.'
+                'Invalid credentials.',
             ],
         ];
     }
@@ -44,8 +57,11 @@ class LoginDataProvider
     {
         return [
             [
-                ['email' => 'mahertesting@gmail.com', 'password' => 'Test@1234'],
-                200
+                [
+                    'email' => 'mahertesting@gmail.com',
+                    'password' => 'Test@1234',
+                ],
+                200,
             ],
         ];
     }

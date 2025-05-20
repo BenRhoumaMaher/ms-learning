@@ -2,39 +2,38 @@
 
 namespace App\Controller\Course;
 
-use DateTimeImmutable;
-use App\Entity\ForumPost;
-use App\Entity\QuizScore;
-use App\Repository\QuizRepository;
-use App\Repository\UserRepository;
-use App\Repository\LessonRepository;
-use App\Repository\CoursesRepository;
-use App\Service\Course\CourseService;
-use App\Repository\ForumPostRepository;
-use App\Repository\QuizScoreRepository;
-use App\Query\Course\GetAllCoursesQuery;
-use App\Query\Course\GetCourseByIdQuery;
-use Doctrine\ORM\EntityManagerInterface;
-use App\Query\Course\GetFreeCoursesQuery;
+use App\Command\Course\CreateFullCourseCommand;
 use App\Command\Course\DeleteCourseCommand;
 use App\Command\Course\UpdateCourseCommand;
-use App\Query\Course\GetLatestCoursesQuery;
-use App\Repository\StudentCourseRepository;
+use App\Entity\QuizScore;
+use App\Query\Course\GetAllCoursesQuery;
+use App\Query\Course\GetCourseByIdQuery;
+use App\Query\Course\GetCoursesModulesLessonsWithoutResourcesQuery;
+use App\Query\Course\GetCourseWithModulesAndLessonsQuery;
 use App\Query\Course\GetEnrolledCourseQuery;
-use Symfony\Component\HttpFoundation\Request;
-use App\Query\User\GetUserCoursesModulesQuery;
-use App\Command\Course\CreateFullCourseCommand;
+use App\Query\Course\GetFreeCoursesQuery;
+use App\Query\Course\GetLatestCoursesQuery;
 use App\Query\Course\GetRecommendedCoursesQuery;
-use App\Service\QueryBusService\QueryBusService;
-use Symfony\Component\HttpFoundation\JsonResponse;
+use App\Query\User\GetUserCoursesModulesQuery;
+use App\Repository\CoursesRepository;
+use App\Repository\ForumPostRepository;
+use App\Repository\LessonRepository;
+use App\Repository\QuizRepository;
+use App\Repository\QuizScoreRepository;
+use App\Repository\StudentCourseRepository;
+use App\Repository\UserRepository;
 use App\Service\CommandBusService\CommandBusService;
+use App\Service\Course\CourseService;
+use App\Service\ElasticSearch\VideoEngagementAnalyticsService;
+use App\Service\QueryBusService\QueryBusService;
+use DateTimeImmutable;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Serializer\SerializerInterface;
-use App\Query\Course\GetCourseWithModulesAndLessonsQuery;
-use App\Service\ElasticSearch\VideoEngagementAnalyticsService;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use App\Query\Course\GetCoursesModulesLessonsWithoutResourcesQuery;
 
 class CoursesController extends AbstractController
 {
@@ -56,7 +55,9 @@ class CoursesController extends AbstractController
             $courses,
             200,
             [],
-            ['groups' => 'course:read']
+            [
+                'groups' => 'course:read',
+            ]
         );
     }
 
@@ -67,7 +68,9 @@ class CoursesController extends AbstractController
             $course,
             200,
             [],
-            ['groups' => 'course:read']
+            [
+                'groups' => 'course:read',
+            ]
         );
     }
 
@@ -95,7 +98,7 @@ class CoursesController extends AbstractController
             'status' => $course->getStatus(),
             'progress' => $course->getProgress(),
             'startDate' => $course->getStartDate(),
-            'endDate' => $course->getEndDate()
+            'endDate' => $course->getEndDate(),
         ];
 
         return $this->json($data);
@@ -104,13 +107,17 @@ class CoursesController extends AbstractController
     public function createCourse(Request $request, MessageBusInterface $commandBus, CourseService $courseService): JsonResponse
     {
         $jsonData = $request->request->get('data');
-        if (!$jsonData) {
-            return new JsonResponse(['error' => 'Invalid request, missing data'], 400);
+        if (! $jsonData) {
+            return new JsonResponse([
+                'error' => 'Invalid request, missing data',
+            ], 400);
         }
 
         $data = json_decode($jsonData, true);
-        if (!$data || !isset($data['user_id'], $data['course'], $data['modules'])) {
-            return new JsonResponse(['error' => 'Missing required fields'], 400);
+        if (! $data || ! isset($data['user_id'], $data['course'], $data['modules'])) {
+            return new JsonResponse([
+                'error' => 'Missing required fields',
+            ], 400);
         }
 
         $files = $request->files->all();
@@ -134,7 +141,9 @@ class CoursesController extends AbstractController
 
         $commandBus->dispatch($command);
 
-        return new JsonResponse(['message' => 'Course creation started'], 202);
+        return new JsonResponse([
+            'message' => 'Course creation started',
+        ], 202);
     }
 
     public function getUserCoursesModules(
@@ -163,12 +172,14 @@ class CoursesController extends AbstractController
 
             $response = [
                 ...$userData,
-                'videoAnalytics' => $videoAnalytics
+                'videoAnalytics' => $videoAnalytics,
             ];
 
             return $this->json($response);
         } catch (\Exception $e) {
-            return $this->json(['error' => $e->getMessage()], 404);
+            return $this->json([
+                'error' => $e->getMessage(),
+            ], 404);
         }
     }
 
@@ -182,11 +193,15 @@ class CoursesController extends AbstractController
             );
 
             return $this->json(
-                ['courses' => $coursesData]
+                [
+                    'courses' => $coursesData,
+                ]
             );
         } catch (\Exception $e) {
             return $this->json(
-                ['error' => $e->getMessage()],
+                [
+                    'error' => $e->getMessage(),
+                ],
                 404
             );
         }
@@ -202,7 +217,9 @@ class CoursesController extends AbstractController
 
             return $this->json($courseData);
         } catch (\Exception $e) {
-            return $this->json(['error' => $e->getMessage()], 404);
+            return $this->json([
+                'error' => $e->getMessage(),
+            ], 404);
         }
     }
 
@@ -220,7 +237,7 @@ class CoursesController extends AbstractController
             return $this->json(
                 [
                     'status' => 'error',
-                    'message' => $e->getMessage()
+                    'message' => $e->getMessage(),
                 ],
                 500
             );
@@ -239,12 +256,13 @@ class CoursesController extends AbstractController
             return $this->json(
                 [
                     'status' => 'error',
-                    'message' => $e->getMessage()
+                    'message' => $e->getMessage(),
                 ],
                 500
             );
         }
     }
+
     public function update(
         int $id,
         Request $request
@@ -254,9 +272,11 @@ class CoursesController extends AbstractController
             true
         );
 
-        if (!isset($data['title'], $data['description'], $data['duration'], $data['level'])) {
+        if (! isset($data['title'], $data['description'], $data['duration'], $data['level'])) {
             return new JsonResponse(
-                ['error' => 'Missing required fields'],
+                [
+                    'error' => 'Missing required fields',
+                ],
                 400
             );
         }
@@ -277,11 +297,12 @@ class CoursesController extends AbstractController
         $this->commandBusService->handle($command);
 
         return $this->json(
-            ['message' => 'Course updated successfully'],
+            [
+                'message' => 'Course updated successfully',
+            ],
             200
         );
     }
-
 
     public function delete(int $id): JsonResponse
     {
@@ -289,7 +310,9 @@ class CoursesController extends AbstractController
         $this->commandBusService->handle($command);
 
         return new JsonResponse(
-            ['message' => 'Course deleted successfully'],
+            [
+                'message' => 'Course deleted successfully',
+            ],
             204
         );
     }
@@ -304,7 +327,9 @@ class CoursesController extends AbstractController
             $courses,
             200,
             [],
-            ['groups' => 'course:read']
+            [
+                'groups' => 'course:read',
+            ]
         );
     }
 
@@ -318,7 +343,9 @@ class CoursesController extends AbstractController
             $courses,
             200,
             [],
-            ['groups' => 'course:read']
+            [
+                'groups' => 'course:read',
+            ]
         );
     }
 
@@ -329,12 +356,16 @@ class CoursesController extends AbstractController
                 new GetRecommendedCoursesQuery($id)
             );
         } catch (NotFoundHttpException $e) {
-            return $this->json(['error' => $e->getMessage()], 404);
+            return $this->json([
+                'error' => $e->getMessage(),
+            ], 404);
         }
 
         if (empty($courses)) {
             return $this->json(
-                ['message' => 'No courses found matching your interests'],
+                [
+                    'message' => 'No courses found matching your interests',
+                ],
                 200
             );
         }
@@ -343,7 +374,9 @@ class CoursesController extends AbstractController
             $courses,
             200,
             [],
-            ['groups' => 'course:read']
+            [
+                'groups' => 'course:read',
+            ]
         );
     }
 
@@ -351,12 +384,16 @@ class CoursesController extends AbstractController
         int $id,
         CoursesRepository $courseRepo
     ): JsonResponse {
-        $courses = $courseRepo->findBy(['category' => $id]);
+        $courses = $courseRepo->findBy([
+            'category' => $id,
+        ]);
         return $this->json(
             $courses,
             200,
             [],
-            ['groups' => 'course:read']
+            [
+                'groups' => 'course:read',
+            ]
         );
     }
 
@@ -368,20 +405,28 @@ class CoursesController extends AbstractController
 
         $lesson = $lessonRepository->find($lessonId);
 
-        if (!$lesson) {
-            return $this->json(['error' => 'Lesson not found'], 404);
+        if (! $lesson) {
+            return $this->json([
+                'error' => 'Lesson not found',
+            ], 404);
         }
 
         $course = $lesson->getCourse();
 
-        if (!$course) {
-            return $this->json(['error' => 'Course not found for this lesson'], 404);
+        if (! $course) {
+            return $this->json([
+                'error' => 'Course not found for this lesson',
+            ], 404);
         }
 
-        $quiz = $quizRepository->findOneBy(['course' => $course]);
+        $quiz = $quizRepository->findOneBy([
+            'course' => $course,
+        ]);
 
-        if (!$quiz) {
-            return $this->json(['error' => 'Quiz not found for this course'], 404);
+        if (! $quiz) {
+            return $this->json([
+                'error' => 'Quiz not found for this course',
+            ], 404);
         }
 
         $questions = $quiz->getQuestions();
@@ -393,7 +438,7 @@ class CoursesController extends AbstractController
                 $answers[] = [
                     'id' => $answer->getId(),
                     'text' => $answer->getText(),
-                    'isCorrect' => $answer->isCorrect()
+                    'isCorrect' => $answer->isCorrect(),
                 ];
             }
 
@@ -401,14 +446,14 @@ class CoursesController extends AbstractController
                 'id' => $question->getId(),
                 'text' => $question->getText(),
                 'answers' => $answers,
-                'position' => $question->getPosition()
+                'position' => $question->getPosition(),
             ];
         }
 
         return $this->json(
             [
-            'timeLimit' => $quiz->getTimeLimit(),
-            'questions' => $result
+                'timeLimit' => $quiz->getTimeLimit(),
+                'questions' => $result,
             ]
         );
     }
@@ -417,18 +462,24 @@ class CoursesController extends AbstractController
     {
         $data = json_decode($request->getContent(), true);
 
-        if (!isset($data['userId'], $data['quizId'], $data['score'], $data['totalQuestions'])) {
-            return $this->json(['error' => 'Missing required fields'], 400);
+        if (! isset($data['userId'], $data['quizId'], $data['score'], $data['totalQuestions'])) {
+            return $this->json([
+                'error' => 'Missing required fields',
+            ], 400);
         }
 
         $user = $this->userRepository->find($data['userId']);
-        if (!$user) {
-            return $this->json(['error' => 'User not found'], 404);
+        if (! $user) {
+            return $this->json([
+                'error' => 'User not found',
+            ], 404);
         }
 
         $quiz = $this->quizRepository->find($data['quizId']);
-        if (!$quiz) {
-            return $this->json(['error' => 'Quiz not found'], 404);
+        if (! $quiz) {
+            return $this->json([
+                'error' => 'Quiz not found',
+            ], 404);
         }
 
         $score = new QuizScore();
@@ -443,8 +494,8 @@ class CoursesController extends AbstractController
 
         return $this->json(
             [
-            'success' => true,
-            'scoreId' => $score->getId()
+                'success' => true,
+                'scoreId' => $score->getId(),
             ]
         );
     }
@@ -457,8 +508,10 @@ class CoursesController extends AbstractController
         $userScore = (int) $request->query->get('userScore', 0);
         $totalQuestions = (int) $request->query->get('totalQuestions', 0);
 
-        if (!$userId || !$userScore || !$totalQuestions) {
-            return $this->json(['error' => 'Missing required parameters'], 400);
+        if (! $userId || ! $userScore || ! $totalQuestions) {
+            return $this->json([
+                'error' => 'Missing required parameters',
+            ], 400);
         }
 
         $stats = $this->quizScoreRepository->getQuizStatistics($quizId);
@@ -470,13 +523,13 @@ class CoursesController extends AbstractController
 
         return $this->json(
             [
-            'averageScore' => (float) $stats['averageScore'],
-            'highestScore' => (int) $stats['highestScore'],
-            'totalAttempts' => (int) $stats['totalAttempts'],
-            'ranking' => [
-                'position' => (int) $ranking['position'],
-                'total' => (int) $ranking['total']
-            ]
+                'averageScore' => (float) $stats['averageScore'],
+                'highestScore' => (int) $stats['highestScore'],
+                'totalAttempts' => (int) $stats['totalAttempts'],
+                'ranking' => [
+                    'position' => (int) $ranking['position'],
+                    'total' => (int) $ranking['total'],
+                ],
             ]
         );
     }
@@ -491,7 +544,9 @@ class CoursesController extends AbstractController
             $serializer->serialize(
                 $courses,
                 'json',
-                ['groups' => ['course:read']]
+                [
+                    'groups' => ['course:read'],
+                ]
             ),
             200,
             [],
@@ -529,21 +584,29 @@ class CoursesController extends AbstractController
     ): JsonResponse {
         $lesson = $lessonRepository->find($id);
 
-        if (!$lesson) {
-            return $this->json(['error' => 'Lesson not found'], 404);
+        if (! $lesson) {
+            return $this->json([
+                'error' => 'Lesson not found',
+            ], 404);
         }
 
         $course = $lesson->getCourse();
-        if (!$course) {
-            return $this->json(['error' => 'No course associated with lesson'], 404);
+        if (! $course) {
+            return $this->json([
+                'error' => 'No course associated with lesson',
+            ], 404);
         }
 
         $quiz = $course->getQuiz();
-        if (!$quiz) {
-            return $this->json(['error' => 'No quiz associated with course'], 404);
+        if (! $quiz) {
+            return $this->json([
+                'error' => 'No quiz associated with course',
+            ], 404);
         }
 
-        $quizScores = $quizScoreRepository->findBy(['quiz' => $quiz]);
+        $quizScores = $quizScoreRepository->findBy([
+            'quiz' => $quiz,
+        ]);
 
         $data = array_map(
             function ($score) {

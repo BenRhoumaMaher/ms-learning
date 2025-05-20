@@ -2,9 +2,9 @@
 
 namespace App\Entity;
 
+use App\Repository\LessonRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use App\Repository\LessonRepository;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: LessonRepository::class)]
@@ -81,26 +81,35 @@ class Lesson
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $fullTranscript = null;
 
-    #[ORM\Column(type: 'integer', options: ['default' => 0])]
+    #[ORM\Column(type: 'integer', options: [
+        'default' => 0,
+    ])]
     #[Groups(['lesson:read'])]
     private int $totalViews = 0;
 
-    #[ORM\Column(type: 'integer', options: ['default' => 0])]
+    #[ORM\Column(type: 'integer', options: [
+        'default' => 0,
+    ])]
     #[Groups(['lesson:read'])]
     private int $totalWatchTime = 0;
 
-    #[ORM\Column(type: 'integer', options: ['default' => 0])]
+    #[ORM\Column(type: 'integer', options: [
+        'default' => 0,
+    ])]
     #[Groups(['lesson:read'])]
     private int $totalPauses = 0;
 
-    #[ORM\Column(type: 'integer', options: ['default' => 0])]
+    #[ORM\Column(type: 'integer', options: [
+        'default' => 0,
+    ])]
     #[Groups(['lesson:read'])]
     private int $totalReplays = 0;
 
-    #[ORM\Column(type: 'float', options: ['default' => 0])]
+    #[ORM\Column(type: 'float', options: [
+        'default' => 0,
+    ])]
     #[Groups(['lesson:read'])]
     private float $averageCompletion = 0.0;
-
 
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(nullable: true)]
@@ -403,7 +412,6 @@ class Lesson
             );
         }
     }
-
 
     /**
      * Get the value of instructor

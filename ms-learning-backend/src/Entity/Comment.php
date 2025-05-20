@@ -102,7 +102,7 @@ class Comment
 
     public function addCommentReply(CommentReply $commentReply): static
     {
-        if (!$this->commentReplies->contains($commentReply)) {
+        if (! $this->commentReplies->contains($commentReply)) {
             $this->commentReplies->add($commentReply);
             $commentReply->setComment($this);
         }

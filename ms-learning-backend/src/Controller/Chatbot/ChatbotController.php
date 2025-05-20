@@ -2,14 +2,14 @@
 
 namespace App\Controller\Chatbot;
 
-use DateTimeImmutable;
 use App\Entity\ChatbotMessage;
-use App\Repository\UserRepository;
-use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\ChatbotMessageRepository;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\JsonResponse;
+use App\Repository\UserRepository;
+use DateTimeImmutable;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 
 class ChatbotController extends AbstractController
 {
@@ -22,13 +22,17 @@ class ChatbotController extends AbstractController
         $userId = $jsonData['user_id'] ?? null;
         $messageText = $jsonData['message'] ?? null;
 
-        if (!$userId || !$messageText) {
-            return $this->json(['error' => 'Missing user_id or message'], 400);
+        if (! $userId || ! $messageText) {
+            return $this->json([
+                'error' => 'Missing user_id or message',
+            ], 400);
         }
 
         $user = $userRepo->find($userId);
-        if (!$user) {
-            return $this->json(['error' => 'Invalid user ID'], 401);
+        if (! $user) {
+            return $this->json([
+                'error' => 'Invalid user ID',
+            ], 401);
         }
 
         $message = new ChatbotMessage();
@@ -39,7 +43,10 @@ class ChatbotController extends AbstractController
         $em->persist($message);
         $em->flush();
 
-        return $this->json(['success' => true, 'message' => 'Message sent successfully']);
+        return $this->json([
+            'success' => true,
+            'message' => 'Message sent successfully',
+        ]);
     }
 
     public function getUserMessages(
@@ -49,32 +56,40 @@ class ChatbotController extends AbstractController
     ): JsonResponse {
         $userId = $request->query->get('user_id');
 
-        if (!$userId) {
-            return $this->json(['error' => 'Missing user_id'], 400);
+        if (! $userId) {
+            return $this->json([
+                'error' => 'Missing user_id',
+            ], 400);
         }
 
         $user = $userRepo->find($userId);
-        if (!$user) {
-            return $this->json(['error' => 'Invalid user ID'], 401);
+        if (! $user) {
+            return $this->json([
+                'error' => 'Invalid user ID',
+            ], 401);
         }
 
-        $messages = $repository->findBy(['user' => $user], ['createdAt' => 'ASC']);
+        $messages = $repository->findBy([
+            'user' => $user,
+        ], [
+            'createdAt' => 'ASC',
+        ]);
 
         return $this->json(
             [
-            'messages' => array_map(
-                function (ChatbotMessage $message) {
-                    return [
-                        'id' => $message->getId(),
-                        'message' => $message->getMessage(),
-                        'response' => $message->getResponse(),
-                        'createdAt' => $message->getCreatedAt()->format('Y-m-d H:i:s'),
-                        'respondAt' => $message->getRespondAt()?->format('Y-m-d H:i:s'),
-                        'isRead' => $message->isRead()
-                    ];
-                },
-                $messages
-            )
+                'messages' => array_map(
+                    function (ChatbotMessage $message) {
+                        return [
+                            'id' => $message->getId(),
+                            'message' => $message->getMessage(),
+                            'response' => $message->getResponse(),
+                            'createdAt' => $message->getCreatedAt()->format('Y-m-d H:i:s'),
+                            'respondAt' => $message->getRespondAt()?->format('Y-m-d H:i:s'),
+                            'isRead' => $message->isRead(),
+                        ];
+                    },
+                    $messages
+                ),
             ]
         );
     }
@@ -82,23 +97,27 @@ class ChatbotController extends AbstractController
     public function getPendingMessages(
         ChatbotMessageRepository $repository
     ): JsonResponse {
-        $messages = $repository->findBy(['response' => null], ['createdAt' => 'ASC']);
+        $messages = $repository->findBy([
+            'response' => null,
+        ], [
+            'createdAt' => 'ASC',
+        ]);
 
         return $this->json(
             [
-            'messages' => array_map(
-                function (ChatbotMessage $message) {
-                    return [
-                        'id' => $message->getId(),
-                        'userId' => $message->getUser()->getId(),
-                        'userName' => $message->getUser()->getUsername(),
-                        'userEmail' => $message->getUser()->getEmail(),
-                        'message' => $message->getMessage(),
-                        'createdAt' => $message->getCreatedAt()->format('Y-m-d H:i:s')
-                    ];
-                },
-                $messages
-            )
+                'messages' => array_map(
+                    function (ChatbotMessage $message) {
+                        return [
+                            'id' => $message->getId(),
+                            'userId' => $message->getUser()->getId(),
+                            'userName' => $message->getUser()->getUsername(),
+                            'userEmail' => $message->getUser()->getEmail(),
+                            'message' => $message->getMessage(),
+                            'createdAt' => $message->getCreatedAt()->format('Y-m-d H:i:s'),
+                        ];
+                    },
+                    $messages
+                ),
             ]
         );
     }
@@ -111,9 +130,11 @@ class ChatbotController extends AbstractController
         UserRepository $userRepository
     ): JsonResponse {
         $message = $repository->find($id);
-        if (!$message) {
+        if (! $message) {
             return $this->json(
-                ['error' => 'Message not found'],
+                [
+                    'error' => 'Message not found',
+                ],
                 404
             );
         }
@@ -127,9 +148,11 @@ class ChatbotController extends AbstractController
 
         $admin = $userRepository->find($userId);
 
-        if (!$responseText) {
+        if (! $responseText) {
             return $this->json(
-                ['error' => 'Response is required'],
+                [
+                    'error' => 'Response is required',
+                ],
                 403
             );
         }
@@ -143,8 +166,8 @@ class ChatbotController extends AbstractController
 
         return $this->json(
             [
-            'success' => true,
-            'message' => 'Response sent successfully'
+                'success' => true,
+                'message' => 'Response sent successfully',
             ]
         );
     }
@@ -155,9 +178,11 @@ class ChatbotController extends AbstractController
         EntityManagerInterface $em
     ): JsonResponse {
         $message = $repository->find($id);
-        if (!$message) {
+        if (! $message) {
             return $this->json(
-                ['error' => 'Message not found'],
+                [
+                    'error' => 'Message not found',
+                ],
                 404
             );
         }
@@ -167,8 +192,8 @@ class ChatbotController extends AbstractController
 
         return $this->json(
             [
-            'success' => true,
-            'message' => 'Message marked as read'
+                'success' => true,
+                'message' => 'Message marked as read',
             ]
         );
     }

@@ -2,10 +2,10 @@
 
 namespace App\Controller\msconnect\forum;
 
-use Symfony\Component\HttpFoundation\Request;
 use App\Service\ForumPostService\ForumPostService;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 
 class ForumPostController extends AbstractController
 {
@@ -24,15 +24,19 @@ class ForumPostController extends AbstractController
 
             return $this->json(
                 [
-                'message' => 'Forum Post created!',
-                'id' => $post->getId()
+                    'message' => 'Forum Post created!',
+                    'id' => $post->getId(),
                 ],
                 200
             );
         } catch (\InvalidArgumentException $e) {
-            return $this->json(['error' => $e->getMessage()], 400);
+            return $this->json([
+                'error' => $e->getMessage(),
+            ], 400);
         } catch (\RuntimeException $e) {
-            return $this->json(['error' => $e->getMessage()], 403);
+            return $this->json([
+                'error' => $e->getMessage(),
+            ], 403);
         }
     }
 
@@ -45,7 +49,9 @@ class ForumPostController extends AbstractController
             return $this->json($data);
         } catch (\InvalidArgumentException $e) {
             return $this->json(
-                ['message' => $e->getMessage()],
+                [
+                    'message' => $e->getMessage(),
+                ],
                 404
             );
         }
@@ -59,7 +65,9 @@ class ForumPostController extends AbstractController
             $data = $forumPostService->getSiblingPosts($id);
             return $this->json($data);
         } catch (\InvalidArgumentException $e) {
-            return $this->json(['error' => $e->getMessage()], 404);
+            return $this->json([
+                'error' => $e->getMessage(),
+            ], 404);
         }
     }
 }

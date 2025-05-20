@@ -24,19 +24,19 @@ class MessageService
         $roomId = $data['roomId'] ?? null;
         $content = $data['content'] ?? null;
 
-        if (!$userId || !$receiverId || !$content) {
+        if (! $userId || ! $receiverId || ! $content) {
             throw new \InvalidArgumentException('User ID, Receiver ID and content required');
         }
 
         $user = $this->em->getRepository(User::class)->find($userId);
         $receiver = $this->em->getRepository(User::class)->find($receiverId);
 
-        if (!$user || !$receiver) {
+        if (! $user || ! $receiver) {
             throw new \InvalidArgumentException('Invalid user or receiver');
         }
 
-        if (!$roomId) {
-            $userIds = [(int)$userId, (int)$receiverId];
+        if (! $roomId) {
+            $userIds = [(int) $userId, (int) $receiverId];
             sort($userIds);
             $roomId = 'room_' . implode('_', $userIds);
         }
@@ -80,7 +80,7 @@ class MessageService
             throw new \InvalidArgumentException('Invalid room format');
         }
 
-        if (!in_array((string) $currentUserId, $userIds, true)) {
+        if (! in_array((string) $currentUserId, $userIds, true)) {
             throw new \RuntimeException('Unauthorized access to this conversation');
         }
 

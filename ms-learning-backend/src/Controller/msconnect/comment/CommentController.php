@@ -2,11 +2,10 @@
 
 namespace App\Controller\msconnect\comment;
 
-use App\Repository\CommentRepository;
-use Symfony\Component\HttpFoundation\Request;
 use App\Service\CommentService\CommentService;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 
 final class CommentController extends AbstractController
 {
@@ -21,12 +20,14 @@ final class CommentController extends AbstractController
 
             return $this->json(
                 [
-                'message' => 'Comment added',
-                'id' => $comment->getId(),
+                    'message' => 'Comment added',
+                    'id' => $comment->getId(),
                 ]
             );
         } catch (\InvalidArgumentException $e) {
-            return $this->json(['error' => $e->getMessage()], 404);
+            return $this->json([
+                'error' => $e->getMessage(),
+            ], 404);
         }
     }
 
@@ -42,12 +43,14 @@ final class CommentController extends AbstractController
 
             return $this->json(
                 [
-                'message' => 'Reply added',
-                'id' => $reply->getId()
+                    'message' => 'Reply added',
+                    'id' => $reply->getId(),
                 ]
             );
         } catch (\InvalidArgumentException $e) {
-            return $this->json(['error' => $e->getMessage()], 404);
+            return $this->json([
+                'error' => $e->getMessage(),
+            ], 404);
         }
     }
 
@@ -59,7 +62,9 @@ final class CommentController extends AbstractController
             $replies = $commentService->listRepliesByComment($commentId);
             return $this->json($replies);
         } catch (\InvalidArgumentException $e) {
-            return $this->json(['error' => $e->getMessage()], 404);
+            return $this->json([
+                'error' => $e->getMessage(),
+            ], 404);
         }
     }
 
@@ -79,7 +84,9 @@ final class CommentController extends AbstractController
             $data = $commentService->getCommentData($id);
             return $this->json($data);
         } catch (\InvalidArgumentException $e) {
-            return $this->json(['error' => $e->getMessage()], 404);
+            return $this->json([
+                'error' => $e->getMessage(),
+            ], 404);
         }
     }
 }

@@ -4,8 +4,8 @@ namespace App\Repository;
 
 use App\Entity\Lesson;
 use App\Entity\StudentCourse;
-use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * @extends ServiceEntityRepository<StudentCourse>
@@ -39,7 +39,7 @@ class StudentCourseRepository extends ServiceEntityRepository
 
         // Get live lessons for these courses
         $liveLessons = [];
-        if (!empty($ids)) {
+        if (! empty($ids)) {
             $em = $this->getEntityManager();
             $lessonRepo = $em->getRepository(Lesson::class);
 
@@ -69,7 +69,7 @@ class StudentCourseRepository extends ServiceEntityRepository
             'ids' => $ids,
             'enrollmentIds' => $enrollmentIds,
             'courseImages' => $courseImages,
-            'liveLessons' => $liveLessons
+            'liveLessons' => $liveLessons,
         ];
     }
 

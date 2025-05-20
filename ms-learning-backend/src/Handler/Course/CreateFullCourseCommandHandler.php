@@ -2,15 +2,15 @@
 
 namespace App\Handler\Course;
 
-use DateTime;
+use App\Command\Course\CreateFullCourseCommand;
 use App\Entity\Lesson;
 use App\Entity\Module;
-use DateTimeImmutable;
-use App\Repository\UserRepository;
 use App\Repository\CoursesRepository;
+use App\Repository\UserRepository;
 use App\Service\Course\CourseService;
+use DateTime;
+use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
-use App\Command\Course\CreateFullCourseCommand;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
 #[AsMessageHandler]
@@ -28,17 +28,17 @@ class CreateFullCourseCommandHandler
     public function __invoke(CreateFullCourseCommand $command): array
     {
         $user = $this->userRepository->find($command->userId);
-        if (!$user) {
+        if (! $user) {
             throw new \Exception('User not found');
         }
 
         $course = $this->courseRepository->find($command->courseId);
-        if (!$course) {
+        if (! $course) {
             throw new \Exception('Course not found');
         }
 
         foreach ($command->modules as $moduleIndex => $moduleData) {
-            if (!isset($moduleData['title'], $moduleData['position'])) {
+            if (! isset($moduleData['title'], $moduleData['position'])) {
                 continue;
             }
 
@@ -52,7 +52,7 @@ class CreateFullCourseCommandHandler
             $this->entityManager->persist($module);
 
             foreach ($moduleData['lessons'] as $lessonIndex => $lessonData) {
-                if (!isset($lessonData['title'], $lessonData['content'])) {
+                if (! isset($lessonData['title'], $lessonData['content'])) {
                     continue;
                 }
 
@@ -86,8 +86,7 @@ class CreateFullCourseCommandHandler
                 }
 
                 if (isset($command->files['modules'][$moduleIndex]['lessons'][$lessonIndex]['resource'])) {
-                    $file = $command->files['modules']
-                    [$moduleIndex]['lessons'][$lessonIndex]['resource'];
+                    $file = $command->files['modules'][$moduleIndex]['lessons'][$lessonIndex]['resource'];
                     $fileUrl = $this->courseService->uploadFile($file);
                     $lesson->setRessources($fileUrl);
                 }
@@ -98,6 +97,9 @@ class CreateFullCourseCommandHandler
 
         $this->entityManager->flush();
 
-        return ['message' => 'Course created successfully', 'status' => 201];
+        return [
+            'message' => 'Course created successfully',
+            'status' => 201,
+        ];
     }
 }

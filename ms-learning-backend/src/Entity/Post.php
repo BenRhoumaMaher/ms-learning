@@ -174,7 +174,7 @@ class Post
 
     public function addComment(Comment $comment): static
     {
-        if (!$this->comments->contains($comment)) {
+        if (! $this->comments->contains($comment)) {
             $this->comments->add($comment);
             $comment->setPost($this);
         }
@@ -204,7 +204,7 @@ class Post
 
     public function addPostLike(PostLike $postLike): static
     {
-        if (!$this->postLikes->contains($postLike)) {
+        if (! $this->postLikes->contains($postLike)) {
             $this->postLikes->add($postLike);
             $postLike->setPost($this);
         }
@@ -232,5 +232,4 @@ class Post
             $this->createdAt = new \DateTimeImmutable();
         }
     }
-
 }

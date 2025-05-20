@@ -2,9 +2,9 @@
 
 namespace App\Service\CommandBusService;
 
-use Symfony\Component\Messenger\Stamp\HandledStamp;
-use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Messenger\Exception\HandlerFailedException;
+use Symfony\Component\Messenger\MessageBusInterface;
+use Symfony\Component\Messenger\Stamp\HandledStamp;
 
 class CommandBusService
 {

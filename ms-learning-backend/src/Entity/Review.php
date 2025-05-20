@@ -2,9 +2,9 @@
 
 namespace App\Entity;
 
+use App\Repository\ReviewRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use App\Repository\ReviewRepository;
 use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: ReviewRepository::class)]
@@ -109,5 +109,4 @@ class Review
             $this->createdAt = new \DateTimeImmutable();
         }
     }
-
 }

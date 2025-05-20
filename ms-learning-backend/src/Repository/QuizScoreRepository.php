@@ -27,9 +27,9 @@ class QuizScoreRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('s')
             ->select(
                 [
-                'AVG(s.score) as averageScore',
-                'MAX(s.score) as highestScore',
-                'COUNT(s.id) as totalAttempts'
+                    'AVG(s.score) as averageScore',
+                    'MAX(s.score) as highestScore',
+                    'COUNT(s.id) as totalAttempts',
                 ]
             )
             ->where('s.quiz = :quizId')
@@ -55,14 +55,13 @@ class QuizScoreRepository extends ServiceEntityRepository
         $stmt = $conn->prepare($sql);
         $result = $stmt->executeQuery(
             [
-            'quizId' => $quizId,
-            'score' => $score
+                'quizId' => $quizId,
+                'score' => $score,
             ]
         );
 
         return $result->fetchAssociative();
     }
-
 
     //    /**
     //     * @return QuizScore[] Returns an array of QuizScore objects

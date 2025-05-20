@@ -2,10 +2,10 @@
 
 namespace App\Controller\msconnect\message;
 
-use Symfony\Component\HttpFoundation\Request;
 use App\Service\MessageService\MessageService;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 
 class MessagesController extends AbstractController
 {
@@ -19,9 +19,12 @@ class MessagesController extends AbstractController
 
             return $this->json($response, 201);
         } catch (\InvalidArgumentException $e) {
-            return $this->json(['error' => $e->getMessage()], 400);
+            return $this->json([
+                'error' => $e->getMessage(),
+            ], 400);
         }
     }
+
     public function getMessages(
         string $roomId,
         Request $request,
@@ -32,9 +35,13 @@ class MessagesController extends AbstractController
             $messages = $messageService->getMessagesForRoom($roomId, $userId);
             return $this->json($messages);
         } catch (\InvalidArgumentException $e) {
-            return $this->json(['error' => $e->getMessage()], 400);
+            return $this->json([
+                'error' => $e->getMessage(),
+            ], 400);
         } catch (\RuntimeException $e) {
-            return $this->json(['error' => $e->getMessage()], 403);
+            return $this->json([
+                'error' => $e->getMessage(),
+            ], 403);
         }
     }
 
@@ -45,39 +52,38 @@ class MessagesController extends AbstractController
             $messageText = $request->request->get('text');
             $targetLang = $request->request->get('lang', 'fr');
 
-            if (!$messageText) {
-                throw new \InvalidArgumentException("Message text is required.");
+            if (! $messageText) {
+                throw new \InvalidArgumentException('Message text is required.');
             }
 
             $client = new \GuzzleHttp\Client();
             $response = $client->post(
                 'http://whisper:5000/translate-text',
                 [
-                'form_params' => [
-                    'text' => $messageText,
-                    'lang' => $targetLang,
-                ],
-                'timeout' => 20,
+                    'form_params' => [
+                        'text' => $messageText,
+                        'lang' => $targetLang,
+                    ],
+                    'timeout' => 20,
                 ]
             );
 
             $translated = json_decode($response->getBody(), true);
             return $this->json(
                 [
-                'status' => 'success',
-                'translated' => $translated['translated'],
+                    'status' => 'success',
+                    'translated' => $translated['translated'],
                 ]
             );
 
         } catch (\Exception $e) {
             return $this->json(
                 [
-                'status' => 'error',
-                'message' => $e->getMessage(),
+                    'status' => 'error',
+                    'message' => $e->getMessage(),
                 ],
                 500
             );
         }
     }
-
 }

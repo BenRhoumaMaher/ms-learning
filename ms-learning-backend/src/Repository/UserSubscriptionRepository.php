@@ -2,11 +2,11 @@
 
 namespace App\Repository;
 
-use DateTime;
 use App\Entity\User;
 use App\Entity\UserSubscription;
-use Doctrine\Persistence\ManagerRegistry;
+use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * @extends ServiceEntityRepository<UserSubscription>

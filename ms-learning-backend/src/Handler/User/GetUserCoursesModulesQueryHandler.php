@@ -2,10 +2,10 @@
 
 namespace App\Handler\User;
 
-use App\Repository\UserRepository;
 use App\Query\Course\GetUserCoursesModulesQuery;
-use Symfony\Component\Messenger\Attribute\AsMessageHandler;
+use App\Repository\UserRepository;
 use App\Service\ElasticSearch\VideoEngagementAnalyticsService;
+use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
 #[AsMessageHandler]
 class GetUserCoursesModulesQueryHandler
@@ -20,7 +20,7 @@ class GetUserCoursesModulesQueryHandler
     {
         $user = $this->userRepository->find($query->id);
 
-        if (!$user) {
+        if (! $user) {
             throw new \Exception('User not found');
         }
 
@@ -85,7 +85,7 @@ class GetUserCoursesModulesQueryHandler
         return [
             'username' => $user->getFirstname() . ' ' . $user->getLastName(),
             'courses' => $courses,
-            'videoAnalytics' => $videoAnalytics
+            'videoAnalytics' => $videoAnalytics,
         ];
 
     }

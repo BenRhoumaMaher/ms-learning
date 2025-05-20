@@ -2,10 +2,10 @@
 
 namespace App\Handler\Course;
 
-use App\Repository\CoursesRepository;
 use App\Query\Course\GetAllCoursesQuery;
-use Symfony\Component\Messenger\Attribute\AsMessageHandler;
+use App\Repository\CoursesRepository;
 use App\Service\Course\CourseService;
+use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
 #[AsMessageHandler]
 class GetAllCoursesHandler

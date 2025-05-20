@@ -2,9 +2,9 @@
 
 namespace App\Controller\ElasticSearch;
 
+use Elasticsearch\ClientBuilder;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Elasticsearch\ClientBuilder;
 
 class LogStatsController extends AbstractController
 {
@@ -28,11 +28,11 @@ class LogStatsController extends AbstractController
                     'log_messages' => [
                         'terms' => [
                             'field' => 'event.original.keyword',
-                            'size' => 1000
-                        ]
-                    ]
-                ]
-            ]
+                            'size' => 1000,
+                        ],
+                    ],
+                ],
+            ],
         ];
 
         try {
@@ -50,13 +50,18 @@ class LogStatsController extends AbstractController
 
             $result = [];
             foreach ($levelCounts as $level => $count) {
-                $result[] = ['level' => $level, 'count' => $count];
+                $result[] = [
+                    'level' => $level,
+                    'count' => $count,
+                ];
             }
 
             return new JsonResponse($result);
         } catch (\Exception $e) {
             return new JsonResponse(
-                ['error' => $e->getMessage()],
+                [
+                    'error' => $e->getMessage(),
+                ],
                 500
             );
         }

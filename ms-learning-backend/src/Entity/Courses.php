@@ -2,11 +2,11 @@
 
 namespace App\Entity;
 
+use App\Repository\CoursesRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use App\Repository\CoursesRepository;
-use Doctrine\Common\Collections\Collection;
-use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: CoursesRepository::class)]
@@ -19,7 +19,7 @@ class Courses
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['category:read', 'course:read', 'user:read','enrolledCourse:read'])]
+    #[Groups(['category:read', 'course:read', 'user:read', 'enrolledCourse:read'])]
     private ?string $title = null;
 
     #[ORM\Column(type: Types::TEXT)]
@@ -49,7 +49,7 @@ class Courses
     private ?\DateTimeInterface $updatedAt = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['category:read', 'course:read','lesson:read'])]
+    #[Groups(['category:read', 'course:read', 'lesson:read'])]
     private ?string $image = null;
 
     /**
@@ -230,7 +230,7 @@ class Courses
 
     public function addEnrollment(User $enrollment): static
     {
-        if (!$this->enrollments->contains($enrollment)) {
+        if (! $this->enrollments->contains($enrollment)) {
             $this->enrollments->add($enrollment);
         }
 
@@ -254,7 +254,7 @@ class Courses
 
     public function addLesson(Lesson $lesson): static
     {
-        if (!$this->lessons->contains($lesson)) {
+        if (! $this->lessons->contains($lesson)) {
             $this->lessons->add($lesson);
             $lesson->setCourse($this);
         }
@@ -284,7 +284,7 @@ class Courses
 
     public function addReview(Review $review): static
     {
-        if (!$this->reviews->contains($review)) {
+        if (! $this->reviews->contains($review)) {
             $this->reviews->add($review);
             $review->setCourse($this);
         }
@@ -314,7 +314,7 @@ class Courses
 
     public function addModule(Module $module): static
     {
-        if (!$this->modules->contains($module)) {
+        if (! $this->modules->contains($module)) {
             $this->modules->add($module);
             $module->setCourse($this);
         }
@@ -366,7 +366,7 @@ class Courses
 
     public function addPayment(Payment $payment): static
     {
-        if (!$this->payments->contains($payment)) {
+        if (! $this->payments->contains($payment)) {
             $this->payments->add($payment);
             $payment->setCourse($this);
         }
@@ -420,7 +420,7 @@ class Courses
 
     public function addStudentCourse(StudentCourse $studentCourse): static
     {
-        if (!$this->studentCourses->contains($studentCourse)) {
+        if (! $this->studentCourses->contains($studentCourse)) {
             $this->studentCourses->add($studentCourse);
             $studentCourse->setCurse($this);
         }

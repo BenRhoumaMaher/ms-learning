@@ -2,9 +2,9 @@
 
 namespace App\Service\QueryBusService;
 
+use Symfony\Component\Messenger\Exception\HandlerFailedException;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Messenger\Stamp\HandledStamp;
-use Symfony\Component\Messenger\Exception\HandlerFailedException;
 
 class QueryBusService
 {
@@ -19,7 +19,7 @@ class QueryBusService
             $envelope = $this->queryBus->dispatch($query);
             $handledStamp = $envelope->last(HandledStamp::class);
 
-            if (!$handledStamp) {
+            if (! $handledStamp) {
                 throw new \Exception('No response from handler');
             }
 

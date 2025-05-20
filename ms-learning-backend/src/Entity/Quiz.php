@@ -2,11 +2,11 @@
 
 namespace App\Entity;
 
+use App\Repository\QuizRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use App\Repository\QuizRepository;
-use Doctrine\Common\Collections\Collection;
-use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: QuizRepository::class)]
@@ -171,7 +171,7 @@ class Quiz
 
     public function addQuestion(Question $question): static
     {
-        if (!$this->questions->contains($question)) {
+        if (! $this->questions->contains($question)) {
             $this->questions->add($question);
             $question->setQuiz($this);
         }
@@ -201,7 +201,7 @@ class Quiz
 
     public function addQuizScore(QuizScore $quizScore): static
     {
-        if (!$this->quizScores->contains($quizScore)) {
+        if (! $this->quizScores->contains($quizScore)) {
             $this->quizScores->add($quizScore);
             $quizScore->setQuiz($this);
         }

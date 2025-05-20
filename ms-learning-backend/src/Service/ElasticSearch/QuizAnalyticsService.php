@@ -2,20 +2,21 @@
 
 namespace App\Service\ElasticSearch;
 
-use Elastica\Query;
-use Elastica\Search;
-use Elastica\Query\Term;
-use Elastica\Query\Nested;
 use Elastica\Aggregation\Avg;
 use Elastica\Aggregation\Max;
 use Elastica\Aggregation\Min;
 use Elastica\Aggregation\ValueCount;
+use Elastica\Query;
+use Elastica\Query\Nested;
+use Elastica\Query\Term;
+use Elastica\Search;
 use FOS\ElasticaBundle\Elastica\Client;
 
 class QuizAnalyticsService
 {
-    public function __construct(private Client $elasticaClient)
-    {
+    public function __construct(
+        private Client $elasticaClient
+    ) {
     }
 
     public function getInstructorQuizAnalytics(int $instructorId): array
@@ -26,7 +27,9 @@ class QuizAnalyticsService
         $this->elasticaClient->getIndex('quiz_scores')->refresh();
         $search->addIndex($index);
 
-        $instructorTerm = new Term(['quiz.instructor.id' => $instructorId]);
+        $instructorTerm = new Term([
+            'quiz.instructor.id' => $instructorId,
+        ]);
         $instructorNested = new Nested();
         $instructorNested->setPath('quiz.instructor');
         $instructorNested->setQuery($instructorTerm);
@@ -75,5 +78,4 @@ class QuizAnalyticsService
             ),
         ];
     }
-
 }

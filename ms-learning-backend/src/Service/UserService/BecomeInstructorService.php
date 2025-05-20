@@ -2,13 +2,12 @@
 
 namespace App\Service\UserService;
 
-use App\Entity\User;
 use App\Entity\Courses;
+use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
-use App\Service\UserService\UserServiceInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class BecomeInstructorService implements UserServiceInterface
 {
@@ -33,7 +32,9 @@ class BecomeInstructorService implements UserServiceInterface
         return (bool) $this->em->getRepository(
             User::class
         )->findOneBy(
-            ['email' => $email]
+            [
+                'email' => $email,
+            ]
         );
     }
 
@@ -77,7 +78,7 @@ class BecomeInstructorService implements UserServiceInterface
             $user->setResume($resumeUrl);
         }
 
-        if (!empty($courses)) {
+        if (! empty($courses)) {
             $courseRepository = $this->em->getRepository(Courses::class);
             foreach ($courses as $courseId) {
                 $course = $courseRepository->find($courseId);

@@ -2,10 +2,10 @@
 
 namespace App\Handler\User;
 
-use App\Repository\UserRepository;
-use App\Repository\CategoryRepository;
-use Doctrine\ORM\EntityManagerInterface;
 use App\Command\User\AddUserInterestsCommand;
+use App\Repository\CategoryRepository;
+use App\Repository\UserRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
 #[AsMessageHandler]
@@ -21,12 +21,14 @@ class AddUserInterestsHandler
     public function __invoke(AddUserInterestsCommand $command): void
     {
         $user = $this->userRepository->find($command->userId);
-        if (!$user) {
+        if (! $user) {
             throw new \InvalidArgumentException('User not found');
         }
 
         $categories = $this->categoryRepository
-            ->findBy(['id' => $command->categoryIds]);
+            ->findBy([
+                'id' => $command->categoryIds,
+            ]);
         foreach ($categories as $category) {
             $user->addInterest($category);
         }

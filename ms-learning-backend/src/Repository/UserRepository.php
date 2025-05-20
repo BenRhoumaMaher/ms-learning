@@ -28,7 +28,7 @@ class UserRepository extends ServiceEntityRepository
     public function findInstructors(): array
     {
         return $this->createQueryBuilder('u')
-            ->where("u.roles LIKE :role")
+            ->where('u.roles LIKE :role')
             ->setParameter('role', '%"ROLE_INSTRUCTOR"%')
             ->getQuery()
             ->getResult();
@@ -53,14 +53,13 @@ class UserRepository extends ServiceEntityRepository
         $followedIds = $currentUser->getFollowing()
             ->map(fn ($u) => $u->getId())->toArray();
 
-        if (!empty($followedIds)) {
+        if (! empty($followedIds)) {
             $qb->andWhere($qb->expr()->notIn('u.id', ':excluded'))
                 ->setParameter('excluded', $followedIds);
         }
 
         return $qb->getQuery()->getResult();
     }
-
 
     //    /**
     //     * @return User[] Returns an array of User objects

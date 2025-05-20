@@ -2,15 +2,15 @@
 
 namespace App\Service\ForumPostService;
 
-use App\Entity\User;
-use DateTimeImmutable;
 use App\Entity\ForumPost;
+use App\Entity\User;
 use App\Repository\CategoryRepository;
 use App\Repository\ForumPostRepository;
+use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpFoundation\Request;
 
 class ForumPostService
 {
@@ -26,7 +26,9 @@ class ForumPostService
     {
         $posts = $this->forumPostRepository->findBy(
             [],
-            ['createdAt' => 'DESC']
+            [
+                'createdAt' => 'DESC',
+            ]
         );
 
         return array_map(
@@ -63,16 +65,16 @@ class ForumPostService
         $userId = $decoded['user_id'] ?? null;
         $categoryIds = $decoded['categories'] ?? [];
 
-        if (!$userId) {
+        if (! $userId) {
             throw new \InvalidArgumentException('User ID is required');
         }
 
         $user = $this->em->getRepository(User::class)->find($userId);
-        if (!$user) {
+        if (! $user) {
             throw new \InvalidArgumentException('Invalid user ID');
         }
 
-        if (!in_array('ROLE_INSTRUCTOR', $user->getRoles(), true)) {
+        if (! in_array('ROLE_INSTRUCTOR', $user->getRoles(), true)) {
             throw new \RuntimeException('Access denied. Instructor role required.');
         }
 
@@ -101,31 +103,11 @@ class ForumPostService
         return $post;
     }
 
-    private function extractTags(string $content): array
-    {
-        preg_match_all('/#(\w+)/', $content, $matches);
-        return array_unique($matches[1]);
-    }
-
-    private function uploadForumPostImage(?UploadedFile $file): array
-    {
-        $uploadedPaths = [];
-
-        if ($file instanceof UploadedFile) {
-            $filename = uniqid() . '.' . $file->guessExtension();
-            $uploadDir = $this->params->get('forum_upload_dir');
-            $file->move($uploadDir, $filename);
-            $uploadedPaths[] = '/images/forum/' . $filename;
-        }
-
-        return $uploadedPaths;
-    }
-
     public function getPostDetailsAndIncrementViews(int $id): array
     {
         $post = $this->forumPostRepository->find($id);
 
-        if (!$post) {
+        if (! $post) {
             throw new \InvalidArgumentException('Post not found');
         }
 
@@ -151,13 +133,15 @@ class ForumPostService
     {
         $posts = $this->forumPostRepository->findBy(
             [],
-            ['createdAt' => 'ASC']
+            [
+                'createdAt' => 'ASC',
+            ]
         );
         $postIds = array_map(fn ($p) => $p->getId(), $posts);
         $index = array_search($id, $postIds);
 
         if ($index === false) {
-            throw new \InvalidArgumentException("Post not found in ordered list");
+            throw new \InvalidArgumentException('Post not found in ordered list');
         }
 
         return [
@@ -172,4 +156,23 @@ class ForumPostService
         ];
     }
 
+    private function extractTags(string $content): array
+    {
+        preg_match_all('/#(\w+)/', $content, $matches);
+        return array_unique($matches[1]);
+    }
+
+    private function uploadForumPostImage(?UploadedFile $file): array
+    {
+        $uploadedPaths = [];
+
+        if ($file instanceof UploadedFile) {
+            $filename = uniqid() . '.' . $file->guessExtension();
+            $uploadDir = $this->params->get('forum_upload_dir');
+            $file->move($uploadDir, $filename);
+            $uploadedPaths[] = '/images/forum/' . $filename;
+        }
+
+        return $uploadedPaths;
+    }
 }

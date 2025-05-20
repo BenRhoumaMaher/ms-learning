@@ -9,8 +9,8 @@ class UserDataProvider
         return [
             'successful_request' => [
                 200,
-                3
-            ]
+                3,
+            ],
         ];
     }
 
@@ -19,8 +19,8 @@ class UserDataProvider
         return [
             'successful_deletion' => [
                 200,
-                'Account deleted successfully'
-            ]
+                'Account deleted successfully',
+            ],
         ];
     }
 
@@ -29,8 +29,8 @@ class UserDataProvider
         return [
             'user_not_found' => [
                 404,
-                'User not found'
-            ]
+                'User not found',
+            ],
         ];
     }
 }

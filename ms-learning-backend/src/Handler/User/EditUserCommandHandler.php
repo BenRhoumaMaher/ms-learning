@@ -2,14 +2,12 @@
 
 namespace App\Handler\User;
 
-use App\Repository\UserRepository;
 use App\Command\User\EditUserCommand;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
-use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
 
 #[AsMessageHandler]
 class EditUserCommandHandler
@@ -25,7 +23,7 @@ class EditUserCommandHandler
     {
         $user = $this->userRepository->find($command->userId);
 
-        if (!$user) {
+        if (! $user) {
             throw new \Exception('User not found');
         }
 
@@ -39,13 +37,19 @@ class EditUserCommandHandler
         // Validate user
         $errors = $this->validateUser($user);
         if ($errors) {
-            return ['error' => $errors, 'status' => 400];
+            return [
+                'error' => $errors,
+                'status' => 400,
+            ];
         }
 
         // Save changes
         $this->entityManager->flush();
 
-        return ['user' => $user, 'status' => 200];
+        return [
+            'user' => $user,
+            'status' => 200,
+        ];
     }
 
     private function handleProfileImageUpload(UploadedFile $file, $user): void
@@ -78,7 +82,7 @@ class EditUserCommandHandler
 
         foreach ($mapping as $key => $method) {
             if (isset($data[$key])) {
-                $user->$method($data[$key]);
+                $user->{$method}($data[$key]);
             }
         }
     }

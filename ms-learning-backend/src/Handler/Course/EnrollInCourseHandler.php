@@ -2,17 +2,15 @@
 
 namespace App\Handler\Course;
 
+use App\Command\Course\EnrollInCourseCommand;
+use App\Entity\StudentCourse;
+use App\Repository\CoursesRepository;
+use App\Repository\StudentCourseRepository;
+use App\Repository\UserRepository;
 use DateTime;
 use DateTimeImmutable;
-use App\Entity\StudentCourse;
-use App\Repository\UserRepository;
-use App\Repository\CourseRepository;
-use App\Repository\CoursesRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use App\Repository\StudentCourseRepository;
-use App\Command\Course\EnrollInCourseCommand;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
-use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
 
 #[AsMessageHandler]
 class EnrollInCourseHandler
@@ -30,14 +28,14 @@ class EnrollInCourseHandler
         $user = $this->userRepository->find($command->userId);
         $course = $this->courseRepository->find($command->courseId);
 
-        if (!$user || !$course) {
+        if (! $user || ! $course) {
             throw new \Exception('User or Course not found.');
         }
 
         $existing = $this->studentCourseRepository->findOneBy(
             [
-            'user' => $user,
-            'curse' => $course,
+                'user' => $user,
+                'curse' => $course,
             ]
         );
 

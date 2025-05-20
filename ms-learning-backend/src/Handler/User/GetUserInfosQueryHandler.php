@@ -5,7 +5,6 @@ namespace App\Handler\User;
 use App\Query\User\GetUserInfosQuery;
 use App\Service\UserService\UserService;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
-use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
 
 #[AsMessageHandler]
 class GetUserInfosQueryHandler
@@ -15,11 +14,11 @@ class GetUserInfosQueryHandler
     ) {
     }
 
-    public function __invoke(GetUserInfosQuery  $query)
+    public function __invoke(GetUserInfosQuery $query)
     {
         $user = $this->userService->getUserById($query->id);
 
-        if (!$user) {
+        if (! $user) {
             throw new \Exception('User not found');
         }
 

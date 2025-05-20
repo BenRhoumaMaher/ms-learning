@@ -2,13 +2,11 @@
 
 namespace App\Service\Chatbot;
 
-use App\Entity\User;
-use DateTimeImmutable;
 use App\Entity\ChatbotMessage;
-use App\Repository\UserRepository;
 use App\Repository\MessageRepository;
+use App\Repository\UserRepository;
+use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\HttpFoundation\JsonResponse;
 
 class ChatbotMessageService
 {
@@ -23,7 +21,7 @@ class ChatbotMessageService
     {
         $user = $this->userRepository->find($userId);
 
-        if (!$user) {
+        if (! $user) {
             throw new \InvalidArgumentException('Invalid user ID');
         }
 
@@ -39,8 +37,12 @@ class ChatbotMessageService
     public function getPendingMessages(): array
     {
         $messages = $this->messageRepo->findBy(
-            ['response' => null],
-            ['createdAt' => 'ASC']
+            [
+                'response' => null,
+            ],
+            [
+                'createdAt' => 'ASC',
+            ]
         );
 
         return array_map(
@@ -53,7 +55,7 @@ class ChatbotMessageService
                     'userEmail' => $user->getEmail(),
                     'message' => $message->getMessage(),
                     'createdAt' => $message->getCreatedAt()->format('Y-m-d H:i:s'),
-                    ];
+                ];
             },
             $messages
         );
@@ -63,11 +65,15 @@ class ChatbotMessageService
     {
         $user = $this->userRepository->find($userId);
 
-        if (!$user) {
+        if (! $user) {
             throw new \InvalidArgumentException('Invalid user ID');
         }
 
-        $messages = $this->messageRepository->findBy(['user' => $user], ['createdAt' => 'ASC']);
+        $messages = $this->messageRepository->findBy([
+            'user' => $user,
+        ], [
+            'createdAt' => 'ASC',
+        ]);
 
         return array_map(
             function (ChatbotMessage $message) {
@@ -78,7 +84,7 @@ class ChatbotMessageService
                     'createdAt' => $message->getCreatedAt()->format('Y-m-d H:i:s'),
                     'respondAt' => $message->getRespondAt()?->format('Y-m-d H:i:s'),
                     'isRead' => $message->isRead(),
-                    ];
+                ];
             },
             $messages
         );
@@ -87,16 +93,16 @@ class ChatbotMessageService
     public function respondToMessage(int $messageId, int $adminUserId, string $responseText): void
     {
         $message = $this->messageRepository->find($messageId);
-        if (!$message) {
+        if (! $message) {
             throw new \RuntimeException('Message not found');
         }
 
-        if (!$responseText) {
+        if (! $responseText) {
             throw new \InvalidArgumentException('Response is required');
         }
 
         $admin = $this->userRepository->find($adminUserId);
-        if (!$admin) {
+        if (! $admin) {
             throw new \InvalidArgumentException('Admin user not found');
         }
 
@@ -112,13 +118,11 @@ class ChatbotMessageService
     {
         $message = $this->messageRepository->find($messageId);
 
-        if (!$message) {
+        if (! $message) {
             throw new \RuntimeException('Message not found');
         }
 
         $message->setIsRead(true);
         $this->em->flush();
     }
-
-
 }

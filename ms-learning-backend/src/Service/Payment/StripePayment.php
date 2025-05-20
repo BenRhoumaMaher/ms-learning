@@ -2,8 +2,8 @@
 
 namespace App\Service\Payment;
 
-use Stripe\Stripe;
 use Stripe\Checkout\Session;
+use Stripe\Stripe;
 
 class StripePayment
 {
@@ -28,24 +28,24 @@ class StripePayment
 
         $session = Session::create(
             [
-            'line_items' => [
-                [
-                    'quantity' => 1,
-                    'price_data' => [
-                        'currency' => 'USD',
-                        'product_data' => [
-                            'name' => $courseData['title'],
-                            'description' => $courseData['description'] ?? 'Online Course',
+                'line_items' => [
+                    [
+                        'quantity' => 1,
+                        'price_data' => [
+                            'currency' => 'USD',
+                            'product_data' => [
+                                'name' => $courseData['title'],
+                                'description' => $courseData['description'] ?? 'Online Course',
+                            ],
+                            'unit_amount' => $this->calculateFinalPrice($courseData) * 100,
                         ],
-                        'unit_amount' => $this->calculateFinalPrice($courseData) * 100,
                     ],
-                ]
-            ],
-            'mode' => 'payment',
-            'success_url' => $successUrl . '?session_id={CHECKOUT_SESSION_ID}',
-            'cancel_url' => $cancelUrl,
-            'customer_email' => $metadata['user_email'] ?? null,
-            'metadata' => $metadata,
+                ],
+                'mode' => 'payment',
+                'success_url' => $successUrl . '?session_id={CHECKOUT_SESSION_ID}',
+                'cancel_url' => $cancelUrl,
+                'customer_email' => $metadata['user_email'] ?? null,
+                'metadata' => $metadata,
             ]
         );
 
@@ -77,27 +77,26 @@ class StripePayment
     ): void {
         $session = Session::create(
             [
-            'payment_method_types' => ['card'],
-            'line_items' => [[
-                'price_data' => [
-                    'currency' => 'EUR',
-                    'product_data' => [
-                        'name' => $planData['name'],
+                'payment_method_types' => ['card'],
+                'line_items' => [[
+                    'price_data' => [
+                        'currency' => 'EUR',
+                        'product_data' => [
+                            'name' => $planData['name'],
+                        ],
+                        'unit_amount' => $planData['price'] * 100,
                     ],
-                    'unit_amount' => $planData['price'] * 100,
+                    'quantity' => 1,
+                ]],
+                'mode' => 'payment',
+                'success_url' => $successUrl,
+                'cancel_url' => $cancelUrl,
+                'payment_intent_data' => [
+                    'metadata' => $metadata,
                 ],
-                'quantity' => 1,
-            ]],
-            'mode' => 'payment',
-            'success_url' => $successUrl,
-            'cancel_url' => $cancelUrl,
-            'payment_intent_data' => [
-                'metadata' => $metadata,
-            ],
             ]
         );
 
         $this->redirectUrl = $session->url;
     }
-
 }

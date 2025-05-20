@@ -10,9 +10,11 @@ interface UserServiceInterface
     public function validateUserData(
         array $data
     ): array;
+
     public function userExists(
         string $email
     ): bool;
+
     public function createUser(
         string $email,
         string $firstname,
@@ -24,5 +26,6 @@ interface UserServiceInterface
         ?string $profilePicture,
         array $courses = []
     ): User;
+
     public function getAllUsers(): array;
 }

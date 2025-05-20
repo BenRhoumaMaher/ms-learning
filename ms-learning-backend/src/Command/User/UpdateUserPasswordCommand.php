@@ -2,7 +2,6 @@
 
 namespace App\Command\User;
 
-
 class UpdateUserPasswordCommand
 {
     public function __construct(

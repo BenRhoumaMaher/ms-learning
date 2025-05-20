@@ -19,7 +19,7 @@ class GoogleTokenVerifier
     ): ?array {
         $response = $this->httpClient->request(
             'GET',
-            "https://oauth2.googleapis.com/tokeninfo?id_token=" . $token
+            'https://oauth2.googleapis.com/tokeninfo?id_token=' . $token
         );
 
         if ($response->getStatusCode() !== 200) {

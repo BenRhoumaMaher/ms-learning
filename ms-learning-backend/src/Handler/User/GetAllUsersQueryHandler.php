@@ -5,7 +5,6 @@ namespace App\Handler\User;
 use App\Query\User\GetAllUsersQuery;
 use App\Service\UserService\UserService;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
-use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
 
 #[AsMessageHandler]
 

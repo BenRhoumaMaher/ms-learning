@@ -2,7 +2,6 @@
 
 namespace App\Command\User;
 
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class EditUserCommand

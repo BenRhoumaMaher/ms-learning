@@ -2,15 +2,15 @@
 
 namespace App\Service\LessonService;
 
-use DateTime;
-use App\Entity\User;
 use App\Entity\Lesson;
-use DateTimeImmutable;
-use App\Repository\UserRepository;
+use App\Entity\User;
+use App\Repository\CoursesRepository;
 use App\Repository\LessonRepository;
 use App\Repository\ModuleRepository;
-use App\Repository\CoursesRepository;
+use App\Repository\UserRepository;
 use App\Service\Course\CourseService;
+use DateTime;
+use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
@@ -27,6 +27,7 @@ class LessonService
         private CourseService $courseService
     ) {
     }
+
     public function getLessonsWithoutResources(User $user): array
     {
         $lessons = $this->lessonRepository->findUserLessonsNoRessources(
@@ -91,11 +92,11 @@ class LessonService
     {
         $requiredFields = [
             'course_id', 'module_id', 'title',
-             'content', 'position', 'type', 'user_id'];
+            'content', 'position', 'type', 'user_id'];
 
         if ($data['type'] === 'live') {
             $requiredFields = array_merge(
-                $requiredFields, 
+                $requiredFields,
                 ['liveStartTime', 'liveEndTime', 'liveMeetingLink']
             );
         } else {
@@ -103,8 +104,8 @@ class LessonService
         }
 
         foreach ($requiredFields as $field) {
-            if (!isset($data[$field])) {
-                return "Missing required field: $field";
+            if (! isset($data[$field])) {
+                return "Missing required field: {$field}";
             }
         }
 
@@ -117,8 +118,10 @@ class LessonService
         $course = $this->coursesRepository->find($data['course_id']);
         $module = $this->moduleRepository->find($data['module_id']);
 
-        if (!$user || !$course || !$module) {
-            return ['error' => 'Invalid user, course, or module'];
+        if (! $user || ! $course || ! $module) {
+            return [
+                'error' => 'Invalid user, course, or module',
+            ];
         }
 
         return compact('user', 'course', 'module');
@@ -182,5 +185,4 @@ class LessonService
         $lesson->setLiveEndTime(null);
         $lesson->setLiveMeetingLink(null);
     }
-
 }

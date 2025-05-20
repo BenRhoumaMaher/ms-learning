@@ -6,10 +6,9 @@ use App\Entity\User;
 use App\Repository\PostRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use App\Service\UserService\UserServiceInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class UserService implements UserServiceInterface
 {
@@ -49,6 +48,7 @@ class UserService implements UserServiceInterface
             'occupation' => $user->getOccupation(),
         ];
     }
+
     public function getAllUsers(): array
     {
         return $this->em->getRepository(
@@ -65,7 +65,7 @@ class UserService implements UserServiceInterface
             $errors['confirmPassword'] = 'Passwords do not match';
         }
 
-        if (!preg_match('/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/', $data['password'])) {
+        if (! preg_match('/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/', $data['password'])) {
             $errors['password'] = 'Password must contain at least one uppercase letter, one lowercase letter, one number and one special character (@$!%*?&)';
         }
 
@@ -91,7 +91,9 @@ class UserService implements UserServiceInterface
         return (bool) $this->em->getRepository(
             User::class
         )->findOneBy(
-            ['email' => $email]
+            [
+                'email' => $email,
+            ]
         );
     }
 
@@ -166,7 +168,7 @@ class UserService implements UserServiceInterface
 
     public function uploadFile(?UploadedFile $file): ?string
     {
-        if (!$file) {
+        if (! $file) {
             return null;
         }
 
@@ -180,20 +182,28 @@ class UserService implements UserServiceInterface
         int $targetId
     ): array {
         if ($userId === $targetId) {
-            return ['error' => 'You cannot follow yourself', 'code' => 400];
+            return [
+                'error' => 'You cannot follow yourself',
+                'code' => 400,
+            ];
         }
 
         $user = $this->userRepository->find($userId);
         $targetUser = $this->userRepository->find($targetId);
 
-        if (!$user || !$targetUser) {
-            return ['error' => 'User not found', 'code' => 404];
+        if (! $user || ! $targetUser) {
+            return [
+                'error' => 'User not found',
+                'code' => 404,
+            ];
         }
 
         $user->addFollowing($targetUser);
         $this->em->flush();
 
-        return ['message' => 'Followed successfully'];
+        return [
+            'message' => 'Followed successfully',
+        ];
     }
 
     public function unfollow(int $userId, int $targetId): array
@@ -201,19 +211,26 @@ class UserService implements UserServiceInterface
         $user = $this->userRepository->find($userId);
         $targetUser = $this->userRepository->find($targetId);
 
-        if (!$user || !$targetUser) {
-            return ['error' => 'User not found', 'code' => 404];
+        if (! $user || ! $targetUser) {
+            return [
+                'error' => 'User not found',
+                'code' => 404,
+            ];
         }
 
         $user->removeFollowing($targetUser);
         $this->em->flush();
 
-        return ['message' => 'Unfollowed successfully'];
+        return [
+            'message' => 'Unfollowed successfully',
+        ];
     }
 
     public function getUserPosts(int $userId): array
     {
-        $posts = $this->postRepository->findBy(['user' => $userId]);
+        $posts = $this->postRepository->findBy([
+            'user' => $userId,
+        ]);
 
         return array_map(
             function ($post) {
@@ -240,5 +257,4 @@ class UserService implements UserServiceInterface
             $posts
         );
     }
-
 }

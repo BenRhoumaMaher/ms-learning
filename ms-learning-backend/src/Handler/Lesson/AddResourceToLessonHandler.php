@@ -2,12 +2,11 @@
 
 namespace App\Handler\Lesson;
 
+use App\Command\Lesson\AddResourceToLessonCommand;
 use App\Repository\LessonRepository;
 use App\Service\Course\CourseService;
 use Doctrine\ORM\EntityManagerInterface;
-use App\Command\Lesson\AddResourceToLessonCommand;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
-use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
 
 #[AsMessageHandler]
 
@@ -24,7 +23,7 @@ class AddResourceToLessonHandler
     {
         $lesson = $this->lessonRepository->find($command->lessonId);
 
-        if (!$lesson) {
+        if (! $lesson) {
             throw new \Exception('Lesson not found');
         }
 
@@ -36,7 +35,7 @@ class AddResourceToLessonHandler
 
         return [
             'message' => 'Resource added successfully',
-            'resource_path' => $resourcePath
+            'resource_path' => $resourcePath,
         ];
     }
 }

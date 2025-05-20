@@ -5,22 +5,24 @@ namespace App\Controller\ElasticSearch;
 use Elastica\Query;
 use Elastica\Query\BoolQuery;
 use Elastica\Query\MatchQuery;
-use Symfony\Component\HttpFoundation\Request;
 use FOS\ElasticaBundle\Finder\FinderInterface;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 
 class SearchController extends AbstractController
 {
-    public function __construct(private FinderInterface $coursesFinder)
-    {
+    public function __construct(
+        private FinderInterface $coursesFinder
+    ) {
     }
+
     public function searchCourses(Request $request): JsonResponse
     {
         $query = $request->query->get('q', '');
         $results = [];
 
-        if (!empty($query)) {
+        if (! empty($query)) {
             $boolQuery = new BoolQuery();
 
             $titleQuery = new MatchQuery();
@@ -46,7 +48,7 @@ class SearchController extends AbstractController
                         'id' => $course->getId(),
                         'title' => $course->getTitle(),
                         'description' => $course->getDescription(),
-                        'price' => (float)$course->getPrice(),
+                        'price' => (float) $course->getPrice(),
                         'duration' => $course->getDuration(),
                         'image' => $course->getImage(),
                     ];
@@ -57,10 +59,10 @@ class SearchController extends AbstractController
 
         return $this->json(
             [
-            'success' => true,
-            'results' => $results,
-            'query' => $query,
-            'count' => count($results)
+                'success' => true,
+                'results' => $results,
+                'query' => $query,
+                'count' => count($results),
             ]
         );
     }

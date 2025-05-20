@@ -2,10 +2,9 @@
 
 namespace App\Handler\Instructor;
 
+use App\Command\Instructor\RegisterInstructorCommand;
 use App\Service\UserService\BecomeInstructorService;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
-use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
-use App\Command\Instructor\RegisterInstructorCommand;
 
 #[AsMessageHandler]
 class RegisterInstructorHandler
@@ -19,19 +18,25 @@ class RegisterInstructorHandler
     {
         $errors = $this->userService->validateUserData(
             [
-            'email' => $command->email,
-            'firstname' => $command->firstname,
-            'lastname' => $command->lastname,
-            'expertise' => $command->expertise
+                'email' => $command->email,
+                'firstname' => $command->firstname,
+                'lastname' => $command->lastname,
+                'expertise' => $command->expertise,
             ]
         );
 
-        if (!empty($errors)) {
-            throw new \InvalidArgumentException(json_encode(['errors' => $errors]));
+        if (! empty($errors)) {
+            throw new \InvalidArgumentException(json_encode([
+                'errors' => $errors,
+            ]));
         }
 
         if ($this->userService->userExists($command->email)) {
-            throw new \InvalidArgumentException(json_encode(['errors' => ['email' => 'User already exists']]));
+            throw new \InvalidArgumentException(json_encode([
+                'errors' => [
+                    'email' => 'User already exists',
+                ],
+            ]));
         }
 
         // Create the instructor user

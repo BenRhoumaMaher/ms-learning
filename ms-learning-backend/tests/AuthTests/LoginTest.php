@@ -2,20 +2,21 @@
 
 namespace App\Tests\AuthTests;
 
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use App\Entity\User;
+use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class LoginTest extends WebTestCase
 {
     private $client;
+
     private $entityManager;
 
     protected function setUp(): void
     {
         $this->client = static::createClient();
         $this->entityManager = $this->client->getContainer()
-        ->get('doctrine')->getManager();
+            ->get('doctrine')->getManager();
 
         $uniqueId = uniqid();
 
@@ -38,7 +39,9 @@ class LoginTest extends WebTestCase
     protected function tearDown(): void
     {
         $user = $this->entityManager->getRepository(User::class)
-            ->findOneBy(['email' => 'mahertesting@gmail.com']);
+            ->findOneBy([
+                'email' => 'mahertesting@gmail.com',
+            ]);
         if ($user) {
             $this->entityManager->remove($user);
             $this->entityManager->flush();
@@ -51,7 +54,7 @@ class LoginTest extends WebTestCase
      * @dataProvider \App\Tests\DataProvider\LoginDataProvider::emptyFieldsDataProvider
      */
     public function testLoginEmptyFields(
-        array $loginData, 
+        array $loginData,
         int $expectedStatusCode
     ): void {
         $this->client->request(
@@ -59,7 +62,9 @@ class LoginTest extends WebTestCase
             'http://localhost:8080/api/login',
             [],
             [],
-            ['CONTENT_TYPE' => 'application/json'],
+            [
+                'CONTENT_TYPE' => 'application/json',
+            ],
             json_encode($loginData)
         );
 
@@ -70,8 +75,8 @@ class LoginTest extends WebTestCase
      * @dataProvider \App\Tests\DataProvider\LoginDataProvider::invalidCredentialsDataProvider
      */
     public function testInvalidCredentials(
-        array $loginData, 
-        int $expectedStatusCode, 
+        array $loginData,
+        int $expectedStatusCode,
         string $expectedMessage
     ): void {
         $this->client->request(
@@ -79,7 +84,9 @@ class LoginTest extends WebTestCase
             'http://localhost:8080/api/login',
             [],
             [],
-            ['CONTENT_TYPE' => 'application/json'],
+            [
+                'CONTENT_TYPE' => 'application/json',
+            ],
             json_encode($loginData)
         );
 
@@ -87,7 +94,7 @@ class LoginTest extends WebTestCase
 
         $responseContent = json_decode(
             $this->client
-                ->getResponse()->getContent(), 
+                ->getResponse()->getContent(),
             true
         );
         $this->assertArrayHasKey('message', $responseContent);
@@ -104,7 +111,9 @@ class LoginTest extends WebTestCase
             'http://localhost:8080/api/login',
             [],
             [],
-            ['CONTENT_TYPE' => 'application/json'],
+            [
+                'CONTENT_TYPE' => 'application/json',
+            ],
             json_encode($loginData)
         );
 
@@ -113,7 +122,8 @@ class LoginTest extends WebTestCase
         if ($expectedStatusCode === 200) {
             $responseContent = json_decode(
                 $this->client->getResponse()
-                    ->getContent(), true
+                    ->getContent(),
+                true
             );
         }
     }

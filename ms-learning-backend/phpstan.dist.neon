@@ -8,8 +8,8 @@ parameters:
     level: 6
     paths:
         - src/
-        - tests/
+        - tests/    
     doctrine:
         allowNullablePropertyForRequiredField: true
     ignoreErrors:
-        - identifier: missingType.generics
+        - identifier: missingType.generics   

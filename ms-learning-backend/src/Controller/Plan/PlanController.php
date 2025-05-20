@@ -2,16 +2,16 @@
 
 namespace App\Controller\Plan;
 
+use App\Entity\UserSubscription;
+use App\Repository\SubscriptionPlanRepository;
+use App\Repository\UserRepository;
+use App\Repository\UserSubscriptionRepository;
 use DateTime;
 use DateTimeImmutable;
-use App\Entity\UserSubscription;
-use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\HttpFoundation\Request;
-use App\Repository\SubscriptionPlanRepository;
-use App\Repository\UserSubscriptionRepository;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 
 class PlanController extends AbstractController
 {
@@ -22,10 +22,13 @@ class PlanController extends AbstractController
         private UserSubscriptionRepository $userSubscriptionRepository
     ) {
     }
+
     public function getPlans(
     ): JsonResponse {
         $plans = $this->subscriptionPlanRepository->findBy(
-            ['isActive' => true]
+            [
+                'isActive' => true,
+            ]
         );
 
         $data = [];
@@ -52,15 +55,19 @@ class PlanController extends AbstractController
         $planId = $data['planId'] ?? null;
         $userId = $data['userId'] ?? null;
 
-        if (!$planId || !$userId) {
-            return $this->json(['error' => 'Missing required parameters'], 400);
+        if (! $planId || ! $userId) {
+            return $this->json([
+                'error' => 'Missing required parameters',
+            ], 400);
         }
 
         $plan = $this->subscriptionPlanRepository->find($planId);
         $user = $this->userRepository->find($userId);
 
-        if (!$plan || !$user) {
-            return $this->json(['error' => 'Invalid plan or user'], 404);
+        if (! $plan || ! $user) {
+            return $this->json([
+                'error' => 'Invalid plan or user',
+            ], 404);
         }
 
         $subscription = new UserSubscription();
@@ -85,19 +92,22 @@ class PlanController extends AbstractController
 
         return $this->json(
             [
-            'success' => true,
-            'subscriptionId' => $subscription->getId()
+                'success' => true,
+                'subscriptionId' => $subscription->getId(),
             ]
         );
     }
+
     public function getCurrentSubscription(
         int $userId
     ): JsonResponse {
         $user = $this->userRepository->find($userId);
 
-        if (!$user) {
+        if (! $user) {
             return new JsonResponse(
-                ['error' => 'User not found'],
+                [
+                    'error' => 'User not found',
+                ],
                 404
             );
         }
@@ -105,26 +115,27 @@ class PlanController extends AbstractController
         $subscription = $this
             ->userSubscriptionRepository->findCurrentSubscription($user);
 
-        if (!$subscription) {
+        if (! $subscription) {
             return new JsonResponse(
-                ['message' => 'No active subscription found'],
+                [
+                    'message' => 'No active subscription found',
+                ],
                 404
             );
         }
 
         return $this->json(
             [
-            'plan' => $subscription->getPlan() ? $subscription
-                ->getPlan()->getName() : null,
-            'price' => $subscription->getPlan() ? $subscription
-                ->getPlan()->getPrice() : null,
-            'endDate' => $subscription->getEndDate() ? $subscription
-                ->getEndDate()->format('m/d/Y') : null,
-            'status' => $subscription->getStatus(),
-            'features' => $subscription->getPlan() ? $subscription
-                ->getPlan()->getFeatures() : null
+                'plan' => $subscription->getPlan() ? $subscription
+                    ->getPlan()->getName() : null,
+                'price' => $subscription->getPlan() ? $subscription
+                    ->getPlan()->getPrice() : null,
+                'endDate' => $subscription->getEndDate() ? $subscription
+                    ->getEndDate()->format('m/d/Y') : null,
+                'status' => $subscription->getStatus(),
+                'features' => $subscription->getPlan() ? $subscription
+                    ->getPlan()->getFeatures() : null,
             ]
         );
     }
-
 }

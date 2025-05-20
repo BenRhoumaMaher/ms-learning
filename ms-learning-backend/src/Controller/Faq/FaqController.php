@@ -3,8 +3,8 @@
 namespace App\Controller\Faq;
 
 use App\Repository\FaqRepository;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 class FaqController extends AbstractController
 {
@@ -13,7 +13,9 @@ class FaqController extends AbstractController
     ): JsonResponse {
         $faqs = $faqRepository->findBy(
             [],
-            ['createdAt' => 'DESC']
+            [
+                'createdAt' => 'DESC',
+            ]
         );
 
         $data = [];

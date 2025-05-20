@@ -29,7 +29,7 @@ class Mail
             }
         }
 
-        if (!$this->enabled) {
+        if (! $this->enabled) {
             return;
         }
 
@@ -37,15 +37,17 @@ class Mail
             $_ENV['MJ_APIKEY_PUBLIC'],
             $_ENV['MJ_APIKEY_PRIVATE'],
             true,
-            ['version' => 'v3.1']
+            [
+                'version' => 'v3.1',
+            ]
         );
 
         $body = [
             'Messages' => [
                 [
                     'From' => [
-                        'Email' => "maherbenrhoumaa@gmail.com",
-                        'Name' => "MS-LEARNING",
+                        'Email' => 'maherbenrhoumaa@gmail.com',
+                        'Name' => 'MS-LEARNING',
                     ],
                     'To' => [
                         [
@@ -63,6 +65,8 @@ class Mail
             ],
         ];
 
-        $mj->post(Resources::$Email, ['body' => $body]);
+        $mj->post(Resources::$Email, [
+            'body' => $body,
+        ]);
     }
 }

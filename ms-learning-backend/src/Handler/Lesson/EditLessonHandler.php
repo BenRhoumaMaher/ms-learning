@@ -2,11 +2,10 @@
 
 namespace App\Handler\Lesson;
 
-use App\Repository\LessonRepository;
 use App\Command\Lesson\EditLessonCommand;
+use App\Repository\LessonRepository;
 use App\Service\LessonService\LessonService;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
-use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
 
 #[AsMessageHandler]
 
@@ -22,15 +21,17 @@ class EditLessonHandler
     {
         $lesson = $this->lessonService->getLessonById($command->lessonId);
 
-        if (!$lesson) {
+        if (! $lesson) {
             throw new \Exception('Lesson not found');
         }
 
         $this->lessonService->updateLessonData($lesson, $command->data);
         $errors = $this->lessonService->validateLesson($lesson);
 
-        if (!empty($errors)) {
-            return ['errors' => $errors];
+        if (! empty($errors)) {
+            return [
+                'errors' => $errors,
+            ];
         }
 
         $this->lessonService->saveLesson($lesson);

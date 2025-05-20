@@ -2,20 +2,18 @@
 
 namespace App\Entity;
 
+use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use App\Repository\UserRepository;
-use Doctrine\Common\Collections\Collection;
-use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
-class User implements
-    UserInterface,
-    PasswordAuthenticatedUserInterface
+class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -24,18 +22,18 @@ class User implements
     private ?int $id = null;
 
     #[ORM\Column(length: 50, type: 'string')]
-    #[Assert\NotBlank(message: "Firstname is required")]
+    #[Assert\NotBlank(message: 'Firstname is required')]
     #[Groups('user:read', 'enrolledCourse:read')]
     private ?string $firstname = null;
 
     #[ORM\Column(length: 50, type: 'string')]
-    #[Assert\NotBlank(message: "Lastname is required")]
+    #[Assert\NotBlank(message: 'Lastname is required')]
     #[Groups('user:read', 'enrolledCourse:read')]
     private ?string $lastname = null;
 
     #[ORM\Column(length: 50, type: 'string', unique: true)]
-    #[Assert\NotBlank(message: "Email is required")]
-    #[Assert\Email(message: "Invalid email format")]
+    #[Assert\NotBlank(message: 'Email is required')]
+    #[Assert\Email(message: 'Invalid email format')]
     #[Groups('user:read')]
     private ?string $email = null;
 
@@ -48,33 +46,32 @@ class User implements
     private ?string $picture = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\NotBlank(message: "Password is required", groups: ['password_update'])]
+    #[Assert\NotBlank(message: 'Password is required', groups: ['password_update'])]
     #[Assert\Length(
         min: 8,
-        minMessage: "Password must be at least 8 characters long",
+        minMessage: 'Password must be at least 8 characters long',
         groups: ['password_update']
     )]
     #[Assert\Regex(
-        pattern: "/(?=.*[a-z])/",
-        message: "Password must contain at least one lowercase letter",
+        pattern: '/(?=.*[a-z])/',
+        message: 'Password must contain at least one lowercase letter',
         groups: ['password_update']
     )]
     #[Assert\Regex(
-        pattern: "/(?=.*[A-Z])/",
-        message: "Password must contain at least one uppercase letter",
+        pattern: '/(?=.*[A-Z])/',
+        message: 'Password must contain at least one uppercase letter',
         groups: ['password_update']
     )]
     #[Assert\Regex(
         pattern: "/(?=.*\d)/",
-        message: "Password must contain at least one number",
+        message: 'Password must contain at least one number',
         groups: ['password_update']
     )]
     #[Assert\Regex(
-        pattern: "/(?=.*[@$!%*?&])/",
-        message: "Password must contain at least one special character (@$!%*?&)",
+        pattern: '/(?=.*[@$!%*?&])/',
+        message: 'Password must contain at least one special character (@$!%*?&)',
         groups: ['password_update']
     )]
-
     private ?string $password = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
@@ -299,7 +296,7 @@ class User implements
 
     public function addFollower(self $user): self
     {
-        if (!$this->followers->contains($user)) {
+        if (! $this->followers->contains($user)) {
             $this->followers->add($user);
         }
 
@@ -319,7 +316,7 @@ class User implements
 
     public function addFollowing(self $user): self
     {
-        if (!$this->following->contains($user)) {
+        if (! $this->following->contains($user)) {
             $this->following->add($user);
             $user->addFollower($this);
         }
@@ -335,7 +332,6 @@ class User implements
 
         return $this;
     }
-
 
     public function getId(): ?int
     {
@@ -438,11 +434,13 @@ class User implements
 
         return $this;
     }
+
     public function eraseCredentials(): void
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
     }
+
     public function getUserIdentifier(): string
     {
         return (string) $this->email;
@@ -470,7 +468,7 @@ class User implements
 
     public function addCourse(Courses $course): static
     {
-        if (!$this->courses->contains($course)) {
+        if (! $this->courses->contains($course)) {
             $this->courses->add($course);
             $course->addEnrollment($this);
         }
@@ -497,7 +495,7 @@ class User implements
 
     public function addReview(Review $review): static
     {
-        if (!$this->reviews->contains($review)) {
+        if (! $this->reviews->contains($review)) {
             $this->reviews->add($review);
             $review->setUser($this);
         }
@@ -575,7 +573,7 @@ class User implements
 
     public function addNotification(Notification $notification): static
     {
-        if (!$this->notifications->contains($notification)) {
+        if (! $this->notifications->contains($notification)) {
             $this->notifications->add($notification);
             $notification->setUser($this);
         }
@@ -605,7 +603,7 @@ class User implements
 
     public function addTestimonial(Testimonial $testimonial): static
     {
-        if (!$this->testimonials->contains($testimonial)) {
+        if (! $this->testimonials->contains($testimonial)) {
             $this->testimonials->add($testimonial);
             $testimonial->setUser($this);
         }
@@ -659,7 +657,7 @@ class User implements
 
     public function addInstructorEarning(InstructorEarning $instructorEarning): static
     {
-        if (!$this->instructorEarnings->contains($instructorEarning)) {
+        if (! $this->instructorEarnings->contains($instructorEarning)) {
             $this->instructorEarnings->add($instructorEarning);
             $instructorEarning->setInstructor($this);
         }
@@ -689,7 +687,7 @@ class User implements
 
     public function addUserSubscription(UserSubscription $userSubscription): static
     {
-        if (!$this->userSubscriptions->contains($userSubscription)) {
+        if (! $this->userSubscriptions->contains($userSubscription)) {
             $this->userSubscriptions->add($userSubscription);
             $userSubscription->setUser($this);
         }
@@ -719,7 +717,7 @@ class User implements
 
     public function addPayment(Payment $payment): static
     {
-        if (!$this->payments->contains($payment)) {
+        if (! $this->payments->contains($payment)) {
             $this->payments->add($payment);
             $payment->setUser($this);
         }
@@ -749,7 +747,7 @@ class User implements
 
     public function addStudentCourse(StudentCourse $studentCourse): static
     {
-        if (!$this->studentCourses->contains($studentCourse)) {
+        if (! $this->studentCourses->contains($studentCourse)) {
             $this->studentCourses->add($studentCourse);
             $studentCourse->setUser($this);
         }
@@ -779,7 +777,7 @@ class User implements
 
     public function addCalendar(Calendar $calendar): static
     {
-        if (!$this->calendars->contains($calendar)) {
+        if (! $this->calendars->contains($calendar)) {
             $this->calendars->add($calendar);
             $calendar->setUser($this);
         }
@@ -809,7 +807,7 @@ class User implements
 
     public function addModule(Module $module): static
     {
-        if (!$this->modules->contains($module)) {
+        if (! $this->modules->contains($module)) {
             $this->modules->add($module);
             $module->setUser($this);
         }
@@ -839,7 +837,7 @@ class User implements
 
     public function addLesson(Lesson $lesson): static
     {
-        if (!$this->lessons->contains($lesson)) {
+        if (! $this->lessons->contains($lesson)) {
             $this->lessons->add($lesson);
             $lesson->setUser($this);
         }
@@ -893,7 +891,7 @@ class User implements
 
     public function addInterest(Category $interest): static
     {
-        if (!$this->interests->contains($interest)) {
+        if (! $this->interests->contains($interest)) {
             $this->interests->add($interest);
         }
 
@@ -941,7 +939,7 @@ class User implements
 
     public function addPost(Post $post): static
     {
-        if (!$this->posts->contains($post)) {
+        if (! $this->posts->contains($post)) {
             $this->posts->add($post);
             $post->setUser($this);
         }
@@ -971,7 +969,7 @@ class User implements
 
     public function addComment(Comment $comment): static
     {
-        if (!$this->comments->contains($comment)) {
+        if (! $this->comments->contains($comment)) {
             $this->comments->add($comment);
             $comment->setUser($this);
         }
@@ -1001,7 +999,7 @@ class User implements
 
     public function addCommentReply(CommentReply $commentReply): static
     {
-        if (!$this->commentReplies->contains($commentReply)) {
+        if (! $this->commentReplies->contains($commentReply)) {
             $this->commentReplies->add($commentReply);
             $commentReply->setUser($this);
         }
@@ -1031,7 +1029,7 @@ class User implements
 
     public function addPostLike(PostLike $postLike): static
     {
-        if (!$this->postLikes->contains($postLike)) {
+        if (! $this->postLikes->contains($postLike)) {
             $this->postLikes->add($postLike);
             $postLike->setUser($this);
         }
@@ -1061,7 +1059,7 @@ class User implements
 
     public function addForumPost(ForumPost $forumPost): static
     {
-        if (!$this->forumPosts->contains($forumPost)) {
+        if (! $this->forumPosts->contains($forumPost)) {
             $this->forumPosts->add($forumPost);
             $forumPost->setUser($this);
         }
@@ -1091,7 +1089,7 @@ class User implements
 
     public function addMessage(Message $message): static
     {
-        if (!$this->messages->contains($message)) {
+        if (! $this->messages->contains($message)) {
             $this->messages->add($message);
             $message->setSender($this);
         }
@@ -1121,7 +1119,7 @@ class User implements
 
     public function addReceivermessage(Message $receivermessage): static
     {
-        if (!$this->receivermessages->contains($receivermessage)) {
+        if (! $this->receivermessages->contains($receivermessage)) {
             $this->receivermessages->add($receivermessage);
             $receivermessage->setReceiver($this);
         }
@@ -1151,7 +1149,7 @@ class User implements
 
     public function addChatbotMessage(ChatbotMessage $chatbotMessage): static
     {
-        if (!$this->chatbotMessages->contains($chatbotMessage)) {
+        if (! $this->chatbotMessages->contains($chatbotMessage)) {
             $this->chatbotMessages->add($chatbotMessage);
             $chatbotMessage->setUser($this);
         }
@@ -1181,7 +1179,7 @@ class User implements
 
     public function addChatbotadminResponse(ChatbotMessage $chatbotadminResponse): static
     {
-        if (!$this->chatbotadminResponses->contains($chatbotadminResponse)) {
+        if (! $this->chatbotadminResponses->contains($chatbotadminResponse)) {
             $this->chatbotadminResponses->add($chatbotadminResponse);
             $chatbotadminResponse->setAdminuser($this);
         }
@@ -1211,7 +1209,7 @@ class User implements
 
     public function addQuizScore(QuizScore $quizScore): static
     {
-        if (!$this->quizScores->contains($quizScore)) {
+        if (! $this->quizScores->contains($quizScore)) {
             $this->quizScores->add($quizScore);
             $quizScore->setUser($this);
         }

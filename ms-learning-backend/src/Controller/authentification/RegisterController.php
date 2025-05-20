@@ -2,114 +2,114 @@
 
 namespace App\Controller\authentification;
 
-use OpenApi\Attributes as OA;
-use App\Service\UserService\UserService;
-use Symfony\Component\HttpFoundation\Request;
 use App\Service\MailService\MailServiceInterface;
-use App\Service\UserService\UserServiceInterface;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
+use App\Service\UserService\UserService;
+use OpenApi\Attributes as OA;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 final class RegisterController extends AbstractController
 {
     public function __construct(
-        private UserService          $userService,
+        private UserService $userService,
         private MailServiceInterface $mailService
     ) {
     }
+
     #[OA\Post(
-        path: "/api/register",
-        summary: "Register a new user",
-        description: "Creates a new user account and sends a welcome email.",
+        path: '/api/register',
+        summary: 'Register a new user',
+        description: 'Creates a new user account and sends a welcome email.',
         requestBody: new OA\RequestBody(
             required: true,
             content: new OA\JsonContent(
                 properties: [
                     new OA\Property(
-                        property: "firstname",
-                        type: "string",
-                        example: "Maher"
+                        property: 'firstname',
+                        type: 'string',
+                        example: 'Maher'
                     ),
                     new OA\Property(
-                        property: "lastname",
-                        type: "string",
-                        example: "Ben Rhouma"
+                        property: 'lastname',
+                        type: 'string',
+                        example: 'Ben Rhouma'
                     ),
                     new OA\Property(
-                        property: "email",
-                        type: "string",
-                        example: "maherbenrhouma@example.com"
+                        property: 'email',
+                        type: 'string',
+                        example: 'maherbenrhouma@example.com'
                     ),
                     new OA\Property(
-                        property: "password",
-                        type: "string",
-                        example: "Pas!sword123"
+                        property: 'password',
+                        type: 'string',
+                        example: 'Pas!sword123'
                     ),
                     new OA\Property(
-                        property: "confirmPassword",
-                        type: "string",
-                        example: "Pas!sword123"
-                    )
+                        property: 'confirmPassword',
+                        type: 'string',
+                        example: 'Pas!sword123'
+                    ),
                 ]
             )
         )
     )]
     #[OA\Response(
         response: 201,
-        description: "User registered successfully",
+        description: 'User registered successfully',
         content: new OA\JsonContent(
             properties: [
                 new OA\Property(
-                    property: "message",
-                    type: "string",
-                    example: "User registered successfully"
-                )
+                    property: 'message',
+                    type: 'string',
+                    example: 'User registered successfully'
+                ),
             ]
         )
     )]
     #[OA\Response(
         response: 400,
-        description: "Validation errors",
+        description: 'Validation errors',
         content: new OA\JsonContent(
             properties: [
                 new OA\Property(
-                    property: "errors",
-                    type: "object",
+                    property: 'errors',
+                    type: 'object',
                     properties: [
                         new OA\Property(
-                            property: "firstname",
-                            type: "string",
-                            example: "First name is required"
+                            property: 'firstname',
+                            type: 'string',
+                            example: 'First name is required'
                         ),
                         new OA\Property(
-                            property: "lastname",
-                            type: "string",
-                            example: "Last name is required"
+                            property: 'lastname',
+                            type: 'string',
+                            example: 'Last name is required'
                         ),
                         new OA\Property(
-                            property: "email",
-                            type: "string",
-                            example: "User already exists"
+                            property: 'email',
+                            type: 'string',
+                            example: 'User already exists'
                         ),
                         new OA\Property(
-                            property: "confirmPassword",
-                            type: "string",
-                            example: "Passwords do not match"
+                            property: 'confirmPassword',
+                            type: 'string',
+                            example: 'Passwords do not match'
                         ),
                         new OA\Property(
-                            property: "password",
-                            type: "string",
-                            example: "
+                            property: 'password',
+                            type: 'string',
+                            example: '
                             Password must contain at least 
-                            one special character (@$!%*?&)"
+                            one special character (@$!%*?&)'
                         ),
                     ]
-                )
+                ),
             ]
         )
     )]
-    #[OA\Tag(name: "Authentication")]
+    #[OA\Tag(name: 'Authentication')]
     public function register(
         Request $request,
         ValidatorInterface $validator
@@ -118,16 +118,22 @@ final class RegisterController extends AbstractController
         $data = json_decode($request->getContent(), true);
 
         $errors = $this->userService->validateUserData($data);
-        if (!empty($errors)) {
+        if (! empty($errors)) {
             return $this->json(
-                ['errors' => $errors],
+                [
+                    'errors' => $errors,
+                ],
                 400
             );
         }
 
         if ($this->userService->userExists($data['email'])) {
             return $this->json(
-                ['errors' => ['email' => 'User already exists']],
+                [
+                    'errors' => [
+                        'email' => 'User already exists',
+                    ],
+                ],
                 400
             );
         }
@@ -146,13 +152,16 @@ final class RegisterController extends AbstractController
             $user->getEmail(),
             $user->getUsername(),
             'Welcome',
-            "Welcome.html",
-            ['username' => $user->getUsername()]
+            'Welcome.html',
+            [
+                'username' => $user->getUsername(),
+            ]
         );
 
         return $this->json(
             [
-                'message' => 'User registered successfully'],
+                'message' => 'User registered successfully',
+            ],
             201
         );
     }

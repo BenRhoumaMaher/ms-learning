@@ -40,7 +40,7 @@ class VideoInteractionIndexSubscriber implements EventSubscriber
     {
         $entity = $args->getObject();
 
-        if (!$entity instanceof VideoInteraction) {
+        if (! $entity instanceof VideoInteraction) {
             return;
         }
 
@@ -51,7 +51,7 @@ class VideoInteractionIndexSubscriber implements EventSubscriber
     {
         $entity = $args->getObject();
 
-        if (!$entity instanceof VideoInteraction) {
+        if (! $entity instanceof VideoInteraction) {
             return;
         }
 

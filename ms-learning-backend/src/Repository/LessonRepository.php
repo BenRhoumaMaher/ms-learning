@@ -2,10 +2,10 @@
 
 namespace App\Repository;
 
-use DateTime;
 use App\Entity\Lesson;
-use Doctrine\Persistence\ManagerRegistry;
+use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * @extends ServiceEntityRepository<Lesson>
@@ -16,7 +16,6 @@ class LessonRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Lesson::class);
     }
-
 
     public function findLatestLiveLessonForUser(int $id): ?Lesson
     {
@@ -66,8 +65,6 @@ class LessonRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
-
-
 
     //    /**
     //     * @return Lesson[] Returns an array of Lesson objects

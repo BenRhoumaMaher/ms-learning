@@ -30,7 +30,7 @@ class ForumPost
     #[Groups(['forum:read'])]
     private ?string $image = null;
 
-    #[ORM\ManyToOne(fetch: "EAGER", inversedBy: "forumPosts")]
+    #[ORM\ManyToOne(fetch: 'EAGER', inversedBy: 'forumPosts')]
     #[Groups(['forum:read'])]
     private ?User $user = null;
 
@@ -67,6 +67,7 @@ class ForumPost
         $this->views++;
         return $this;
     }
+
     public function getId(): ?int
     {
         return $this->id;
@@ -154,7 +155,7 @@ class ForumPost
 
     public function addCategory(Category $category): static
     {
-        if (!$this->category->contains($category)) {
+        if (! $this->category->contains($category)) {
             $this->category->add($category);
         }
 

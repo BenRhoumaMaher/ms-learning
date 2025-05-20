@@ -2,35 +2,35 @@
 
 namespace App\Controller\User;
 
-use App\Entity\User;
-use App\Entity\Review;
-use DateTimeImmutable;
-use App\Repository\PostRepository;
-use App\Repository\UserRepository;
-use App\Query\User\GetAllUsersQuery;
-use App\Repository\ReviewRepository;
-use App\Command\User\EditUserCommand;
-use App\Query\User\GetUserInfosQuery;
-use App\Repository\CoursesRepository;
-use App\Query\User\GetInstructorsQuery;
-use App\Query\User\GetUserCoursesQuery;
-use App\Query\User\ShowInstructorQuery;
-use App\Service\UserService\UserService;
-use Doctrine\ORM\EntityManagerInterface;
-use App\Repository\QAInstructorRepository;
-use App\Repository\StudentCourseRepository;
-use App\Query\Course\GetEnrolledCourseQuery;
 use App\Command\Course\EnrollInCourseCommand;
 use App\Command\User\AddUserInterestsCommand;
-use Symfony\Component\HttpFoundation\Request;
-use App\Repository\UserSubscriptionRepository;
+use App\Command\User\EditUserCommand;
 use App\Command\User\UpdateUserPasswordCommand;
-use App\Service\QueryBusService\QueryBusService;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use App\Service\ElasticSearch\QuizAnalyticsService;
+use App\Entity\Review;
+use App\Entity\User;
+use App\Query\Course\GetEnrolledCourseQuery;
+use App\Query\User\GetAllUsersQuery;
+use App\Query\User\GetInstructorsQuery;
+use App\Query\User\GetUserCoursesQuery;
+use App\Query\User\GetUserInfosQuery;
+use App\Query\User\ShowInstructorQuery;
+use App\Repository\CoursesRepository;
+use App\Repository\PostRepository;
+use App\Repository\QAInstructorRepository;
+use App\Repository\ReviewRepository;
+use App\Repository\StudentCourseRepository;
+use App\Repository\UserRepository;
+use App\Repository\UserSubscriptionRepository;
 use App\Service\CommandBusService\CommandBusService;
 use App\Service\ElasticSearch\ContentAnalyticsService;
+use App\Service\ElasticSearch\QuizAnalyticsService;
+use App\Service\QueryBusService\QueryBusService;
+use App\Service\UserService\UserService;
+use DateTimeImmutable;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 
 final class UserController extends AbstractController
 {
@@ -41,6 +41,7 @@ final class UserController extends AbstractController
         private QuizAnalyticsService $quizAnalyticsService
     ) {
     }
+
     public function index(
     ): JsonResponse {
         $courses = $this->queryBusService->handle(new GetAllUsersQuery());
@@ -49,9 +50,12 @@ final class UserController extends AbstractController
             $courses,
             200,
             [],
-            ['groups' => 'user:read']
+            [
+                'groups' => 'user:read',
+            ]
         );
     }
+
     public function getUserCourses(int $id): JsonResponse
     {
         try {
@@ -65,7 +69,7 @@ final class UserController extends AbstractController
             $responseData = array_merge(
                 $userCourses,
                 [
-                'analytics' => $analytics
+                    'analytics' => $analytics,
                 ]
             );
 
@@ -73,11 +77,15 @@ final class UserController extends AbstractController
                 $responseData,
                 200,
                 [],
-                ['groups' => 'course:read']
+                [
+                    'groups' => 'course:read',
+                ]
             );
         } catch (\Exception $e) {
             return $this->json(
-                ['error' => $e->getMessage()],
+                [
+                    'error' => $e->getMessage(),
+                ],
                 404
             );
         }
@@ -91,11 +99,15 @@ final class UserController extends AbstractController
                 $userData,
                 200,
                 [],
-                ['groups' => 'user:read']
+                [
+                    'groups' => 'user:read',
+                ]
             );
         } catch (\Exception $e) {
             return $this->json(
-                ['error' => $e->getMessage()],
+                [
+                    'error' => $e->getMessage(),
+                ],
                 404
             );
         }
@@ -115,11 +127,15 @@ final class UserController extends AbstractController
             $this->commandBusService->handle($command);
 
             return $this->json(
-                ['message' => 'User updated successfully'],
+                [
+                    'message' => 'User updated successfully',
+                ],
                 200
             );
         } catch (\Exception $e) {
-            return $this->json(['error' => $e->getMessage()], 400);
+            return $this->json([
+                'error' => $e->getMessage(),
+            ], 400);
         }
     }
 
@@ -131,12 +147,15 @@ final class UserController extends AbstractController
             $command = new UpdateUserPasswordCommand($id, $data);
             $this->commandBusService->handle($command);
 
-            return $this->json(['message' => 'Password updated successfully']);
+            return $this->json([
+                'message' => 'Password updated successfully',
+            ]);
         } catch (\Exception $e) {
-            return $this->json(['error' => $e->getMessage()], 400);
+            return $this->json([
+                'error' => $e->getMessage(),
+            ], 400);
         }
     }
-
 
     public function deleteAccount(
         int $id,
@@ -144,9 +163,11 @@ final class UserController extends AbstractController
     ): JsonResponse {
         $user = $entityManager->getRepository(User::class)->find($id);
 
-        if (!$user) {
+        if (! $user) {
             return $this->json(
-                ['message' => 'User not found'],
+                [
+                    'message' => 'User not found',
+                ],
                 404
             );
         }
@@ -155,27 +176,22 @@ final class UserController extends AbstractController
         $entityManager->flush();
 
         return $this->json(
-            ['message' => 'Account deleted successfully'],
+            [
+                'message' => 'Account deleted successfully',
+            ],
             200
         );
-    }
-
-    private function getErrorsFromForm($form): array
-    {
-        $errors = [];
-        foreach ($form->getErrors(true, true) as $error) {
-            $errors[$error->getOrigin()->getName()] = $error->getMessage();
-        }
-        return $errors;
     }
 
     public function addInterests(
         Request $request
     ): JsonResponse {
         $user = $this->getUser();
-        if (!$user) {
+        if (! $user) {
             return new JsonResponse(
-                ['error' => 'Unauthorized'],
+                [
+                    'error' => 'Unauthorized',
+                ],
                 401
             );
         }
@@ -185,7 +201,9 @@ final class UserController extends AbstractController
 
         if (empty($categoryIds)) {
             return new JsonResponse(
-                ['error' => 'No categories provided'],
+                [
+                    'error' => 'No categories provided',
+                ],
                 400
             );
         }
@@ -194,7 +212,9 @@ final class UserController extends AbstractController
         $this->commandBusService->handle($command);
 
         return new JsonResponse(
-            ['message' => 'Interest update request received'],
+            [
+                'message' => 'Interest update request received',
+            ],
             202
         );
     }
@@ -210,7 +230,9 @@ final class UserController extends AbstractController
             $instructors,
             200,
             [],
-            ['groups' => 'user:read']
+            [
+                'groups' => 'user:read',
+            ]
         );
     }
 
@@ -219,7 +241,9 @@ final class UserController extends AbstractController
         try {
             $data = $this->queryBusService->handle(new ShowInstructorQuery($id));
         } catch (\Throwable $e) {
-            return $this->json(['error' => $e->getMessage()], 404);
+            return $this->json([
+                'error' => $e->getMessage(),
+            ], 404);
         }
 
         return $this->json($data);
@@ -230,8 +254,10 @@ final class UserController extends AbstractController
         $data = json_decode($request->getContent(), true);
         $userId = $data['userId'] ?? null;
 
-        if (!is_int($userId)) {
-            return $this->json(['error' => 'Invalid or missing userId'], 400);
+        if (! is_int($userId)) {
+            return $this->json([
+                'error' => 'Invalid or missing userId',
+            ], 400);
         }
 
         try {
@@ -240,13 +266,15 @@ final class UserController extends AbstractController
 
             return $this->json(
                 [
-                'success' => true,
-                'message' => 'Successfully enrolled in course',
-                'enrollmentId' => $result,
+                    'success' => true,
+                    'message' => 'Successfully enrolled in course',
+                    'enrollmentId' => $result,
                 ]
             );
         } catch (\Exception $e) {
-            return $this->json(['error' => $e->getMessage()], 400);
+            return $this->json([
+                'error' => $e->getMessage(),
+            ], 400);
         }
     }
 
@@ -258,17 +286,23 @@ final class UserController extends AbstractController
 
         $course = $coursesRepository->find($courseId);
 
-        if (!$course) {
-            return $this->json(['error' => 'Course not found'], 404);
+        if (! $course) {
+            return $this->json([
+                'error' => 'Course not found',
+            ], 404);
         }
 
-        $reviews = $reviewRepository->findBy(['course' => $course]);
+        $reviews = $reviewRepository->findBy([
+            'course' => $course,
+        ]);
 
         return $this->json(
             $reviews,
             200,
             [],
-            ['groups' => ['review:read', 'user:read']]
+            [
+                'groups' => ['review:read', 'user:read'],
+            ]
         );
     }
 
@@ -283,8 +317,10 @@ final class UserController extends AbstractController
         );
         $currentcourseId = $course->getCurse()->getId();
         $course = $coursesRepository->find($currentcourseId);
-        if (!$course) {
-            return $this->json(['error' => 'Course not found'], 404);
+        if (! $course) {
+            return $this->json([
+                'error' => 'Course not found',
+            ], 404);
         }
 
         $data = json_decode($request->getContent(), true);
@@ -295,7 +331,9 @@ final class UserController extends AbstractController
         $user = $em->getRepository(User::class)->find($userId);
 
         if ($rating === null) {
-            return $this->json(['error' => 'Rating is required'], 400);
+            return $this->json([
+                'error' => 'Rating is required',
+            ], 400);
         }
 
         $review = new Review();
@@ -308,7 +346,9 @@ final class UserController extends AbstractController
         $em->persist($review);
         $em->flush();
 
-        return $this->json(['message' => 'Review added successfully'], 201);
+        return $this->json([
+            'message' => 'Review added successfully',
+        ], 201);
     }
 
     public function getStudentCourseTitles(
@@ -325,7 +365,7 @@ final class UserController extends AbstractController
                 'course_ids' => $enrollmentData['ids'],
                 'enrollment_ids' => $enrollmentData['enrollmentIds'],
                 'course_images' => $enrollmentData['courseImages'],
-                'live_lessons' => $enrollmentData['liveLessons']
+                'live_lessons' => $enrollmentData['liveLessons'],
             ]
         );
     }
@@ -342,9 +382,11 @@ final class UserController extends AbstractController
         $userId = $data['user_id'] ?? null;
         $targetId = $data['target_id'] ?? null;
 
-        if (!$userId || !$targetId) {
+        if (! $userId || ! $targetId) {
             return $this->json(
-                ['error' => 'Missing user_id or target_id'],
+                [
+                    'error' => 'Missing user_id or target_id',
+                ],
                 400
             );
         }
@@ -353,12 +395,16 @@ final class UserController extends AbstractController
 
         if (isset($result['error'])) {
             return $this->json(
-                ['error' => $result['error']],
+                [
+                    'error' => $result['error'],
+                ],
                 $result['code'] ?? 400
             );
         }
 
-        return $this->json(['message' => $result['message']]);
+        return $this->json([
+            'message' => $result['message'],
+        ]);
     }
 
     public function unfollow(
@@ -370,17 +416,23 @@ final class UserController extends AbstractController
         $userId = $data['user_id'] ?? null;
         $targetId = $data['target_id'] ?? null;
 
-        if (!$userId || !$targetId) {
-            return $this->json(['error' => 'Missing user_id or target_id'], 400);
+        if (! $userId || ! $targetId) {
+            return $this->json([
+                'error' => 'Missing user_id or target_id',
+            ], 400);
         }
 
         $result = $userService->unfollow((int) $userId, (int) $targetId);
 
         if (isset($result['error'])) {
-            return $this->json(['error' => $result['error']], $result['code'] ?? 400);
+            return $this->json([
+                'error' => $result['error'],
+            ], $result['code'] ?? 400);
         }
 
-        return $this->json(['message' => $result['message']]);
+        return $this->json([
+            'message' => $result['message'],
+        ]);
     }
 
     public function suggested(
@@ -390,9 +442,11 @@ final class UserController extends AbstractController
     ): JsonResponse {
         $currentUser = $userRepository->find($userId);
 
-        if (!$currentUser) {
+        if (! $currentUser) {
             return $this->json(
-                ['error' => 'User not found'],
+                [
+                    'error' => 'User not found',
+                ],
                 404
             );
         }
@@ -403,7 +457,9 @@ final class UserController extends AbstractController
             $suggestedUsers,
             200,
             [],
-            ['groups' => ['user:read']]
+            [
+                'groups' => ['user:read'],
+            ]
         );
     }
 
@@ -413,9 +469,11 @@ final class UserController extends AbstractController
     ): JsonResponse {
         $user = $userRepository->find($userId);
 
-        if (!$user) {
+        if (! $user) {
             return $this->json(
-                ['error' => 'User not found'],
+                [
+                    'error' => 'User not found',
+                ],
                 404
             );
         }
@@ -426,7 +484,9 @@ final class UserController extends AbstractController
             $followers,
             200,
             [],
-            ['groups' => ['user:read']]
+            [
+                'groups' => ['user:read'],
+            ]
         );
     }
 
@@ -436,9 +496,11 @@ final class UserController extends AbstractController
     ): JsonResponse {
         $user = $userRepository->find($userId);
 
-        if (!$user) {
+        if (! $user) {
             return $this->json(
-                ['error' => 'User not found'],
+                [
+                    'error' => 'User not found',
+                ],
                 404
             );
         }
@@ -449,7 +511,9 @@ final class UserController extends AbstractController
             $followings,
             200,
             [],
-            ['groups' => ['user:read']]
+            [
+                'groups' => ['user:read'],
+            ]
         );
     }
 
@@ -468,18 +532,21 @@ final class UserController extends AbstractController
     ): JsonResponse {
         $subscription = $subscriptionRepo->findActivePlanByUserId($userId);
 
-        if (!$subscription) {
+        if (! $subscription) {
             return $this->json(
-                ['planId' => null, 'planName' => null],
+                [
+                    'planId' => null,
+                    'planName' => null,
+                ],
                 200
             );
         }
 
         return $this->json(
             [
-            'planId' => $subscription->getPlan()->getId(),
-            'planName' => $subscription->getPlan()->getName(),
-            'endDate' => $subscription->getEndDate()->format('Y-m-d')
+                'planId' => $subscription->getPlan()->getId(),
+                'planName' => $subscription->getPlan()->getName(),
+                'endDate' => $subscription->getEndDate()->format('Y-m-d'),
             ]
         );
     }
@@ -528,14 +595,14 @@ final class UserController extends AbstractController
 
         return $this->json(
             [
-            'reviews' => [
-            'data' => $reviews,
-            'analytics' => $analytics['reviews']
-            ],
-            'posts' => [
-            'data' => $formattedPosts,
-            'analytics' => $analytics['posts']
-            ]
+                'reviews' => [
+                    'data' => $reviews,
+                    'analytics' => $analytics['reviews'],
+                ],
+                'posts' => [
+                    'data' => $formattedPosts,
+                    'analytics' => $analytics['posts'],
+                ],
             ]
         );
     }
@@ -550,8 +617,18 @@ final class UserController extends AbstractController
             $qaItems,
             200,
             [],
-            ['groups' => 'qainstructor:read']
+            [
+                'groups' => 'qainstructor:read',
+            ]
         );
     }
 
+    private function getErrorsFromForm($form): array
+    {
+        $errors = [];
+        foreach ($form->getErrors(true, true) as $error) {
+            $errors[$error->getOrigin()->getName()] = $error->getMessage();
+        }
+        return $errors;
+    }
 }

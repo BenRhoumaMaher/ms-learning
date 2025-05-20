@@ -2,22 +2,23 @@
 
 namespace App\Handler\Course;
 
-use App\Repository\UserRepository;
 use App\Query\Course\GetRecommendedCoursesQuery;
-use Symfony\Component\Messenger\Attribute\AsMessageHandler;
+use App\Repository\UserRepository;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
 #[AsMessageHandler]
 class GetRecommendedCoursesHandler
 {
-    public function __construct(private UserRepository $userRepository)
-    {
+    public function __construct(
+        private UserRepository $userRepository
+    ) {
     }
 
     public function __invoke(GetRecommendedCoursesQuery $query): array
     {
         $user = $this->userRepository->find($query->userId);
-        if (!$user) {
+        if (! $user) {
             throw new NotFoundHttpException('User not found');
         }
 
@@ -34,7 +35,7 @@ class GetRecommendedCoursesHandler
         $unique = [];
         $ids = [];
         foreach ($courses as $course) {
-            if (!in_array($course->getId(), $ids)) {
+            if (! in_array($course->getId(), $ids)) {
                 $unique[] = $course;
                 $ids[] = $course->getId();
             }

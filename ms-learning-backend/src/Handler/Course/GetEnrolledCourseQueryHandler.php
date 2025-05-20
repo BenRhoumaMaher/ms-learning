@@ -2,12 +2,9 @@
 
 namespace App\Handler\Course;
 
-use App\Repository\CoursesRepository;
-use App\Service\Course\CourseService;
-use App\Query\Course\GetCourseByIdQuery;
 use App\Query\Course\GetEnrolledCourseQuery;
+use App\Service\Course\CourseService;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 #[AsMessageHandler]
 class GetEnrolledCourseQueryHandler

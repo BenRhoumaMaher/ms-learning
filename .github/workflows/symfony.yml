@@ -1,4 +1,4 @@
-name: Symfony CI/CD
+name: Tests CI/CD
 
 on: [push, pull_request]
 

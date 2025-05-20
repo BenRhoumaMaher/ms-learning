@@ -132,7 +132,7 @@ class Question
 
     public function addAnswer(Answer $answer): static
     {
-        if (!$this->answers->contains($answer)) {
+        if (! $this->answers->contains($answer)) {
             $this->answers->add($answer);
             $answer->setQuestion($this);
         }

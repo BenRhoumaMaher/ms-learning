@@ -14,18 +14,18 @@ class GoogleAuthenticator extends OAuthAuthenticator
 
     protected function getUserFromResourceOwner(ResourceOwnerInterface $resourceOwner, UserRepository $repository): ?User
     {
-        if (!($resourceOwner instanceof GoogleUser)) {
-            throw new \RuntimeException("expecting google user");
+        if (! ($resourceOwner instanceof GoogleUser)) {
+            throw new \RuntimeException('expecting google user');
         }
 
         if (true !== ($resourceOwner->toArray()['email_verified'] ?? null)) {
-            throw new AuthenticationException("email not verified");
+            throw new AuthenticationException('email not verified');
         }
 
         return $repository->findOneBy(
             [
-            'googleId' => $resourceOwner->getId(),
-            'email' => $resourceOwner->getEmail()
+                'googleId' => $resourceOwner->getId(),
+                'email' => $resourceOwner->getEmail(),
             ]
         );
     }
