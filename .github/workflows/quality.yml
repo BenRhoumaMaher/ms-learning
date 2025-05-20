@@ -32,6 +32,15 @@ jobs:
           restore-keys: |
             php8.2-composer-latest-
 
+      - name: Create .env file
+        run: |
+          echo "APP_ENV=test" > .env
+          echo "DATABASE_URL=sqlite:///%kernel.project_dir%/var/data.db" >> .env
+          echo "MERCURE_URL=http://localhost:3000/.well-known/mercure" >> .env
+          echo "MERCURE_PUBLIC_URL=http://localhost:3000/.well-known/mercure" >> .env
+          echo "MERCURE_JWT_SECRET=!ChangeThisMercureHubJWTSecretKey!" >> .env
+        working-directory: ./ms-learning-backend
+
       - name: Update composer
         run: composer self-update
         working-directory: ./ms-learning-backend
