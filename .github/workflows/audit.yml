@@ -41,7 +41,7 @@ jobs:
         working-directory: ./ms-learning-backend
 
       - name: Install dependencies
-        run: composer install --prefer-dist --no-interaction --no-progress --optimize-autoloader --ansi --no-scripts
+        run: composer install --prefer-dist --no-interaction --no-progress --optimize-autoloader --ansi
         working-directory: ./ms-learning-backend
 
       - name: Security audit
