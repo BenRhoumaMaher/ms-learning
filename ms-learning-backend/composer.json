@@ -104,6 +104,13 @@
             "bin/console doctrine:schema:create --env=test",
             "bin/console cache:clear --env=test",
             "bin/phpunit"
+        ],
+        "app:code-quality": [
+            "./vendor/bin/ecs check",
+            "bin/console lint:yaml config --parse-tags",
+            "bin/console lint:container",
+            "./vendor/bin/phpstan analyse --memory-limit=-1",
+            "./vendor/bin/rector --dry-run"
         ]
     },
     "conflict": {
@@ -118,13 +125,18 @@
     "require-dev": {
         "dama/doctrine-test-bundle": "*",
         "doctrine/doctrine-fixtures-bundle": "*",
+        "phpstan/phpstan": "^2.1",
+        "phpstan/phpstan-doctrine": "^2.0",
+        "phpstan/phpstan-symfony": "^2.0",
         "phpunit/phpunit": "^9.5",
+        "rector/rector": "^2.0",
         "symfony/browser-kit": "7.1.*",
         "symfony/css-selector": "7.1.*",
         "symfony/debug-bundle": "7.1.*",
         "symfony/maker-bundle": "^1.0",
         "symfony/phpunit-bridge": "^7.2",
         "symfony/stopwatch": "7.1.*",
-        "symfony/web-profiler-bundle": "7.1.*"
+        "symfony/web-profiler-bundle": "7.1.*",
+        "symplify/easy-coding-standard": "^12.5"
     }
 }

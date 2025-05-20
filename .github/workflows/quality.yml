@@ -1,0 +1,45 @@
+name: Quality Analysis
+on: [push, pull_request]
+jobs:
+  quality:
+    name: Quality Analysis
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./ms-learning-backend
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          path: .
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.2
+          tools: composer:v2
+          coverage: none
+
+      - name: Setup Cache
+        run: echo "COMPOSER_CACHE_DIR=$(composer config cache-dir)" >> $GITHUB_ENV
+        working-directory: ./ms-learning-backend
+
+      - name: Caching deps
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.COMPOSER_CACHE_DIR }}
+          key: php8.2-composer-${{ hashFiles('ms-learning-backend/composer.json') }}
+          restore-keys: |
+            php8.2-composer-latest-
+
+      - name: Update composer
+        run: composer self-update
+        working-directory: ./ms-learning-backend
+
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-interaction --no-progress --optimize-autoloader --ansi
+        working-directory: ./ms-learning-backend
+
+      - name: Quality analysis
+        run: composer app:code-quality
+        working-directory: ./ms-learning-backend
