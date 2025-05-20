@@ -2,10 +2,10 @@
 
 namespace App\Handler\User;
 
-use App\Message\Command\AddUserInterestsCommand;
 use App\Repository\UserRepository;
 use App\Repository\CategoryRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Command\User\AddUserInterestsCommand;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
 #[AsMessageHandler]
