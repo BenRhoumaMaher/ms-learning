@@ -36,8 +36,19 @@ jobs:
         run: composer self-update
         working-directory: ./ms-learning-backend
 
-      - name: Create .env file (if needed)
-        run: echo "APP_ENV=ci" > .env
+      - name: Create .env file for CI
+        run: |
+          cat > .env << 'EOL'
+          APP_ENV=ci
+          APP_SECRET=2303a3dac97337d8666a0126b0bef701
+          DATABASE_URL="sqlite:///%kernel.project_dir%/var/data.db"
+          MESSENGER_TRANSPORT_DSN=doctrine://default?auto_setup=0
+          MAILER_DSN=null://null
+          JWT_SECRET_KEY=%kernel.project_dir%/config/jwt/private.pem
+          JWT_PUBLIC_KEY=%kernel.project_dir%/config/jwt/public.pem
+          JWT_PASSPHRASE=test
+          CORS_ALLOW_ORIGIN='^https?://(localhost|127\.0\.0\.1 )(:[0-9]+)?$'
+          EOL
         working-directory: ./ms-learning-backend
 
       - name: Install dependencies
