@@ -47,6 +47,17 @@ jobs:
           JWT_SECRET_KEY=%kernel.project_dir%/config/jwt/private.pem
           JWT_PUBLIC_KEY=%kernel.project_dir%/config/jwt/public.pem
           JWT_PASSPHRASE=test
+          MERCURE_JWT_SECRET=dummy_value_for_tests
+          ELASTICSEARCH_DSN=http://mslearning_elasticsearch:9200
+          ELASTICSEARCH_HOST=http://mslearning_elasticsearch:9200
+          ELASTICSEARCH_PORT=9200
+          MJ_APIKEY_PUBLIC=dummy_mailjet_public
+          MJ_APIKEY_PRIVATE=dummy_mailjet_private
+          STRIPE_KEY=dummy_stripe_key
+          STRIPE_SECRET=dummy_stripe_secret
+          MERCURE_URL=http://dummy_mercure/.well-known/mercure
+          MERCURE_PUBLIC_URL=http://dummy_mercure/.well-known/mercure
+          ELASTICSEARCH_URL=http://mslearning_elasticsearch:9200
           CORS_ALLOW_ORIGIN='^https?://(localhost|127\.0\.0\.1 )(:[0-9]+)?$'
           EOL
         working-directory: ./ms-learning-backend
