@@ -11,17 +11,26 @@ class RegisterTest extends WebTestCase
 
     private $entityManager;
 
+    /**
+     * Set Up
+     *
+     * Initializes test environment before each test case:
+     * - Creates HTTP client
+     * - Sets up database connection
+     * - Cleans up any existing test users
+     */
     protected function setUp(): void
     {
         $this->client = static::createClient();
         $this->entityManager = $this->client->getContainer()
             ->get('doctrine')->getManager();
 
-        // Remove any existing test users
         $users = $this->entityManager->getRepository(User::class)
-            ->findBy([
-                'email' => 'maherbenrhouma@example.com',
-            ]);
+            ->findBy(
+                [
+                    'email' => 'maherbenrhouma@example.com',
+                ]
+            );
 
         foreach ($users as $user) {
             $this->entityManager->remove($user);
@@ -30,6 +39,12 @@ class RegisterTest extends WebTestCase
         $this->entityManager->flush();
     }
 
+    /**
+     * Tear Down
+     *
+     * Cleans up test environment after each test case:
+     * - Removes any test users created during tests
+     */
     protected function tearDown(): void
     {
         // Clean up any created users
@@ -49,6 +64,9 @@ class RegisterTest extends WebTestCase
 
     /**
      * @dataProvider \App\Tests\DataProvider\RegisterDataProvider::emptyFieldsDataProvider
+     *
+     * @param array<string, mixed> $userData
+     * @param int $expectedStatusCode
      */
     public function testEmptyRegisterFields(
         array $userData,
@@ -70,6 +88,9 @@ class RegisterTest extends WebTestCase
 
     /**
      * @dataProvider \App\Tests\DataProvider\RegisterDataProvider::validSignupDataProvider
+     *
+     * @param array<string, mixed> $userData
+     * @param int $expectedStatusCode
      */
     public function testValidSignup(array $userData, int $expectedStatusCode): void
     {
@@ -101,6 +122,10 @@ class RegisterTest extends WebTestCase
 
     /**
      * @dataProvider \App\Tests\DataProvider\RegisterDataProvider::passwordValidationDataProvider
+     *
+     * @param array<string, mixed> $userData
+     * @param int $expectedStatusCode
+     * @param string $expectedMessage
      */
     public function testPasswordValidation(
         array $userData,
@@ -134,7 +159,9 @@ class RegisterTest extends WebTestCase
     }
 
     /**
-     * Test that duplicate registration is not allowed.
+     * Test User Already Exists
+     *
+     * Verifies system prevents duplicate registrations with same email.
      */
     public function testUserAlreadyExists(): void
     {
@@ -186,6 +213,9 @@ class RegisterTest extends WebTestCase
 
     /**
      * @dataProvider \App\Tests\DataProvider\RegisterDataProvider::redirectAfterSignupDataProvider
+     *
+     * @param array<string, mixed> $userData
+     * @param int $expectedStatusCode
      */
     public function testRedirectAfterSignup(
         array $userData,

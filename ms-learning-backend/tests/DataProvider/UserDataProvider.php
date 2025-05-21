@@ -4,6 +4,9 @@ namespace App\Tests\DataProvider;
 
 class UserDataProvider
 {
+    /**
+     * @return array<string, array{int, int}>
+     */
     public static function getAllUsersDataProvider(): array
     {
         return [
@@ -14,6 +17,9 @@ class UserDataProvider
         ];
     }
 
+    /**
+     * @return array<string, array{int, string}>
+     */
     public static function deleteUserDataProvider(): array
     {
         return [
@@ -24,6 +30,9 @@ class UserDataProvider
         ];
     }
 
+    /**
+     * @return array<string, array{int, string}>
+     */
     public static function deleteNonExistentUserDataProvider(): array
     {
         return [

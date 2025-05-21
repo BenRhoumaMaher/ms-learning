@@ -235,7 +235,7 @@ class AppFixtures extends Fixture
                     ->setDuration($courseData['duration'])
                     ->setLevel($courseData['level'])
                     ->setImage('images/courses/' . $courseData['image'])
-                    ->setPrice($courseData['price'])
+                    ->setPrice($courseData['price'] !== null ? (string) $courseData['price'] : null)
                     ->setCategory($category)
                     ->setCreatedAt(new \DateTimeImmutable());
 

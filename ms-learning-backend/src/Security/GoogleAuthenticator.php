@@ -24,7 +24,7 @@ class GoogleAuthenticator extends OAuthAuthenticator
 
         return $repository->findOneBy(
             [
-                'googleId' => $resourceOwner->getId(),
+                'google_id' => $resourceOwner->getId(),
                 'email' => $resourceOwner->getEmail(),
             ]
         );

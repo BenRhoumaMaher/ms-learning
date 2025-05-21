@@ -1,5 +1,17 @@
 <?php
 
+/**
+ * This file defines the EnrollInCourseHandler which handles student enrollments
+ * in courses within the MS-LEARNING platform.
+ *
+ * @category Handlers
+ * @package  App\Handler\Course
+ * @author   Maher Ben Rhouma <maherbenrhoumaaa@gmail.com>
+ * @license  No license (Personal project)
+ * @link     https://github.com/BenRhoumaMaher/ms-learning
+ * @project  MS-Learning (PFE Project)
+ */
+
 namespace App\Handler\Course;
 
 use App\Command\Course\EnrollInCourseCommand;
@@ -12,9 +24,26 @@ use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
+/**
+ * Handles the enrollment of students in courses by creating StudentCourse entities.
+ * Validates that both user and course exist and that the user isn't already enrolled.
+ * Sets initial enrollment status, progress, and dates.
+ *
+ * @category Handlers
+ * @package  App\Handler\Course
+ * @author   Maher Ben Rhouma <maherbenrhoumaaa@gmail.com>
+ * @license  No license (Personal project)
+ * @link     https://github.com/BenRhoumaMaher/ms-learning
+ */
 #[AsMessageHandler]
 class EnrollInCourseHandler
 {
+    /**
+     * @param EntityManagerInterface  $em                      Doctrine entity manager
+     * @param UserRepository          $userRepository          Repository for user entities
+     * @param CoursesRepository       $courseRepository        Repository for course entities
+     * @param StudentCourseRepository $studentCourseRepository Repository for enrollment records
+     */
     public function __construct(
         private EntityManagerInterface $em,
         private UserRepository $userRepository,
@@ -23,6 +52,22 @@ class EnrollInCourseHandler
     ) {
     }
 
+    /**
+     * Handle course enrollment command
+     *
+     * Creates a new enrollment record for a student in a course.
+     * Validates existence of both user and course.
+     * Checks for existing enrollment to prevent duplicates.
+     * Sets initial enrollment data including dates and status.
+     *
+     * @param EnrollInCourseCommand $command Contains enrollment data:
+     *                                       - userId: string (required) ID of user to enroll
+     *                                       - courseId: string (required) ID of course to enroll in
+     *
+     * @return string ID of the created enrollment record
+     *
+     * @throws \Exception When user/course not found or already enrolled
+     */
     public function __invoke(EnrollInCourseCommand $command)
     {
         $user = $this->userRepository->find($command->userId);

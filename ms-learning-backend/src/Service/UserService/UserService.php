@@ -28,6 +28,11 @@ class UserService implements UserServiceInterface
         return $this->userRepository->find($id);
     }
 
+    /**
+     * @param User $user
+     * 
+     * @return array<string, mixed>
+     */
     public function getUserData(User $user): array
     {
         return [
@@ -49,6 +54,9 @@ class UserService implements UserServiceInterface
         ];
     }
 
+    /**
+     * @return User[]
+     */
     public function getAllUsers(): array
     {
         return $this->em->getRepository(
@@ -56,6 +64,11 @@ class UserService implements UserServiceInterface
         )->findAll();
     }
 
+    /**
+     * @param array<string, mixed> $data
+     * 
+     * @return array<string, string>
+     */
     public function validateUserData(
         array $data
     ): array {
@@ -97,6 +110,9 @@ class UserService implements UserServiceInterface
         );
     }
 
+    /**
+     * @param int[] $courses
+     */
     public function createUser(
         string $email,
         string $firstname,
@@ -143,6 +159,9 @@ class UserService implements UserServiceInterface
         return $this->passwordHasher->isPasswordValid($user, $password);
     }
 
+    /**
+     * @return array<string, string>
+     */
     public function validatePassword(string $password): array
     {
         $user = new User();
@@ -177,6 +196,9 @@ class UserService implements UserServiceInterface
         return $this->baseUrl . '/images/profiles/' . $filename;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function follow(
         int $userId,
         int $targetId
@@ -206,6 +228,9 @@ class UserService implements UserServiceInterface
         ];
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function unfollow(int $userId, int $targetId): array
     {
         $user = $this->userRepository->find($userId);
@@ -226,6 +251,9 @@ class UserService implements UserServiceInterface
         ];
     }
 
+    /**
+     * @return array<int, array<string, mixed>>
+     */
     public function getUserPosts(int $userId): array
     {
         $posts = $this->postRepository->findBy([

@@ -1,5 +1,17 @@
 <?php
 
+/**
+ * This file defines the UserController which handles all user-related operations
+ * including profile management, enrollment, reviews, and social features for the MS-LEARNING platform.
+ *
+ * @category Controllers
+ * @package  App\Controller\User
+ * @author   Maher Ben Rhouma <maherbenrhoumaaa@gmail.com>
+ * @license  No license (Personal project)
+ * @link     https://github.com/BenRhoumaMaher/ms-learning
+ * @project  MS-Learning (PFE Project)
+ */
+
 namespace App\Controller\User;
 
 use App\Command\Course\EnrollInCourseCommand;
@@ -32,16 +44,41 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
+/**
+ * Handles all user operations including:
+ * - User profile management
+ * - Course enrollment and reviews
+ * - Social features (following, suggestions)
+ * - Instructor-related operations
+ * - Content analytics
+ *
+ * @category Controllers
+ * @package  App\Controller\User
+ * @author   Maher Ben Rhouma <maherbenrhoumaaa@gmail.com>
+ * @license  No license (Personal project)
+ * @link     https://github.com/BenRhoumaMaher/ms-learning
+ */
 final class UserController extends AbstractController
 {
+    /**
+     * @param QueryBusService      $queryBusService      Query bus service
+     * @param CommandBusService    $commandBusService    Command bus service
+     * @param QuizAnalyticsService $quizAnalyticsService Quiz analytics service
+     */
     public function __construct(
-        private UserService $userService,
-        private QueryBusService $queryBusService,
-        private CommandBusService $commandBusService,
-        private QuizAnalyticsService $quizAnalyticsService
+        private readonly QueryBusService $queryBusService,
+        private readonly CommandBusService $commandBusService,
+        private readonly QuizAnalyticsService $quizAnalyticsService
     ) {
     }
 
+    /**
+     * Get all users
+     *
+     * Retrieves a list of all users in the system
+     *
+     * @return JsonResponse Returns array of User entities
+     */
     public function index(
     ): JsonResponse {
         $courses = $this->queryBusService->handle(new GetAllUsersQuery());
@@ -56,6 +93,15 @@ final class UserController extends AbstractController
         );
     }
 
+    /**
+     * Get user's enrolled courses
+     *
+     * Retrieves courses a user is enrolled in along with quiz analytics
+     *
+     * @param int $id User ID
+     *
+     * @return JsonResponse Returns array with courses and analytics data
+     */
     public function getUserCourses(int $id): JsonResponse
     {
         try {
@@ -91,6 +137,15 @@ final class UserController extends AbstractController
         }
     }
 
+    /**
+     * Get user profile information
+     *
+     * Retrieves detailed profile information for a user
+     *
+     * @param int $id User ID
+     *
+     * @return JsonResponse Returns array with user info
+     */
     public function getUserInfos(int $id): JsonResponse
     {
         try {
@@ -113,6 +168,16 @@ final class UserController extends AbstractController
         }
     }
 
+    /**
+     * Update user profile
+     *
+     * Edits user profile information with optional image upload
+     *
+     * @param Request $request HTTP request containing update data
+     * @param int     $id      User ID
+     *
+     * @return JsonResponse Returns success/error message
+     */
     public function edit(Request $request, int $id): JsonResponse
     {
         $id = (int) $id;
@@ -133,12 +198,25 @@ final class UserController extends AbstractController
                 200
             );
         } catch (\Exception $e) {
-            return $this->json([
-                'error' => $e->getMessage(),
-            ], 400);
+            return $this->json(
+                [
+                    'error' => $e->getMessage(),
+                ],
+                400
+            );
         }
     }
 
+    /**
+     * Update user password
+     *
+     * Changes a user's password after validation
+     *
+     * @param Request $request HTTP request containing new password
+     * @param int     $id      User ID
+     *
+     * @return JsonResponse Returns success or error message
+     */
     public function updatePassword(Request $request, int $id): JsonResponse
     {
         $data = json_decode($request->getContent(), true) ?? [];
@@ -147,16 +225,31 @@ final class UserController extends AbstractController
             $command = new UpdateUserPasswordCommand($id, $data);
             $this->commandBusService->handle($command);
 
-            return $this->json([
-                'message' => 'Password updated successfully',
-            ]);
+            return $this->json(
+                [
+                    'message' => 'Password updated successfully',
+                ]
+            );
         } catch (\Exception $e) {
-            return $this->json([
-                'error' => $e->getMessage(),
-            ], 400);
+            return $this->json(
+                [
+                    'error' => $e->getMessage(),
+                ],
+                400
+            );
         }
     }
 
+    /**
+     * Delete user account
+     *
+     * Permanently removes a user account from the system
+     *
+     * @param int                    $id            User ID
+     * @param EntityManagerInterface $entityManager Doctrine entity manager
+     *
+     * @return JsonResponse
+     */
     public function deleteAccount(
         int $id,
         EntityManagerInterface $entityManager
@@ -183,18 +276,23 @@ final class UserController extends AbstractController
         );
     }
 
+    /**
+     * Add user interests
+     *
+     * Updates a user's interest categories
+     *
+     * @param Request $request HTTP request containing category IDs
+     *
+     * @return JsonResponse Returns success or error message
+     */
     public function addInterests(
         Request $request
     ): JsonResponse {
         $user = $this->getUser();
-        if (! $user) {
-            return new JsonResponse(
-                [
-                    'error' => 'Unauthorized',
-                ],
-                401
-            );
+        if (!$user instanceof User) {
+            return new JsonResponse(['error' => 'Unauthorized'], 401);
         }
+        $userId = $user->getId();
 
         $data = json_decode($request->getContent(), true);
         $categoryIds = $data['categories'] ?? [];
@@ -219,6 +317,13 @@ final class UserController extends AbstractController
         );
     }
 
+    /**
+     * Get all instructors
+     *
+     * Retrieves a list of all instructors in the system
+     *
+     * @return JsonResponse Returns array of User entities
+     */
     public function getInstructors(): JsonResponse
     {
         $query = new GetInstructorsQuery();
@@ -236,28 +341,53 @@ final class UserController extends AbstractController
         );
     }
 
+    /**
+     * Get instructor details
+     *
+     * Retrieves detailed information about a specific instructor
+     *
+     * @param int $id Instructor ID
+     *
+     * @return JsonResponse Returns instructor data or error message
+     */
     public function showInstructor(int $id): JsonResponse
     {
         try {
             $data = $this->queryBusService->handle(new ShowInstructorQuery($id));
         } catch (\Throwable $e) {
-            return $this->json([
-                'error' => $e->getMessage(),
-            ], 404);
+            return $this->json(
+                [
+                    'error' => $e->getMessage(),
+                ],
+                404
+            );
         }
 
         return $this->json($data);
     }
 
+    /**
+     * Enroll in course
+     *
+     * Enrolls a user in a specific course
+     *
+     * @param int     $courseId Course ID
+     * @param Request $request  HTTP request containing user ID
+     *
+     * @return JsonResponse Returns enrollment result or error message
+     */
     public function enroll(int $courseId, Request $request): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
         $userId = $data['userId'] ?? null;
 
         if (! is_int($userId)) {
-            return $this->json([
-                'error' => 'Invalid or missing userId',
-            ], 400);
+            return $this->json(
+                [
+                    'error' => 'Invalid or missing userId',
+                ],
+                400
+            );
         }
 
         try {
@@ -272,12 +402,26 @@ final class UserController extends AbstractController
                 ]
             );
         } catch (\Exception $e) {
-            return $this->json([
-                'error' => $e->getMessage(),
-            ], 400);
+            return $this->json(
+                [
+                    'error' => $e->getMessage(),
+                ],
+                400
+            );
         }
     }
 
+    /**
+     * Get course reviews
+     *
+     * Retrieves all reviews for a specific course
+     *
+     * @param int               $courseId          Course ID
+     * @param ReviewRepository  $reviewRepository  Reviews repository
+     * @param CoursesRepository $coursesRepository Courses repository
+     *
+     * @return JsonResponse Returns array of Review entities
+     */
     public function getCourseReviews(
         int $courseId,
         ReviewRepository $reviewRepository,
@@ -287,14 +431,19 @@ final class UserController extends AbstractController
         $course = $coursesRepository->find($courseId);
 
         if (! $course) {
-            return $this->json([
-                'error' => 'Course not found',
-            ], 404);
+            return $this->json(
+                [
+                    'error' => 'Course not found',
+                ],
+                404
+            );
         }
 
-        $reviews = $reviewRepository->findBy([
-            'course' => $course,
-        ]);
+        $reviews = $reviewRepository->findBy(
+            [
+                'course' => $course,
+            ]
+        );
 
         return $this->json(
             $reviews,
@@ -306,6 +455,18 @@ final class UserController extends AbstractController
         );
     }
 
+    /**
+     * Create course review
+     *
+     * Adds a new review for a course
+     *
+     * @param int                    $courseId          Course ID
+     * @param Request                $request           HTTP request containing review data
+     * @param CoursesRepository      $coursesRepository Courses repository
+     * @param EntityManagerInterface $em                Doctrine entity manager
+     *
+     * @return JsonResponse Returns success or error message
+     */
     public function createReviewForCourse(
         int $courseId,
         Request $request,
@@ -318,9 +479,12 @@ final class UserController extends AbstractController
         $currentcourseId = $course->getCurse()->getId();
         $course = $coursesRepository->find($currentcourseId);
         if (! $course) {
-            return $this->json([
-                'error' => 'Course not found',
-            ], 404);
+            return $this->json(
+                [
+                    'error' => 'Course not found',
+                ],
+                404
+            );
         }
 
         $data = json_decode($request->getContent(), true);
@@ -331,9 +495,12 @@ final class UserController extends AbstractController
         $user = $em->getRepository(User::class)->find($userId);
 
         if ($rating === null) {
-            return $this->json([
-                'error' => 'Rating is required',
-            ], 400);
+            return $this->json(
+                [
+                    'error' => 'Rating is required',
+                ],
+                400
+            );
         }
 
         $review = new Review();
@@ -346,11 +513,24 @@ final class UserController extends AbstractController
         $em->persist($review);
         $em->flush();
 
-        return $this->json([
-            'message' => 'Review added successfully',
-        ], 201);
+        return $this->json(
+            [
+                'message' => 'Review added successfully',
+            ],
+            201
+        );
     }
 
+    /**
+     * Get student course titles
+     *
+     * Retrieves course enrollment information for a student
+     *
+     * @param User                    $user                    User entity
+     * @param StudentCourseRepository $studentCourseRepository Student courses repository
+     *
+     * @return JsonResponse Returns array with student course data
+     */
     public function getStudentCourseTitles(
         User $user,
         StudentCourseRepository $studentCourseRepository
@@ -370,6 +550,16 @@ final class UserController extends AbstractController
         );
     }
 
+    /**
+     * Follow another user
+     *
+     * Creates a follow relationship between users
+     *
+     * @param Request     $request     HTTP request containing user IDs
+     * @param UserService $userService User service
+     *
+     * @return JsonResponse Returns success or error message
+     */
     public function follow(
         Request $request,
         UserService $userService
@@ -402,11 +592,23 @@ final class UserController extends AbstractController
             );
         }
 
-        return $this->json([
-            'message' => $result['message'],
-        ]);
+        return $this->json(
+            [
+                'message' => $result['message'],
+            ]
+        );
     }
 
+    /**
+     * Unfollow another user
+     *
+     * Removes a follow relationship between users
+     *
+     * @param Request     $request     HTTP request containing user IDs
+     * @param UserService $userService User service
+     *
+     * @return JsonResponse Returns success or error message
+     */
     public function unfollow(
         Request $request,
         UserService $userService
@@ -417,24 +619,43 @@ final class UserController extends AbstractController
         $targetId = $data['target_id'] ?? null;
 
         if (! $userId || ! $targetId) {
-            return $this->json([
-                'error' => 'Missing user_id or target_id',
-            ], 400);
+            return $this->json(
+                [
+                    'error' => 'Missing user_id or target_id',
+                ],
+                400
+            );
         }
 
         $result = $userService->unfollow((int) $userId, (int) $targetId);
 
         if (isset($result['error'])) {
-            return $this->json([
-                'error' => $result['error'],
-            ], $result['code'] ?? 400);
+            return $this->json(
+                [
+                    'error' => $result['error'],
+                ],
+                $result['code'] ?? 400
+            );
         }
 
-        return $this->json([
-            'message' => $result['message'],
-        ]);
+        return $this->json(
+            [
+                'message' => $result['message'],
+            ]
+        );
     }
 
+    /**
+     * Get suggested users
+     *
+     * Retrieves suggested users to follow based on common interests
+     *
+     * @param Request        $request        HTTP request
+     * @param int            $userId         User ID
+     * @param UserRepository $userRepository Users repository
+     *
+     * @return JsonResponse Returns array of User entities
+     */
     public function suggested(
         Request $request,
         int $userId,
@@ -463,6 +684,16 @@ final class UserController extends AbstractController
         );
     }
 
+    /**
+     * Get user followers
+     *
+     * Retrieves a list of users following the specified user
+     *
+     * @param int            $userId         User ID
+     * @param UserRepository $userRepository Users repository
+     *
+     * @return JsonResponse Returns array of User entities
+     */
     public function followers(
         int $userId,
         UserRepository $userRepository
@@ -490,6 +721,16 @@ final class UserController extends AbstractController
         );
     }
 
+    /**
+     * Get user followings
+     *
+     * Retrieves a list of users the specified user is following
+     *
+     * @param int            $userId         User ID
+     * @param UserRepository $userRepository Users repository
+     *
+     * @return JsonResponse Returns array of User entities
+     */
     public function followings(
         int $userId,
         UserRepository $userRepository
@@ -517,6 +758,16 @@ final class UserController extends AbstractController
         );
     }
 
+    /**
+     * Get user posts
+     *
+     * Retrieves all posts created by a user
+     *
+     * @param int         $id          User ID
+     * @param UserService $userService User service
+     *
+     * @return JsonResponse Returns array of user posts
+     */
     public function getUserPosts(
         int $id,
         UserService $userService
@@ -526,6 +777,19 @@ final class UserController extends AbstractController
         return new JsonResponse($data);
     }
 
+    /**
+     * Get user's current subscription plan
+     *
+     * Retrieves active subscription information for a user
+     *
+     * @param int                        $userId           User ID
+     * @param UserSubscriptionRepository $subscriptionRepo Subscriptions repository
+     *
+     * @return JsonResponse Returns array with:
+     *                      - planId: int|null
+     *                      - planName: string|null
+     *                      - endDate: string|null
+     */
     public function getUserCurrentPlan(
         int $userId,
         UserSubscriptionRepository $subscriptionRepo
@@ -551,6 +815,17 @@ final class UserController extends AbstractController
         );
     }
 
+    /**
+     * Get user content
+     *
+     * Retrieves all content (reviews, posts) created by a user with analytics
+     *
+     * @param User                    $user                    User entity
+     * @param PostRepository          $postRepository          Posts repository
+     * @param ContentAnalyticsService $contentAnalyticsService Content analytics service
+     *
+     * @return JsonResponse Returns array with user content data
+     */
     public function getUserContent(
         User $user,
         PostRepository $postRepository,
@@ -579,15 +854,13 @@ final class UserController extends AbstractController
         );
 
         $formattedPosts = array_map(
-            function ($post) {
-                return [
-                    'id' => $post->getId(),
-                    'title' => $post->getTitle(),
-                    'content' => $post->getContent(),
-                    'tags' => $post->getTags(),
-                    'created_at' => $post->getCreatedAt()->format('Y-m-d H:i:s'),
-                ];
-            },
+            fn($post) => [
+                'id' => $post->getId(),
+                'title' => $post->getTitle(),
+                'content' => $post->getContent(),
+                'tags' => $post->getTags(),
+                'created_at' => $post->getCreatedAt()->format('Y-m-d H:i:s'),
+            ],
             $posts
         );
 
@@ -607,6 +880,15 @@ final class UserController extends AbstractController
         );
     }
 
+    /**
+     * Get QA instructor information
+     *
+     * Retrieves QA instructor details
+     *
+     * @param QAInstructorRepository $qainstructorRepository QA instructors repository
+     *
+     * @return JsonResponse Returns array of QA instructor data
+     */
     public function getQaInstructor(
         QAInstructorRepository $qainstructorRepository
     ): JsonResponse {
@@ -621,14 +903,5 @@ final class UserController extends AbstractController
                 'groups' => 'qainstructor:read',
             ]
         );
-    }
-
-    private function getErrorsFromForm($form): array
-    {
-        $errors = [];
-        foreach ($form->getErrors(true, true) as $error) {
-            $errors[$error->getOrigin()->getName()] = $error->getMessage();
-        }
-        return $errors;
     }
 }

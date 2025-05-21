@@ -7,6 +7,11 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 interface UserServiceInterface
 {
+    /**
+     * @param array<string, mixed> $data
+     * 
+     * @return array<string, string>  Validation errors
+     */
     public function validateUserData(
         array $data
     ): array;
@@ -15,6 +20,9 @@ interface UserServiceInterface
         string $email
     ): bool;
 
+    /**
+     * @param int[] $courses
+     */
     public function createUser(
         string $email,
         string $firstname,
@@ -27,5 +35,8 @@ interface UserServiceInterface
         array $courses = []
     ): User;
 
+    /**
+     * @return User[]
+     */
     public function getAllUsers(): array;
 }

@@ -15,6 +15,16 @@ class StripePayment
         Stripe::setApiVersion('2024-06-20');
     }
 
+    /**
+     * @param array{
+     *   title: string,
+     *   description?: string,
+     *   price: float|int,
+     *   discount?: float|int,
+     *   image?: string|null
+     * } $courseData
+     * @param array<string, string> $metadata
+     */
     public function createCourseCheckoutSession(
         array $courseData,
         string $successUrl,
@@ -53,6 +63,12 @@ class StripePayment
         return $session->id;
     }
 
+    /**
+     * @param array{
+     *   price: float|int,
+     *   discount?: float|int
+     * } $courseData
+     */
     public function calculateFinalPrice(array $courseData): float
     {
         $price = (float) $courseData['price'];
@@ -69,6 +85,13 @@ class StripePayment
         return $this->redirectUrl;
     }
 
+    /**
+     * @param array{
+     *   name: string,
+     *   price: float|int
+     * } $planData
+     * @param array<string, string> $metadata
+     */
     public function createSubscriptionCheckoutSession(
         array $planData,
         string $successUrl,

@@ -1,5 +1,19 @@
 <?php
 
+/**
+ * This file defines the CoursesController which handles
+ * all course-related operations
+ * including CRUD operations, enrollment, recommendations,
+ * and analytics for the MS-LEARNING platform.
+ *
+ * @category Controllers
+ * @package  App\Controller\Course
+ * @author   Maher Ben Rhouma <maherbenrhoumaaa@gmail.com>
+ * @license  No license (Personal project)
+ * @link     https://github.com/BenRhoumaMaher/ms-learning
+ * @project  MS-Learning (PFE Project)
+ */
+
 namespace App\Controller\Course;
 
 use App\Command\Course\CreateFullCourseCommand;
@@ -14,7 +28,7 @@ use App\Query\Course\GetEnrolledCourseQuery;
 use App\Query\Course\GetFreeCoursesQuery;
 use App\Query\Course\GetLatestCoursesQuery;
 use App\Query\Course\GetRecommendedCoursesQuery;
-use App\Query\User\GetUserCoursesModulesQuery;
+use App\Query\Course\GetUserCoursesModulesQuery;
 use App\Repository\CoursesRepository;
 use App\Repository\ForumPostRepository;
 use App\Repository\LessonRepository;
@@ -35,19 +49,51 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Serializer\SerializerInterface;
 
+/**
+ * Handles all course-related operations including:
+ * - Course listing and details
+ * - Course creation, update, and deletion
+ * - Enrollment management
+ * - Course recommendations
+ * - Quiz and analytics functionality
+ *
+ * @category Controllers
+ * @package  App\Controller\Course
+ * @author   Maher Ben Rhouma <maherbenrhoumaaa@gmail.com>
+ * @license  No license (Personal project)
+ * @link     https://github.com/BenRhoumaMaher/ms-learning
+ */
 class CoursesController extends AbstractController
 {
+    /**
+     * @param QueryBusService                 $queryBusService       Query bus
+     *                                                               service
+     * @param CommandBusService               $commandBusService     Command bus
+     *                                                               service
+     * @param QuizScoreRepository             $quizScoreRepository   Quiz score
+     *                                                               repository
+     * @param EntityManagerInterface          $entityManager         Entity manager
+     * @param UserRepository                  $userRepository        User repository
+     * @param QuizRepository                  $quizRepository        Quiz repository
+     * @param VideoEngagementAnalyticsService $videoAnalyticsService Video analytics
+     *                                                               service
+     */
     public function __construct(
-        private QueryBusService $queryBusService,
-        private CommandBusService $commandBusService,
-        private QuizScoreRepository $quizScoreRepository,
-        private EntityManagerInterface $entityManager,
-        private UserRepository $userRepository,
-        private QuizRepository $quizRepository,
-        private VideoEngagementAnalyticsService $videoAnalyticsService
+        private readonly QueryBusService $queryBusService,
+        private readonly CommandBusService $commandBusService,
+        private readonly QuizScoreRepository $quizScoreRepository,
+        private readonly EntityManagerInterface $entityManager,
+        private readonly UserRepository $userRepository,
+        private readonly QuizRepository $quizRepository,
+        private readonly VideoEngagementAnalyticsService $videoAnalyticsService
     ) {
     }
 
+    /**
+     * Get all courses
+     *
+     * @return JsonResponse List of all courses
+     */
     public function index(): JsonResponse
     {
         $courses = $this->queryBusService->handle(new GetAllCoursesQuery());
@@ -61,6 +107,13 @@ class CoursesController extends AbstractController
         );
     }
 
+    /**
+     * Get course details by ID
+     *
+     * @param int $id Course ID
+     *
+     * @return JsonResponse Course details
+     */
     public function show(int $id): JsonResponse
     {
         $course = $this->queryBusService->handle(new GetCourseByIdQuery($id));
@@ -74,6 +127,13 @@ class CoursesController extends AbstractController
         );
     }
 
+    /**
+     * Get enrolled course details
+     *
+     * @param int $id Enrollment ID
+     *
+     * @return JsonResponse Enrolled course details with progress
+     */
     public function enrolledCourse(int $id): JsonResponse
     {
         $course = $this->queryBusService->handle(new GetEnrolledCourseQuery($id));
@@ -104,20 +164,36 @@ class CoursesController extends AbstractController
         return $this->json($data);
     }
 
+    /**
+     * Create a new course with modules and lessons
+     *
+     * @param Request             $request       HTTP request containing course
+     *                                           data and files
+     * @param MessageBusInterface $commandBus    Command bus interface
+     * @param CourseService       $courseService Course service for file handling
+     *
+     * @return JsonResponse       Response indicating course creation status
+     */
     public function createCourse(Request $request, MessageBusInterface $commandBus, CourseService $courseService): JsonResponse
     {
-        $jsonData = $request->request->get('data');
+        $jsonData = $request->request->get('data', null);
         if (! $jsonData) {
-            return new JsonResponse([
-                'error' => 'Invalid request, missing data',
-            ], 400);
+            return new JsonResponse(
+                [
+                    'error' => 'Invalid request, missing data',
+                ],
+                400
+            );
         }
 
         $data = json_decode($jsonData, true);
         if (! $data || ! isset($data['user_id'], $data['course'], $data['modules'])) {
-            return new JsonResponse([
-                'error' => 'Missing required fields',
-            ], 400);
+            return new JsonResponse(
+                [
+                    'error' => 'Missing required fields',
+                ],
+                400
+            );
         }
 
         $files = $request->files->all();
@@ -126,8 +202,10 @@ class CoursesController extends AbstractController
         foreach ($files['modules'] ?? [] as $moduleIndex => $moduleFiles) {
             foreach ($moduleFiles['lessons'] ?? [] as $lessonIndex => $lessonFiles) {
                 if (isset($lessonFiles['resource'])) {
-                    $processedFiles['modules'][$moduleIndex]['lessons'][$lessonIndex]['resource'] =
-                        $courseService->uploadFile($lessonFiles['resource']);
+                    $processedFiles['modules'][$moduleIndex]['lessons'][$lessonIndex]['resource'] = $courseService
+                        ->uploadFile(
+                            $lessonFiles['resource']
+                        );
                 }
             }
         }
@@ -141,11 +219,22 @@ class CoursesController extends AbstractController
 
         $commandBus->dispatch($command);
 
-        return new JsonResponse([
-            'message' => 'Course creation started',
-        ], 202);
+        return new JsonResponse(
+            [
+                'message' => 'Course creation started',
+            ],
+            202
+        );
     }
 
+    /**
+     * Get user courses with modules and analytics
+     *
+     * @param int                 $id       User ID
+     * @param MessageBusInterface $queryBus Query bus interface
+     *
+     * @return JsonResponse User courses data with video analytics
+     */
     public function getUserCoursesModules(
         int $id,
         MessageBusInterface $queryBus,
@@ -177,12 +266,23 @@ class CoursesController extends AbstractController
 
             return $this->json($response);
         } catch (\Exception $e) {
-            return $this->json([
-                'error' => $e->getMessage(),
-            ], 404);
+            return $this->json(
+                [
+                    'error' => $e->getMessage(),
+                ],
+                404
+            );
         }
     }
 
+    /**
+     * Get courses with modules and lessons (without resources)
+     *
+     * @param int                 $id       Course ID
+     * @param MessageBusInterface $queryBus Query bus interface
+     *
+     * @return JsonResponse Courses data without resources
+     */
     public function getCoursesModulesLessonsWithoutResources(
         int $id,
         MessageBusInterface $queryBus
@@ -207,6 +307,13 @@ class CoursesController extends AbstractController
         }
     }
 
+    /**
+     * Get course details with modules and lessons
+     *
+     * @param int $id Course ID
+     *
+     * @return JsonResponse Complete course structure
+     */
     public function getCourseWithModulesAndLessons(
         int $id,
     ): JsonResponse {
@@ -217,12 +324,25 @@ class CoursesController extends AbstractController
 
             return $this->json($courseData);
         } catch (\Exception $e) {
-            return $this->json([
-                'error' => $e->getMessage(),
-            ], 404);
+            return $this->json(
+                [
+                    'error' => $e->getMessage(),
+                ],
+                404
+            );
         }
     }
 
+    /**
+     * Translate lesson content
+     *
+     * @param int           $id            Lesson ID
+     * @param Request       $request       HTTP request containing
+     *                                     language preference
+     * @param CourseService $courseService Course service for translation
+     *
+     * @return JsonResponse Translated lesson content
+     */
     public function translateLesson(
         int $id,
         Request $request,
@@ -244,6 +364,14 @@ class CoursesController extends AbstractController
         }
     }
 
+    /**
+     * Generate lesson notes automatically
+     *
+     * @param int           $id            Lesson ID
+     * @param CourseService $courseService Course service for note generation
+     *
+     * @return JsonResponse Generated lesson notes
+     */
     public function generateLessonNotes(
         int $id,
         CourseService $courseService
@@ -263,6 +391,14 @@ class CoursesController extends AbstractController
         }
     }
 
+    /**
+     * Update course information
+     *
+     * @param int     $id      Course ID
+     * @param Request $request HTTP request containing updated course data
+     *
+     * @return JsonResponse Update confirmation
+     */
     public function update(
         int $id,
         Request $request
@@ -304,6 +440,13 @@ class CoursesController extends AbstractController
         );
     }
 
+    /**
+     * Delete a course
+     *
+     * @param int $id Course ID
+     *
+     * @return JsonResponse Deletion confirmation
+     */
     public function delete(int $id): JsonResponse
     {
         $command = new DeleteCourseCommand($id);
@@ -317,6 +460,11 @@ class CoursesController extends AbstractController
         );
     }
 
+    /**
+     * Get latest courses
+     *
+     * @return JsonResponse List of recently added courses
+     */
     public function getLatestCourses(): JsonResponse
     {
         $courses = $this->queryBusService->handle(
@@ -333,6 +481,11 @@ class CoursesController extends AbstractController
         );
     }
 
+    /**
+     * Get free courses
+     *
+     * @return JsonResponse List of free courses
+     */
     public function getFreeCourses(): JsonResponse
     {
         $courses = $this->queryBusService->handle(
@@ -349,6 +502,13 @@ class CoursesController extends AbstractController
         );
     }
 
+    /**
+     * Get recommended courses for user
+     *
+     * @param int $id User ID
+     *
+     * @return JsonResponse List of recommended courses
+     */
     public function getRecommendedCourses(int $id): JsonResponse
     {
         try {
@@ -356,9 +516,12 @@ class CoursesController extends AbstractController
                 new GetRecommendedCoursesQuery($id)
             );
         } catch (NotFoundHttpException $e) {
-            return $this->json([
-                'error' => $e->getMessage(),
-            ], 404);
+            return $this->json(
+                [
+                    'error' => $e->getMessage(),
+                ],
+                404
+            );
         }
 
         if (empty($courses)) {
@@ -380,13 +543,23 @@ class CoursesController extends AbstractController
         );
     }
 
+    /**
+     * Get courses by category
+     *
+     * @param int               $id         Category ID
+     * @param CoursesRepository $courseRepo Courses repository
+     *
+     * @return JsonResponse List of courses in specified category
+     */
     public function getCoursesByCategory(
         int $id,
         CoursesRepository $courseRepo
     ): JsonResponse {
-        $courses = $courseRepo->findBy([
-            'category' => $id,
-        ]);
+        $courses = $courseRepo->findBy(
+            [
+                'category' => $id,
+            ]
+        );
         return $this->json(
             $courses,
             200,
@@ -397,6 +570,15 @@ class CoursesController extends AbstractController
         );
     }
 
+    /**
+     * Get quiz questions for lesson
+     *
+     * @param int              $lessonId         Lesson ID
+     * @param LessonRepository $lessonRepository Lesson repository
+     * @param QuizRepository   $quizRepository   Quiz repository
+     *
+     * @return JsonResponse Quiz questions and answers
+     */
     public function getQuizQuestions(
         int $lessonId,
         LessonRepository $lessonRepository,
@@ -406,27 +588,38 @@ class CoursesController extends AbstractController
         $lesson = $lessonRepository->find($lessonId);
 
         if (! $lesson) {
-            return $this->json([
-                'error' => 'Lesson not found',
-            ], 404);
+            return $this->json(
+                [
+                    'error' => 'Lesson not found',
+                ],
+                404
+            );
         }
 
         $course = $lesson->getCourse();
 
         if (! $course) {
-            return $this->json([
-                'error' => 'Course not found for this lesson',
-            ], 404);
+            return $this->json(
+                [
+                    'error' => 'Course not found for this lesson',
+                ],
+                404
+            );
         }
 
-        $quiz = $quizRepository->findOneBy([
-            'course' => $course,
-        ]);
+        $quiz = $quizRepository->findOneBy(
+            [
+                'course' => $course,
+            ]
+        );
 
         if (! $quiz) {
-            return $this->json([
-                'error' => 'Quiz not found for this course',
-            ], 404);
+            return $this->json(
+                [
+                    'error' => 'Quiz not found for this course',
+                ],
+                404
+            );
         }
 
         $questions = $quiz->getQuestions();
@@ -458,28 +651,44 @@ class CoursesController extends AbstractController
         );
     }
 
+    /**
+     * Save quiz score
+     *
+     * @param Request $request HTTP request containing quiz results
+     *
+     * @return JsonResponse Score saving confirmation
+     */
     public function saveScore(Request $request): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
 
         if (! isset($data['userId'], $data['quizId'], $data['score'], $data['totalQuestions'])) {
-            return $this->json([
-                'error' => 'Missing required fields',
-            ], 400);
+            return $this->json(
+                [
+                    'error' => 'Missing required fields',
+                ],
+                400
+            );
         }
 
         $user = $this->userRepository->find($data['userId']);
         if (! $user) {
-            return $this->json([
-                'error' => 'User not found',
-            ], 404);
+            return $this->json(
+                [
+                    'error' => 'User not found',
+                ],
+                404
+            );
         }
 
         $quiz = $this->quizRepository->find($data['quizId']);
         if (! $quiz) {
-            return $this->json([
-                'error' => 'Quiz not found',
-            ], 404);
+            return $this->json(
+                [
+                    'error' => 'Quiz not found',
+                ],
+                404
+            );
         }
 
         $score = new QuizScore();
@@ -500,18 +709,29 @@ class CoursesController extends AbstractController
         );
     }
 
+    /**
+     * Get quiz comparison data
+     *
+     * @param int     $quizId  Quiz ID
+     * @param Request $request HTTP request containing user score data
+     *
+     * @return JsonResponse Comparative quiz statistics
+     */
     public function getComparisonData(
         int $quizId,
         Request $request
     ): JsonResponse {
-        $userId = (int) $request->query->get('userId', 0);
-        $userScore = (int) $request->query->get('userScore', 0);
-        $totalQuestions = (int) $request->query->get('totalQuestions', 0);
+        $userId = (int) $request->query->get('userId', '0');
+        $userScore = (int) $request->query->get('userScore', '0');
+        $totalQuestions = (int) $request->query->get('totalQuestions', '0');
 
         if (! $userId || ! $userScore || ! $totalQuestions) {
-            return $this->json([
-                'error' => 'Missing required parameters',
-            ], 400);
+            return $this->json(
+                [
+                    'error' => 'Missing required parameters',
+                ],
+                400
+            );
         }
 
         $stats = $this->quizScoreRepository->getQuizStatistics($quizId);
@@ -534,6 +754,15 @@ class CoursesController extends AbstractController
         );
     }
 
+    /**
+     * Get trending courses
+     *
+     * @param StudentCourseRepository $studentCourseRepository Student course
+     *                                                         repository
+     * @param SerializerInterface     $serializer              Serializer interface
+     *
+     * @return JsonResponse List of popular courses
+     */
     public function getTrendingCourses(
         StudentCourseRepository $studentCourseRepository,
         SerializerInterface $serializer
@@ -554,6 +783,15 @@ class CoursesController extends AbstractController
         );
     }
 
+    /**
+     * Get instructor forum posts
+     *
+     * @param int                 $id                  Instructor ID
+     * @param ForumPostRepository $forumPostRepository Forum post repository
+     * @param SerializerInterface $serializer          Serializer interface
+     *
+     * @return JsonResponse List of instructor's forum posts
+     */
     public function getInstructorForumPosts(
         int $id,
         ForumPostRepository $forumPostRepository,
@@ -577,6 +815,15 @@ class CoursesController extends AbstractController
         );
     }
 
+    /**
+     * Get quiz scores for lesson
+     *
+     * @param int                 $id                  Lesson ID
+     * @param LessonRepository    $lessonRepository    Lesson repository
+     * @param QuizScoreRepository $quizScoreRepository Quiz score repository
+     *
+     * @return JsonResponse Quiz score data
+     */
     public function getQuizScoresForLesson(
         int $id,
         LessonRepository $lessonRepository,
@@ -585,62 +832,50 @@ class CoursesController extends AbstractController
         $lesson = $lessonRepository->find($id);
 
         if (! $lesson) {
-            return $this->json([
-                'error' => 'Lesson not found',
-            ], 404);
+            return $this->json(
+                [
+                    'error' => 'Lesson not found',
+                ],
+                404
+            );
         }
 
         $course = $lesson->getCourse();
         if (! $course) {
-            return $this->json([
-                'error' => 'No course associated with lesson',
-            ], 404);
+            return $this->json(
+                [
+                    'error' => 'No course associated with lesson',
+                ],
+                404
+            );
         }
 
         $quiz = $course->getQuiz();
         if (! $quiz) {
-            return $this->json([
-                'error' => 'No quiz associated with course',
-            ], 404);
+            return $this->json(
+                [
+                    'error' => 'No quiz associated with course',
+                ],
+                404
+            );
         }
 
-        $quizScores = $quizScoreRepository->findBy([
-            'quiz' => $quiz,
-        ]);
+        $quizScores = $quizScoreRepository->findBy(
+            [
+                'quiz' => $quiz,
+            ]
+        );
 
         $data = array_map(
-            function ($score) {
-                return [
-                    'id' => $score->getId(),
-                    'user_id' => $score->getUser()?->getId(),
-                    'quiz_id' => $score->getQuiz()?->getId(),
-                    'score' => $score->getScore(),
-                ];
-            },
+            fn($score) => [
+                'id' => $score->getId(),
+                'user_id' => $score->getUser()?->getId(),
+                'quiz_id' => $score->getQuiz()?->getId(),
+                'score' => $score->getScore(),
+            ],
             $quizScores
         );
 
         return $this->json($data);
     }
-
-    // public function create(
-    //     Request $request,
-    //     ValidatorInterface $validator
-    // ): JsonResponse {
-    //     $data = json_decode($request->getContent(), true);
-
-    //     if (!isset($data['title'], $data['description'], $data['duration'], $data['level'])) {
-    //         return new JsonResponse(
-    //             ['error' => 'Missing required fields (title, description, duration, level)'],
-    //             400
-    //         );
-    //     }
-
-    //     $course = $this->courseService->createCourse($data);
-
-    //     return $this->json(
-    //         $course,
-    //         201
-    //     );
-    // }
 }

@@ -2,20 +2,64 @@
 
 namespace App\Handler\User;
 
-use App\Query\Course\GetUserCoursesModulesQuery;
+use App\Entity\User;
 use App\Repository\UserRepository;
-use App\Service\ElasticSearch\VideoEngagementAnalyticsService;
+use App\Query\Course\GetUserCoursesModulesQuery;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
+use App\Service\ElasticSearch\VideoEngagementAnalyticsService;
 
 #[AsMessageHandler]
 class GetUserCoursesModulesQueryHandler
 {
+    /**
+     * @param UserRepository                  $userRepository        Repository for user entities
+     * @param VideoEngagementAnalyticsService $videoAnalyticsService Service for retrieving video analytics data
+     */
     public function __construct(
         private UserRepository $userRepository,
         private VideoEngagementAnalyticsService $videoAnalyticsService
     ) {
     }
 
+    /**
+     * Handle the GetUserCoursesModulesQuery
+     *
+     * Retrieves the user's courses, modules, and lessons, including video analytics,
+     * structured into a nested array suitable for API output.
+     *
+     * @param GetUserCoursesModulesQuery $query Contains:
+     *                                          - id: int (required) User ID
+     *
+     * @return array{
+     *     username: string,
+     *     courses: array<int, array{
+     *         id: int,
+     *         title: string,
+     *         description: string,
+     *         price: float,
+     *         duration: int,
+     *         image: string,
+     *         category: string,
+     *         modules: array<int, array{
+     *             id: int,
+     *             title: string,
+     *             position: int,
+     *             course: string,
+     *             lessons: array<int, array{
+     *                 id: int,
+     *                 title: string,
+     *                 type: string,
+     *                 video_url: ?string,
+     *                 duration: ?int,
+     *                 analytics?: array{totalPauses: int, totalReplays: int}
+     *             }>
+     *         }>
+     *     }>,
+     *     videoAnalytics: array<string, mixed>
+     * }
+     *
+     * @throws \Exception When user is not found
+     */
     public function __invoke(GetUserCoursesModulesQuery $query): array
     {
         $user = $this->userRepository->find($query->id);
@@ -27,7 +71,44 @@ class GetUserCoursesModulesQueryHandler
         return $this->formatUserCourses($user);
     }
 
-    private function formatUserCourses($user): array
+
+   /**
+    * Format user courses with modules, lessons, and analytics
+    *
+    * Builds a nested data structure representing the user's courses, each with
+    * related modules and lessons, including video analytics for registered lessons.
+    *
+    * @param User $user The user whose course/module/lesson structure will be formatted
+    *
+    * @return array{
+    *     username: string,
+    *     courses: array<int, array{
+    *         id: int,
+    *         title: string,
+    *         description: string,
+    *         price: float,
+    *         duration: int,
+    *         image: string,
+    *         category: string,
+    *         modules: array<int, array{
+    *             id: int,
+    *             title: string,
+    *             position: int,
+    *             course: string,
+    *             lessons: array<int, array{
+    *                 id: int,
+    *                 title: string,
+    *                 type: string,
+    *                 video_url: ?string,
+    *                 duration: ?int,
+    *                 analytics?: array{totalPauses: int, totalReplays: int}
+    *             }>
+    *         }>
+    *     }>,
+    *     videoAnalytics: array<string, mixed>
+    * }
+    */
+   private function formatUserCourses(User $user): array
     {
         $courses = [];
 

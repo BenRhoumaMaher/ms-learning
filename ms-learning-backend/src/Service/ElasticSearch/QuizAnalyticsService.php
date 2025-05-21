@@ -19,6 +19,16 @@ class QuizAnalyticsService
     ) {
     }
 
+    /**
+     * @param int $instructorId
+     * 
+     * @return array{
+     *     totalAttempts: int,
+     *     averageScore: float,
+     *     highestScore: float,
+     *     lowestScore: float
+     * }
+     */
     public function getInstructorQuizAnalytics(int $instructorId): array
     {
 

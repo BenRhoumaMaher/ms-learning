@@ -18,6 +18,9 @@ class PostService
     ) {
     }
 
+    /**
+     * @param array<string, mixed> $data
+     */
     public function create(array $data, ?UploadedFile $file): Post
     {
         $userId = $data['user_id'] ?? null;
@@ -50,6 +53,19 @@ class PostService
         return $post;
     }
 
+    /**
+     * @return array<int, array{
+     *     id: int|null,
+     *     title: string|null,
+     *     content: string,
+     *     media: string[],
+     *     tags: string[],
+     *     author: string|null,
+     *     image: string|null,
+     *     user_id: int|null,
+     *     createdAt: string
+     * }>
+     */
     public function getAllPosts(): array
     {
         $posts = $this->em->getRepository(
@@ -76,6 +92,11 @@ class PostService
         return $data;
     }
 
+    /**
+     * @param array<string, mixed> $data
+     * 
+     * @return array<string, mixed>
+     */
     public function updatePost(int $id, array $data): array
     {
         $post = $this->em->getRepository(
@@ -110,6 +131,9 @@ class PostService
         ];
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function toggleLike(
         int $postId,
         int $userId
@@ -170,6 +194,9 @@ class PostService
         ];
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function delete(int $postId): array
     {
         $post = $this->em->getRepository(Post::class)->find($postId);
@@ -190,6 +217,9 @@ class PostService
         ];
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function show(Post $post): array
     {
         return [
@@ -228,12 +258,18 @@ class PostService
         ];
     }
 
+    /**
+     * @return string[]
+     */
     private function extractTags(string $content): array
     {
         preg_match_all('/#(\w+)/', $content, $matches);
         return array_unique($matches[1]);
     }
 
+    /**
+     * @return string[]
+     */
     private function uploadPostImages(?UploadedFile $file): array
     {
         $paths = [];

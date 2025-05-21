@@ -16,6 +16,14 @@ class UserRepository extends ServiceEntityRepository
         parent::__construct($registry, User::class);
     }
 
+    /**
+     * Add User
+     *
+     * Persists a user entity to the database with optional immediate flush.
+     *
+     * @param User $user  The user entity to persist
+     * @param bool $flush Whether to immediately flush to database (default: false)
+     */
     public function add(User $user, bool $flush = false): void
     {
         $this->getEntityManager()->persist($user);
@@ -25,6 +33,13 @@ class UserRepository extends ServiceEntityRepository
         }
     }
 
+    /**
+     * Find Instructors
+     *
+     * Retrieves all users with ROLE_INSTRUCTOR role.
+     *
+     * @return User[] Array of instructor users
+     */
     public function findInstructors(): array
     {
         return $this->createQueryBuilder('u')
@@ -34,6 +49,15 @@ class UserRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    /**
+     * Find By Role
+     *
+     * Retrieves all users with a specific role.
+     *
+     * @param string $role The role to search for (e.g., 'ROLE_INSTRUCTOR')
+     *
+     * @return User[] Array of users with the specified role
+     */
     public function findByRole(string $role): array
     {
         return $this->createQueryBuilder('u')
@@ -43,6 +67,17 @@ class UserRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    /**
+     * Find Suggested Users
+     *
+     * Retrieves users to suggest for following, excluding:
+     * - The current user
+     * - Users already followed by the current user
+     *
+     * @param User $currentUser The user to get suggestions for
+     *
+     * @return User[] Array of suggested users to follow
+     */
     public function findSuggestedUsers(
         User $currentUser
     ): array {

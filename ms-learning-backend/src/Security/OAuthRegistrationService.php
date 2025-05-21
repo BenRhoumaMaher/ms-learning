@@ -5,11 +5,12 @@ namespace App\Security;
 use App\Entity\User;
 use App\Repository\UserRepository;
 use League\OAuth2\Client\Provider\ResourceOwnerInterface;
+use League\OAuth2\Client\Provider\GoogleUser;
 
 final readonly class OAuthRegistrationService
 {
     public function persist(
-        ResourceOwnerInterface $resourceOwner,
+        GoogleUser $resourceOwner,
         UserRepository $repository
     ): User {
         $email = $resourceOwner->getEmail();

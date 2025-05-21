@@ -14,12 +14,16 @@ class BecomeInstructorService implements UserServiceInterface
     public function __construct(
         private UserPasswordHasherInterface $passwordHasher,
         private EntityManagerInterface $em,
-        private ValidatorInterface $validator,
         private string $resumeDirectory,
         private string $baseUrl
     ) {
     }
 
+    /**
+     * @param array<string, mixed> $data
+     * 
+     * @return array<string, string>
+     */
     public function validateUserData(
         array $data
     ): array {
@@ -38,6 +42,9 @@ class BecomeInstructorService implements UserServiceInterface
         );
     }
 
+    /**
+     * @param array<int> $courses
+     */
     public function createUser(
         string $email,
         string $firstname,
@@ -94,6 +101,9 @@ class BecomeInstructorService implements UserServiceInterface
         return $user;
     }
 
+    /**
+     * @return User[]
+     */
     public function getAllUsers(): array
     {
         return $this->em->getRepository(

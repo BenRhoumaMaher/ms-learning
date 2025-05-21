@@ -1,17 +1,49 @@
 <?php
 
+/**
+ * This file contains test cases for user authentication in the MS-LEARNING platform.
+ *
+ * @category Tests
+ * @package  App\Tests\AuthTests
+ * @author   Maher Ben Rhouma <maherbenrhoumaaa@gmail.com>
+ * @license  No license (Personal project)
+ * @link     https://github.com/BenRhoumaMaher/ms-learning
+ * @project  MS-Learning (PFE Project)
+ */
+
 namespace App\Tests\AuthTests;
 
 use App\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
+/**
+ * Test class for user login functionality.
+ * Covers various authentication scenarios including:
+ * - Empty field validation
+ * - Invalid credentials
+ * - Successful login
+ *
+ * @category Tests
+ * @package  App\Tests\AuthTests
+ * @author   Maher Ben Rhouma <maherbenrhoumaaa@gmail.com>
+ * @license  No license (Personal project)
+ * @link     https://github.com/BenRhoumaMaher/ms-learning
+ */
 class LoginTest extends WebTestCase
 {
     private $client;
 
     private $entityManager;
 
+    /**
+     * Set Up
+     *
+     * Initializes test environment before each test case:
+     * - Creates HTTP client
+     * - Sets up database connection
+     * - Creates a test user for authentication
+     */
     protected function setUp(): void
     {
         $this->client = static::createClient();
@@ -36,6 +68,12 @@ class LoginTest extends WebTestCase
         $this->entityManager->flush();
     }
 
+    /**
+     * Tear Down
+     *
+     * Cleans up test environment after each test case:
+     * - Removes test user from database
+     */
     protected function tearDown(): void
     {
         $user = $this->entityManager->getRepository(User::class)
@@ -52,6 +90,9 @@ class LoginTest extends WebTestCase
 
     /**
      * @dataProvider \App\Tests\DataProvider\LoginDataProvider::emptyFieldsDataProvider
+     *
+     * @param array<string, mixed> $loginData
+     * @param int $expectedStatusCode
      */
     public function testLoginEmptyFields(
         array $loginData,
@@ -73,6 +114,10 @@ class LoginTest extends WebTestCase
 
     /**
      * @dataProvider \App\Tests\DataProvider\LoginDataProvider::invalidCredentialsDataProvider
+     *
+     * @param array<string, mixed> $loginData
+     * @param int $expectedStatusCode
+     * @param string $expectedMessage
      */
     public function testInvalidCredentials(
         array $loginData,
@@ -103,6 +148,9 @@ class LoginTest extends WebTestCase
 
     /**
      * @dataProvider \App\Tests\DataProvider\LoginDataProvider::validLoginDataProvider
+     *
+     * @param array<string, mixed> $loginData
+     * @param int $expectedStatusCode
      */
     public function testValidLogin(array $loginData, int $expectedStatusCode): void
     {

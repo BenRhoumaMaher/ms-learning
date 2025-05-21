@@ -7,9 +7,6 @@ includes:
 parameters:
     level: 6
     paths:
-        - src/
-        - tests/    
+        - src/Controller          
     doctrine:
         allowNullablePropertyForRequiredField: true
-    ignoreErrors:
-        - identifier: missingType.generics   

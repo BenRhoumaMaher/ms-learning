@@ -22,6 +22,18 @@ class ForumPostService
     ) {
     }
 
+    /**
+     * @return array<int, array{
+     *     id: int,
+     *     title: string|null,
+     *     content: string|null,
+     *     image: string|null,
+     *     views: int|null,
+     *     createdAt: string|null,
+     *     user: array{id: int, username: string, picture: string|null}|null,
+     *     category: list<string>
+     * }>
+     */
     public function getAllPosts(): array
     {
         $posts = $this->forumPostRepository->findBy(
@@ -103,6 +115,20 @@ class ForumPostService
         return $post;
     }
 
+    /**
+     * @param int $id
+     * 
+     * @return array{
+     *     id: int,
+     *     title: string|null,
+     *     content: string|null,
+     *     createdAt: string,
+     *     tags: string|null,
+     *     image: string|null,
+     *     views: int|null,
+     *     categories: list<string>
+     * }
+     */
     public function getPostDetailsAndIncrementViews(int $id): array
     {
         $post = $this->forumPostRepository->find($id);
@@ -129,6 +155,16 @@ class ForumPostService
         ];
     }
 
+    /**
+     * @param int $id
+     * 
+     * @return array{
+     *     previous: int|null,
+     *     next: int|null,
+     *     previoustitle: string|null,
+     *     nexttitle: string|null
+     * }
+     */
     public function getSiblingPosts(int $id): array
     {
         $posts = $this->forumPostRepository->findBy(
@@ -156,12 +192,22 @@ class ForumPostService
         ];
     }
 
+    /**
+     * @param string $content
+     * 
+     * @return list<string>
+     */
     private function extractTags(string $content): array
     {
         preg_match_all('/#(\w+)/', $content, $matches);
         return array_unique($matches[1]);
     }
 
+    /**
+     * @param UploadedFile|null $file
+     * 
+     * @return list<string>
+     */
     private function uploadForumPostImage(?UploadedFile $file): array
     {
         $uploadedPaths = [];

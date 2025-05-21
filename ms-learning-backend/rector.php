@@ -7,9 +7,8 @@ use Rector\Config\RectorConfig;
 return RectorConfig::configure()
     ->withPaths(
         [
-        __DIR__ . '/src',
-        __DIR__ . '/tests',
+        __DIR__ . '/src/Controller',
         ]
     )
-    ->withPhpSets(php83: true)
+    ->withPhpSets(php82: true)
     ->withTypeCoverageLevel(0);

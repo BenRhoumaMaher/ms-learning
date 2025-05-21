@@ -1,19 +1,54 @@
 <?php
 
+/**
+ * This file defines the Mail class,
+ * responsible for handling email sending functionality using Mailjet API.
+ * It supports template-based emails with variable substitution.
+ *
+ * @category Classes
+ * @package  App\Classe
+ * @author   Maher Ben Rhouma <maherbenrhoumaaa@gmail.com>
+ * @license  No license (Personal project)
+ * @link     https://dev.mailjet.com/email/guides/
+ */
+
 namespace App\Classe;
 
 use Mailjet\Client;
 use Mailjet\Resources;
 
+/**
+ * Handles email sending through Mailjet API service.
+ * Supports template rendering with dynamic variable replacement.
+ * Can be disabled for testing purposes.
+ *
+ * @category Classes
+ * @package  App\Classe
+ * @author   Maher Ben Rhouma <maherbenrhoumaaa@gmail.com>
+ * @license  No license (Personal project)
+ * @link     https://dev.mailjet.com/email/guides/
+ */
 class Mail
 {
     private bool $enabled;
 
+    /**
+     * @param bool $enabled Whether email sending should be enabled (default: true).
+     */
     public function __construct(bool $enabled = true)
     {
         $this->enabled = $enabled;
     }
 
+    /**
+     * Sends an email using Mailjet API.
+     *
+     * @param string     $to_email Recipient email address.
+     * @param string     $to_name  Recipient name.
+     * @param string     $subject  Email subject.
+     * @param string     $template Path to the email template file.
+     * @param array|null $vars     Optional variables for template substitution.
+     */
     public function send(
         $to_email,
         $to_name,
@@ -65,8 +100,11 @@ class Mail
             ],
         ];
 
-        $mj->post(Resources::$Email, [
-            'body' => $body,
-        ]);
+        $mj->post(
+            Resources::$Email,
+            [
+                'body' => $body,
+            ]
+        );
     }
 }

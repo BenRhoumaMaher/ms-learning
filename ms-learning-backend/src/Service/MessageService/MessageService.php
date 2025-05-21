@@ -17,6 +17,11 @@ class MessageService
     ) {
     }
 
+    /**
+     * @param array<string, mixed> $data
+     * 
+     * @return array<string, mixed>
+     */
     public function sendMessage(array $data): array
     {
         $userId = $data['user_id'] ?? null;
@@ -72,6 +77,11 @@ class MessageService
         return $payload;
     }
 
+    /**
+     * @param int|string $currentUserId
+     * 
+     * @return array<int, array<string, mixed>>
+     */
     public function getMessagesForRoom(string $roomId, int|string $currentUserId): array
     {
         $userIds = explode('_', str_replace('room_', '', $roomId));

@@ -12,11 +12,32 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class StudentCourseRepository extends ServiceEntityRepository
 {
+    /**
+     * @extends ServiceEntityRepository<StudentCourse>
+     */
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, StudentCourse::class);
     }
 
+    /**
+     * Find Course Titles By User ID
+     *
+     * Retrieves comprehensive course information for a student including:
+     * - Course titles, IDs and images
+     * - Enrollment IDs
+     * - Associated live lessons for each course
+     *
+     * @param int $userId The student's user ID
+     *
+     * @return array{
+     *     titles: array<int, string>,
+     *     ids: array<int, int>,
+     *     enrollmentIds: array<int, int>,
+     *     courseImages: array<int, string>,
+     *     liveLessons: array<int, array<string, mixed>>
+     * }
+     */
     public function findCourseTitlesByUserId(int $userId): array
     {
         // Get course information as before
@@ -37,7 +58,6 @@ class StudentCourseRepository extends ServiceEntityRepository
         $ids = array_column($results, 'id');
         $enrollmentIds = array_column($results, 'enrollmentId');
 
-        // Get live lessons for these courses
         $liveLessons = [];
         if (! empty($ids)) {
             $em = $this->getEntityManager();
@@ -73,6 +93,24 @@ class StudentCourseRepository extends ServiceEntityRepository
         ];
     }
 
+    /**
+     * Find Trending Courses
+     *
+     * Retrieves the most popular courses based on enrollment count,
+     * including instructor information.
+     *
+     * @param int $limit Maximum number of courses to return (default: 6)
+     *
+     * @return array<int, array{
+     *     id: int,
+     *     title: string,
+     *     image: string,
+     *     description: string,
+     *     price: float,
+     *     enrollCount: string,
+     *     instructor_username: string
+     * }>
+     */
     public function findTrendingCourses(int $limit = 6): array
     {
         return $this->createQueryBuilder('sc')

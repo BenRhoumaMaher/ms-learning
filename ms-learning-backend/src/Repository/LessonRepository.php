@@ -17,6 +17,15 @@ class LessonRepository extends ServiceEntityRepository
         parent::__construct($registry, Lesson::class);
     }
 
+    /**
+     * Find Latest Live Lesson For User
+     *
+     * Retrieves the next upcoming live lesson for a specific user.
+     *
+     * @param int $id The user ID
+     *
+     * @return Lesson|null The upcoming live lesson or null if none found
+     */
     public function findLatestLiveLessonForUser(int $id): ?Lesson
     {
         return $this->createQueryBuilder('l')
@@ -30,6 +39,15 @@ class LessonRepository extends ServiceEntityRepository
             ->getOneOrNullResult();
     }
 
+    /**
+     * Find Latest Live Lessons
+     *
+     * Retrieves a list of upcoming live lessons, ordered by start time.
+     *
+     * @param int $maxResults Maximum number of results to return (default: 5)
+     *
+     * @return Lesson[] Array of upcoming live lessons
+     */
     public function findLatestLiveLessons(int $maxResults = 5): array
     {
         return $this->createQueryBuilder('l')
@@ -41,6 +59,15 @@ class LessonRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    /**
+     * Find User Live Sessions
+     *
+     * Retrieves all upcoming live sessions for a specific user.
+     *
+     * @param int $userId The user ID
+     *
+     * @return Lesson[] Array of upcoming live lessons
+     */
     public function findUserLiveSessions(int $userId): array
     {
         return $this->createQueryBuilder('l')
@@ -55,6 +82,15 @@ class LessonRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    /**
+     * Find User Lessons Without Resources
+     *
+     * Retrieves lessons belonging to a user that have no resources attached.
+     *
+     * @param int $userId The user ID
+     *
+     * @return Lesson[] Array of lessons without resources
+     */
     public function findUserLessonsNoRessources(int $userId): array
     {
         return $this->createQueryBuilder('l')

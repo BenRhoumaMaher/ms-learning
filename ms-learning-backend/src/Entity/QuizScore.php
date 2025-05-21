@@ -101,23 +101,14 @@ class QuizScore
         return $this;
     }
 
-    /**
-     * Get the value of percentage
-     */
-    public function getPercentage()
+    public function getPercentage(): ?float
     {
         return $this->percentage;
     }
 
-    /**
-     * Set the value of percentage
-     *
-     * @return  self
-     */
-    public function setPercentage($percentage)
+    public function setPercentage(?float $percentage): static
     {
         $this->percentage = $percentage;
-
         return $this;
     }
 

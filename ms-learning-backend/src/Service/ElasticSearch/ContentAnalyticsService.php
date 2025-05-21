@@ -28,6 +28,20 @@ class ContentAnalyticsService
     ) {
     }
 
+    /**
+     * @return array{
+     *     reviews: array{
+     *         sentiment: array{positive: float, neutral: float, negative: float},
+     *         frequent_terms: array<int, array{term: string, count: int}>,
+     *         total_reviews: int
+     *     },
+     *     posts: array{
+     *         sentiment: array{positive: float, neutral: float, negative: float},
+     *         frequent_terms: array<int, array{term: string, count: int}>,
+     *         total_posts: int
+     *     }
+     * }
+     */
     public function getContentAnalytics(int $instructorId): array
     {
         return [
@@ -36,6 +50,13 @@ class ContentAnalyticsService
         ];
     }
 
+    /**
+     * @return array{
+     *     sentiment: array{positive: float, neutral: float, negative: float},
+     *     frequent_terms: array<int, array{term: string, count: int}>,
+     *     total_reviews: int
+     * }
+     */
     private function getReviewAnalytics(int $instructorId): array
     {
         $courseIds = $this->entityManager->getRepository(Courses::class)
@@ -112,6 +133,13 @@ class ContentAnalyticsService
         ];
     }
 
+    /**
+     * @return array{
+     *     sentiment: array{positive: float, neutral: float, negative: float},
+     *     frequent_terms: array<int, array{term: string, count: int}>,
+     *     total_posts: int
+     * }
+     */
     private function getPostAnalytics(
         int $instructorId,
     ): array {
@@ -160,14 +188,18 @@ class ContentAnalyticsService
         $positiveBool = new BoolQuery();
         foreach ($positiveTerms as $term) {
             $positiveBool->addShould(
-                new Term([
+                new Term(
+                    [
                     'content.words' => $term,
-                ])
+                    ]
+                )
             );
             $positiveBool->addShould(
-                new Term([
+                new Term(
+                    [
                     'content.raw_words' => $term,
-                ])
+                    ]
+                )
             );
         }
         $sentimentFilters->addFilter(
@@ -178,14 +210,18 @@ class ContentAnalyticsService
         $neutralBool = new BoolQuery();
         foreach ($neutralTerms as $term) {
             $neutralBool->addShould(
-                new Term([
+                new Term(
+                    [
                     'content.words' => $term,
-                ])
+                    ]
+                )
             );
             $neutralBool->addShould(
-                new Term([
+                new Term(
+                    [
                     'content.raw_words' => $term,
-                ])
+                    ]
+                )
             );
         }
         $sentimentFilters->addFilter(
@@ -196,14 +232,18 @@ class ContentAnalyticsService
         $negativeBool = new BoolQuery();
         foreach ($negativeTerms as $term) {
             $negativeBool->addShould(
-                new Term([
+                new Term(
+                    [
                     'content.words' => $term,
-                ])
+                    ]
+                )
             );
             $negativeBool->addShould(
-                new Term([
+                new Term(
+                    [
                     'content.raw_words' => $term,
-                ])
+                    ]
+                )
             );
         }
         $sentimentFilters->addFilter(
@@ -237,6 +277,11 @@ class ContentAnalyticsService
         ];
     }
 
+    /**
+     * @param array<string, mixed> $sentimentData
+     * 
+     * @return array{positive: float, neutral: float, negative: float}
+     */
     private function processSentiment(array $sentimentData): array
     {
         $total = array_sum(
@@ -276,6 +321,11 @@ class ContentAnalyticsService
         ];
     }
 
+    /**
+     * @param array<int, array{key: string, doc_count: int}> $termsData
+     * 
+     * @return array<int, array{term: string, count: int}>
+     */
     private function processTerms(array $termsData): array
     {
         return array_map(

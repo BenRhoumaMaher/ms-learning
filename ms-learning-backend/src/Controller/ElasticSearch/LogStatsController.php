@@ -1,15 +1,41 @@
 <?php
 
+/**
+ * This file defines the LogStatsController which handles
+ * Elasticsearch log statistics operations for the MS-LEARNING application.
+ * It provides analytics on application log levels and messages.
+ *
+ * @category Controllers
+ * @package  App\Controller\ElasticSearch
+ * @author   Maher Ben Rhouma <maherbenrhoumaaa@gmail.com>
+ * @license  No license (Personal project)
+ * @link     https://github.com/BenRhoumaMaher/ms-learning
+ * @project  MS-Learning (PFE Project)
+ */
+
 namespace App\Controller\ElasticSearch;
 
 use Elasticsearch\ClientBuilder;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
-
+use Elasticsearch\Client;
+/**
+ * Provides analytics on application logs stored in Elasticsearch.
+ * Extracts and aggregates log level statistics for monitoring purposes.
+ *
+ * @category Controllers
+ * @package  App\Controller\ElasticSearch
+ * @author   Maher Ben Rhouma <maherbenrhoumaaa@gmail.com>
+ * @license  No license (Personal project)
+ * @link     https://github.com/BenRhoumaMaher/ms-learning
+ */
 class LogStatsController extends AbstractController
 {
-    private $elasticsearchClient;
+    private readonly Client $elasticsearchClient;
 
+    /**
+     * Initializes the Elasticsearch client with configured hosts and retries.
+     */
     public function __construct()
     {
         $this->elasticsearchClient = ClientBuilder::create()
@@ -18,6 +44,15 @@ class LogStatsController extends AbstractController
             ->build();
     }
 
+    /**
+     * Get log level statistics
+     *
+     * Aggregates and counts log messages by their log level
+     * from Elasticsearch indices matching 'ms-learning-symfony-*'.
+     *
+     * @return JsonResponse Array of log levels with their counts
+     *                     or error message on failure
+     */
     public function getLogLevelStats(): JsonResponse
     {
         $params = [
@@ -67,6 +102,16 @@ class LogStatsController extends AbstractController
         }
     }
 
+    /**
+     * Extract log level from log message
+     *
+     * Parses the log message to extract the log level and category
+     * in format "level.category".
+     *
+     * @param string $logMessage The complete log message
+     *
+     * @return string Extracted log level or original message if pattern not matched
+     */
     private function extractLogLevel(
         string $logMessage
     ): string {

@@ -16,6 +16,15 @@ class CoursesRepository extends ServiceEntityRepository
         parent::__construct($registry, Courses::class);
     }
 
+    /**
+     * Find Course IDs by Instructor
+     *
+     * Retrieves an array of course IDs taught by a specific instructor.
+     *
+     * @param int $instructorId The ID of the instructor
+     *
+     * @return array Array of course IDs
+     */
     public function findCourseIdsByInstructor(int $instructorId): array
     {
         return $this->createQueryBuilder('c')
@@ -27,6 +36,15 @@ class CoursesRepository extends ServiceEntityRepository
             ->getSingleColumnResult();
     }
 
+    /**
+     * Find Course Titles by Instructor
+     *
+     * Retrieves an array of course titles taught by a specific instructor.
+     *
+     * @param int $instructorId The ID of the instructor
+     *
+     * @return array Array of course titles
+     */
     public function findCourseTitlesByInstructor(int $instructorId): array
     {
         return $this->createQueryBuilder('c')

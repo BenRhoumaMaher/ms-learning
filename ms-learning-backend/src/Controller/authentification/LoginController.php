@@ -7,11 +7,12 @@ use OpenApi\Attributes as OA;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use App\Entity\User;
 
 final class LoginController extends AbstractController
 {
     public function __construct(
-        private AuthServiceInterface $authService
+        private readonly AuthServiceInterface $authService
     ) {
     }
 
@@ -79,11 +80,10 @@ final class LoginController extends AbstractController
     ): JsonResponse {
 
         $user = $this->getUser();
-        if (! $user) {
+
+        if (! $user instanceof User) {
             return $this->json(
-                [
-                    'error' => 'Unauthorized',
-                ],
+                ['error' => 'Unauthorized'],
                 401
             );
         }

@@ -14,6 +14,11 @@ class GoogleTokenVerifier
         $this->httpClient = $httpClient;
     }
 
+    /**
+     * @param string $token
+     * 
+     * @return array<string, mixed>|null
+     */
     public function verifyToken(
         string $token
     ): ?array {

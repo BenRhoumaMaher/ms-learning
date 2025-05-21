@@ -16,6 +16,16 @@ class PaymentRepository extends ServiceEntityRepository
         parent::__construct($registry, Payment::class);
     }
 
+    /**
+     * Find Course Purchases By User
+     *
+     * Retrieves all course purchases (non-subscription) for a specific user,
+     * ordered by payment date (newest first).
+     *
+     * @param int $userId The user ID
+     *
+     * @return Payment[] Array of payment entities for course purchases
+     */
     public function findCoursePurchasesByUser(int $userId)
     {
         return $this->createQueryBuilder('p')

@@ -14,7 +14,52 @@ class GetUserCoursesQueryHandler
     ) {
     }
 
-    public function __invoke(GetUserCoursesQuery $query)
+    /**
+     * @return array{
+     *     username: string,
+     *     courses: array<int, array{
+     *         id: int,
+     *         title: string,
+     *         description: string,
+     *         category: ?string,
+     *         created_at: string,
+     *         students: array<int, array{
+     *             id: int,
+     *             name: string,
+     *             email: string,
+     *             image: string,
+     *             quizScores: array<int, array{
+     *                 courseId: int,
+     *                 courseTitle: string,
+     *                 studentId: int,
+     *                 studentName: string,
+     *                 quizId: int,
+     *                 quizTitle: string,
+     *                 score: int,
+     *                 totalQuestions: int,
+     *                 percentage: float,
+     *                 completedAt: string
+     *             }>
+     *         }>,
+     *         quiz: ?array{
+     *             id: int,
+     *             title: string,
+     *             description: string,
+     *             timeLimit: int,
+     *             passingScore: int,
+     *             createdAt: string,
+     *             questions: array<int, array{
+     *                 id: int,
+     *                 text: string,
+     *                 type: string,
+     *                 position: int,
+     *                 createdAt: string
+     *             }>
+     *         }
+     *     }>
+     * }
+     */
+    public function __invoke(GetUserCoursesQuery $query): array
     {
         $user = $this->userRepository->find($query->id);
 

@@ -18,6 +18,16 @@ class UserSubscriptionRepository extends ServiceEntityRepository
         parent::__construct($registry, UserSubscription::class);
     }
 
+    /**
+     * Find Current Subscription
+     *
+     * Retrieves the current active subscription for a user,
+     * either ongoing or marked as active status.
+     *
+     * @param User $user The user entity
+     *
+     * @return UserSubscription|null The active subscription or null if none found
+     */
     public function findCurrentSubscription(User $user): ?UserSubscription
     {
         return $this->createQueryBuilder('us')
@@ -32,6 +42,16 @@ class UserSubscriptionRepository extends ServiceEntityRepository
             ->getOneOrNullResult();
     }
 
+    /**
+     * Find Active Plan By User ID
+     *
+     * Retrieves the active subscription plan for a specific user ID,
+     * ensuring the subscription hasn't expired.
+     *
+     * @param int $userId The ID of the user
+     *
+     * @return UserSubscription|null The active subscription or null if none found
+     */
     public function findActivePlanByUserId(int $userId): ?UserSubscription
     {
         return $this->createQueryBuilder('us')

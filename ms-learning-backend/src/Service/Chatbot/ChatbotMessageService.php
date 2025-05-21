@@ -34,9 +34,21 @@ class ChatbotMessageService
         $this->em->flush();
     }
 
+    /**
+     * Get pending chatbot messages without responses
+     *
+     * @return array<int, array{
+     *     id: int|null,
+     *     userId: int,
+     *     userName: string,
+     *     userEmail: string,
+     *     message: string,
+     *     createdAt: string
+     * }>
+     */
     public function getPendingMessages(): array
     {
-        $messages = $this->messageRepo->findBy(
+        $messages = $this->messageRepository->findBy(
             [
                 'response' => null,
             ],
@@ -61,6 +73,19 @@ class ChatbotMessageService
         );
     }
 
+    /**
+     * Get all chatbot messages for a specific user
+     *
+     * @param int $userId
+     * @return array<int, array{
+     *     id: int|null,
+     *     message: string|null,
+     *     response: string|null,
+     *     createdAt: string,
+     *     respondAt: string|null,
+     *     isRead: bool|null
+     * }>
+     */
     public function getMessagesByUserId(int $userId): array
     {
         $user = $this->userRepository->find($userId);
@@ -69,11 +94,14 @@ class ChatbotMessageService
             throw new \InvalidArgumentException('Invalid user ID');
         }
 
-        $messages = $this->messageRepository->findBy([
+        $messages = $this->messageRepository->findBy(
+            [
             'user' => $user,
-        ], [
+            ],
+            [
             'createdAt' => 'ASC',
-        ]);
+            ]
+        );
 
         return array_map(
             function (ChatbotMessage $message) {

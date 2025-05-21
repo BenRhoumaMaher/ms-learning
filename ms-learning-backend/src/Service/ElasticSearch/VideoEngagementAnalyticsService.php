@@ -19,6 +19,18 @@ class VideoEngagementAnalyticsService
     ) {
     }
 
+    /**
+     * @param int $instructorId
+     *
+     * @return array{
+     *     totalViews: int|float,
+     *     averageWatchTime: int|float,
+     *     averageCompletion: float,
+     *     totalPauses: int|float,
+     *     totalReplays: int|float,
+     *     topLessons: array<int, array{lessonId: int|string, totalViews: int|float, averageCompletion: float}>
+     * }
+     */
     public function getInstructorVideoAnalytics(int $instructorId): array
     {
         $search = new Search($this->elasticaClient);
@@ -35,9 +47,13 @@ class VideoEngagementAnalyticsService
 
         $boolQuery = new BoolQuery();
         $boolQuery->addMust($instructorQuery);
-        $boolQuery->addMust(new Term([
+        $boolQuery->addMust(
+            new Term(
+                [
             'type' => 'registered',
-        ]));
+                ]
+            )
+        );
 
         $query = new Query($boolQuery);
 
@@ -112,6 +128,17 @@ class VideoEngagementAnalyticsService
         ];
     }
 
+    /**
+     * @param int $lessonId
+     * 
+     * @return array{
+     *     totalViews: int|float,
+     *     totalWatchTime: int|float,
+     *     averageCompletion: int|float,
+     *     totalPauses: int|float,
+     *     totalReplays: int|float
+     * }
+     */
     public function getLessonAnalytics(int $lessonId): array
     {
         $search = new Search($this->elasticaClient);

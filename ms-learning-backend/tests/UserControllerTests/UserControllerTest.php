@@ -3,15 +3,25 @@
 namespace App\tests\UserControllerTests;
 
 use App\Entity\User;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class UserControllerTest extends WebTestCase
 {
-    private $client;
+    private KernelBrowser $client;
 
-    private $entityManager;
+    private EntityManagerInterface $entityManager;
 
+    /**
+     * Set Up
+     *
+     * Initializes test environment before each test case:
+     * - Creates HTTP client
+     * - Sets up database connection
+     * - Creates 3 test users for testing scenarios
+     */
     protected function setUp(): void
     {
         $this->client = static::createClient();
@@ -36,6 +46,12 @@ class UserControllerTest extends WebTestCase
         $this->entityManager->flush();
     }
 
+    /**
+     * Tear Down
+     *
+     * Cleans up test environment after each test case:
+     * - Removes all test users created during setup
+     */
     protected function tearDown(): void
     {
         $users = $this->entityManager->getRepository(User::class)
@@ -55,7 +71,16 @@ class UserControllerTest extends WebTestCase
     }
 
     /**
+     * Test Get All Users
+     *
+     * Verifies successful retrieval of all users with:
+     * - Correct status code
+     * - Expected number of users in response
+     *
      * @dataProvider \App\Tests\DataProvider\UserDataProvider::getAllUsersDataProvider
+     *
+     * @param int $expectedStatusCode Expected HTTP response code
+     * @param int $expectedCount Expected number of users in response
      */
     public function testGetAllUsers(
         int $expectedStatusCode,
@@ -86,16 +111,28 @@ class UserControllerTest extends WebTestCase
     }
 
     /**
+     * Test Delete Account
+     *
+     * Verifies successful user deletion with:
+     * - Correct status code
+     * - Expected success message
+     * - Actual removal from database
+     *
      * @dataProvider \App\Tests\DataProvider\UserDataProvider::deleteUserDataProvider
+     *
+     * @param int $expectedStatusCode Expected HTTP response code
+     * @param string $expectedMessage Expected success message
      */
     public function testDeleteAccount(
         int $expectedStatusCode,
         string $expectedMessage
     ): void {
         $user = $this->entityManager->getRepository(User::class)
-            ->findOneBy([
+            ->findOneBy(
+                [
                 'email' => 'testuser0@example.com',
-            ]);
+                ]
+            );
 
         $this->assertNotNull($user, 'Test user not found');
 
@@ -115,9 +152,9 @@ class UserControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame($expectedStatusCode);
 
         $response = $this->client->getResponse();
-        $this->assertNotNull(
+        $this->assertNotFalse(
             $response->getContent(),
-            'Response content should not be null'
+            'Response content should not be false'
         );
 
         $responseContent = json_decode(
@@ -140,7 +177,17 @@ class UserControllerTest extends WebTestCase
     }
 
     /**
+     * Test Delete Non-Existent Account
+     *
+     * Verifies proper error handling when attempting to delete:
+     * - Non-existent user ID
+     * - Correct error status code
+     * - Appropriate error message
+     *
      * @dataProvider \App\Tests\DataProvider\UserDataProvider::deleteNonExistentUserDataProvider
+     *
+     * @param int $expectedStatusCode Expected HTTP error code
+     * @param string $expectedMessage Expected error message
      */
     public function testDeleteNonExistentAccount(
         int $expectedStatusCode,

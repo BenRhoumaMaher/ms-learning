@@ -4,6 +4,9 @@ namespace App\Tests\DataProvider;
 
 class RegisterDataProvider
 {
+    /**
+     * @return array<int, array{array<string, string>, int}>
+     */
     public static function emptyFieldsDataProvider(): array
     {
         return [
@@ -28,6 +31,9 @@ class RegisterDataProvider
         ];
     }
 
+    /**
+     * @return array<string, array{array<string, string>, int}>
+     */
     public function validSignupDataProvider(): array
     {
         return [
@@ -45,6 +51,9 @@ class RegisterDataProvider
         ];
     }
 
+    /**
+     * @return array<int, array{array<string, string>, int, string}>
+     */
     public static function passwordValidationDataProvider(): array
     {
         return [
@@ -62,6 +71,9 @@ class RegisterDataProvider
         ];
     }
 
+    /**
+     * @return array<int, array{array<string, string>, int}>
+     */
     public static function redirectAfterSignupDataProvider(): array
     {
         return [

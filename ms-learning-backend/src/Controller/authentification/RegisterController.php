@@ -13,8 +13,8 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 final class RegisterController extends AbstractController
 {
     public function __construct(
-        private UserService $userService,
-        private MailServiceInterface $mailService
+        private readonly UserService $userService,
+        private readonly MailServiceInterface $mailService
     ) {
     }
 

@@ -73,6 +73,9 @@ class Lesson
     private ?User $user = null;
 
     #[ORM\Column(nullable: true)]
+    /**
+     * @var array<string, array<string, mixed>>|null
+     */
     private ?array $translations = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
@@ -300,11 +303,17 @@ class Lesson
         return $this;
     }
 
+    /**
+     * @return array<string, array<string, mixed>>|null
+     */
     public function getTranslations(): ?array
     {
         return $this->translations;
     }
 
+    /**
+     * @param array<string, array<string, mixed>>|null $translations
+     */
     public function setTranslations(?array $translations): static
     {
         $this->translations = $translations;
@@ -312,11 +321,20 @@ class Lesson
         return $this;
     }
 
+    /**
+     * @param string $language
+     * @param array<string, mixed> $subtitles
+     */
     public function addTranslation(string $language, array $subtitles): void
     {
         $this->translations[$language] = $subtitles;
     }
 
+    /**
+     * @param string $language
+     * 
+     * @return array<string, mixed>|null
+     */
     public function getTranslation(string $language): ?array
     {
         return $this->translations[$language] ?? null;

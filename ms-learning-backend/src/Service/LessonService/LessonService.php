@@ -2,15 +2,17 @@
 
 namespace App\Service\LessonService;
 
-use App\Entity\Lesson;
+use DateTime;
 use App\Entity\User;
-use App\Repository\CoursesRepository;
+use App\Entity\Lesson;
+use App\Entity\Module;
+use DateTimeImmutable;
+use App\Entity\Courses;
+use App\Repository\UserRepository;
 use App\Repository\LessonRepository;
 use App\Repository\ModuleRepository;
-use App\Repository\UserRepository;
+use App\Repository\CoursesRepository;
 use App\Service\Course\CourseService;
-use DateTime;
-use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
@@ -28,6 +30,11 @@ class LessonService
     ) {
     }
 
+    /**
+     * @param User $user
+     * 
+     * @return int[]  Returns an array of lesson IDs (integers).
+     */
     public function getLessonsWithoutResources(User $user): array
     {
         $lessons = $this->lessonRepository->findUserLessonsNoRessources(
@@ -40,6 +47,12 @@ class LessonService
         );
     }
 
+    /**
+     * @param Lesson $lesson
+     * @param array<string, mixed> $data
+     * 
+     * @return void
+     */
     public function updateLessonData(
         Lesson $lesson,
         array $data
@@ -73,6 +86,11 @@ class LessonService
         $lesson->setUpdatedAt(new DateTime());
     }
 
+    /**
+     * @param Lesson $lesson
+     * 
+     * @return array<string, string>  Errors keyed by property path.
+     */
     public function validateLesson(Lesson $lesson): array
     {
         $errors = $this->validator->validate($lesson);
@@ -88,6 +106,11 @@ class LessonService
         return $errorsArray;
     }
 
+    /**
+     * @param array<string, mixed> $data
+     * 
+     * @return string|null
+     */
     public function validateLessonData(array $data): ?string
     {
         $requiredFields = [
@@ -112,6 +135,16 @@ class LessonService
         return null;
     }
 
+    /**
+     * @param array<string, mixed> $data
+     * 
+     * @return array{
+     *   user?: User,
+     *   course?: Courses,
+     *   module?: Module,
+     *   error?: string
+     * }
+     */
     public function getEntitiesForLesson(array $data): array
     {
         $user = $this->userRepository->find($data['user_id']);
@@ -127,6 +160,12 @@ class LessonService
         return compact('user', 'course', 'module');
     }
 
+    /**
+     * @param array<string, mixed> $data
+     * @param array{user: User, course: Courses, module: Module} $entities
+     
+     * @return Lesson
+     */
     public function createLessonEntity(array $data, array $entities): Lesson
     {
         $lesson = new Lesson();

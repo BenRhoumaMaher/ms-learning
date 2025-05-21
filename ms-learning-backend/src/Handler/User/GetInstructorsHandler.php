@@ -3,8 +3,8 @@
 namespace App\Handler\User;
 
 use App\Entity\User;
-use App\Repository\UserRepository;
 use App\Query\User\GetInstructorsQuery;
+use App\Repository\UserRepository;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
 #[AsMessageHandler]

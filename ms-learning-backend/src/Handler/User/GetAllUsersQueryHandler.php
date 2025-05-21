@@ -10,12 +10,21 @@ use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
 class GetAllUsersQueryHandler
 {
+    /**
+     * @param UserService $userService Service for user operations
+     */
     public function __construct(
         private UserService $userService
     ) {
     }
 
-    public function __invoke(GetAllUsersQuery $query)
+    /**
+     * Handle get all users query
+     * 
+     * @param GetAllUsersQuery $query The query object
+     * @return array List of all users
+     */
+    public function __invoke(GetAllUsersQuery $query): array
     {
         return $this->userService->getAllUsers();
     }

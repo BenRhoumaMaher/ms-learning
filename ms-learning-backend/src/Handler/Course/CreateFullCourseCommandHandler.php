@@ -1,5 +1,17 @@
 <?php
 
+/**
+ * This file defines the CreateFullCourseCommandHandler which handles the creation
+ * of complete course structures including modules and lessons in the MS-LEARNING platform.
+ *
+ * @category Handlers
+ * @package  App\Handler\Course
+ * @author   Maher Ben Rhouma <maherbenrhoumaaa@gmail.com>
+ * @license  No license (Personal project)
+ * @link     https://github.com/BenRhoumaMaher/ms-learning
+ * @project  MS-Learning (PFE Project)
+ */
+
 namespace App\Handler\Course;
 
 use App\Command\Course\CreateFullCourseCommand;
@@ -13,10 +25,28 @@ use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
+/**
+ * Handles the CreateFullCourseCommand to create complete course structures including:
+ * - The base course (must exist)
+ * - Multiple modules with their positions
+ * - Lessons within each module with various types (registered/live)
+ * - Associated resources and metadata
+ *
+ * @category Handlers
+ * @package  App\Handler\Course
+ * @author   Maher Ben Rhouma <maherbenrhoumaaa@gmail.com>
+ * @license  No license (Personal project)
+ * @link     https://github.com/BenRhoumaMaher/ms-learning
+ */
 #[AsMessageHandler]
-
 class CreateFullCourseCommandHandler
 {
+    /**
+     * @param EntityManagerInterface $entityManager    Doctrine entity manager
+     * @param UserRepository         $userRepository   User entity repository
+     * @param CoursesRepository      $courseRepository Course entity repository
+     * @param CourseService          $courseService    Course-related services
+     */
     public function __construct(
         private EntityManagerInterface $entityManager,
         private UserRepository $userRepository,
@@ -25,6 +55,25 @@ class CreateFullCourseCommandHandler
     ) {
     }
 
+    /**
+     * Handle full course creation command
+     *
+     * Creates and persists a complete course structure including:
+     * - Modules with titles and positions
+     * - Lessons with various types (registered/live)
+     * - Lesson resources and metadata
+     * - Live lesson specific data (when applicable)
+     *
+     * @param CreateFullCourseCommand $command Contains full course creation data:
+     *                                         - userId: string (required)
+     *                                         - courseId: string (required)
+     *                                         - modules: array (required) Array of module data
+     *                                         - files: array (optional) Uploaded files structure
+     *
+     * @return array Result of the operation with status and message
+     *
+     * @throws \Exception When user or course not found
+     */
     public function __invoke(CreateFullCourseCommand $command): array
     {
         $user = $this->userRepository->find($command->userId);

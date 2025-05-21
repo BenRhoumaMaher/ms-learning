@@ -11,6 +11,11 @@ use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 #[AsMessageHandler]
 class AddUserInterestsHandler
 {
+    /**
+     * @param UserRepository         $userRepository     Repository for user entities
+     * @param CategoryRepository     $categoryRepository Repository for category entities
+     * @param EntityManagerInterface $entityManager      Doctrine entity manager
+     */
     public function __construct(
         private UserRepository $userRepository,
         private CategoryRepository $categoryRepository,
@@ -18,6 +23,23 @@ class AddUserInterestsHandler
     ) {
     }
 
+    /**
+     * Handle add user interests command
+     *
+     * Processes the addition of interest categories to a user by:
+     * - Validating user existence
+     * - Fetching specified categories
+     * - Establishing user-category associations
+     * - Persisting changes to database
+     *
+     * @param AddUserInterestsCommand $command Contains:
+     *                                         - userId: int (required) User ID
+     *                                         - categoryIds: array<int> (required) Category IDs to associate
+     *
+     * @return void
+     *
+     * @throws \InvalidArgumentException When user is not found
+     */
     public function __invoke(AddUserInterestsCommand $command): void
     {
         $user = $this->userRepository->find($command->userId);
@@ -26,9 +48,11 @@ class AddUserInterestsHandler
         }
 
         $categories = $this->categoryRepository
-            ->findBy([
-                'id' => $command->categoryIds,
-            ]);
+            ->findBy(
+                [
+                    'id' => $command->categoryIds,
+                ]
+            );
         foreach ($categories as $category) {
             $user->addInterest($category);
         }

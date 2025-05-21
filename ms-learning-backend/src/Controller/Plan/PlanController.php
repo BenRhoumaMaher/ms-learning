@@ -1,5 +1,18 @@
 <?php
 
+/**
+ * This file defines the PlanController which handles all subscription plan operations
+ * including plan listing, subscription management, and current subscription status
+ * for the MS-LEARNING platform.
+ *
+ * @category Controllers
+ * @package  App\Controller\Plan
+ * @author   Maher Ben Rhouma <maherbenrhoumaaa@gmail.com>
+ * @license  No license (Personal project)
+ * @link     https://github.com/BenRhoumaMaher/ms-learning
+ * @project  MS-Learning (PFE Project)
+ */
+
 namespace App\Controller\Plan;
 
 use App\Entity\UserSubscription;
@@ -13,16 +26,46 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
+/**
+ * Handles all subscription plan operations including:
+ * - Listing available subscription plans
+ * - Subscribing users to plans
+ * - Retrieving current user subscriptions
+ *
+ * @category Controllers
+ * @package  App\Controller\Plan
+ * @author   Maher Ben Rhouma <maherbenrhoumaaa@gmail.com>
+ * @license  No license (Personal project)
+ * @link     https://github.com/BenRhoumaMaher/ms-learning
+ */
 class PlanController extends AbstractController
 {
+    /**
+     * @param SubscriptionPlanRepository $subscriptionPlanRepository Subscription plans repository
+     * @param EntityManagerInterface     $em                         Doctrine entity manager
+     * @param UserRepository             $userRepository             Users repository
+     * @param UserSubscriptionRepository $userSubscriptionRepository User subscriptions repository
+     */
     public function __construct(
-        private SubscriptionPlanRepository $subscriptionPlanRepository,
-        private EntityManagerInterface $em,
-        private UserRepository $userRepository,
-        private UserSubscriptionRepository $userSubscriptionRepository
+        private readonly SubscriptionPlanRepository $subscriptionPlanRepository,
+        private readonly EntityManagerInterface $em,
+        private readonly UserRepository $userRepository,
+        private readonly UserSubscriptionRepository $userSubscriptionRepository
     ) {
     }
 
+    /**
+     * Get all active subscription plans
+     *
+     * Retrieves a list of all active subscription plans with their details
+     *
+     * @return JsonResponse Array of plan objects containing:
+     *     - id
+     *     - name
+     *     - price
+     *     - duration (in days)
+     *     - features array
+     */
     public function getPlans(
     ): JsonResponse {
         $plans = $this->subscriptionPlanRepository->findBy(
@@ -45,6 +88,23 @@ class PlanController extends AbstractController
         return $this->json($data);
     }
 
+    /**
+     * Subscribe a user to a plan.
+     *
+     * @param Request $request HTTP request containing JSON:
+     *                        {
+     *                          "planId": int,
+     *                          "userId": int
+     *                        }
+     *
+     * @return JsonResponse Returns JSON with keys:
+     *                      - success: bool Whether subscription was successful
+     *                      - subscriptionId: int ID of created subscription
+     *                      - error: string (optional) Error message
+     *
+     * @throws \InvalidArgumentException If required parameters are missing (400)
+     * @throws \InvalidArgumentException If plan or user not found (404)
+     */
     public function subscribe(
         Request $request,
     ): JsonResponse {
@@ -56,18 +116,24 @@ class PlanController extends AbstractController
         $userId = $data['userId'] ?? null;
 
         if (! $planId || ! $userId) {
-            return $this->json([
-                'error' => 'Missing required parameters',
-            ], 400);
+            return $this->json(
+                [
+                    'error' => 'Missing required parameters',
+                ],
+                400
+            );
         }
 
         $plan = $this->subscriptionPlanRepository->find($planId);
         $user = $this->userRepository->find($userId);
 
         if (! $plan || ! $user) {
-            return $this->json([
-                'error' => 'Invalid plan or user',
-            ], 404);
+            return $this->json(
+                [
+                    'error' => 'Invalid plan or user',
+                ],
+                404
+            );
         }
 
         $subscription = new UserSubscription();
@@ -98,6 +164,22 @@ class PlanController extends AbstractController
         );
     }
 
+    /**
+     * Get user's current subscription.
+     *
+     * @param int $userId User ID to check
+     *
+     * @return JsonResponse Returns JSON with keys:
+     *                      - plan: string Plan name
+     *                      - price: float Plan price
+     *                      - endDate: string Subscription end date (m/d/Y format)
+     *                      - status: string Subscription status
+     *                      - features: array Plan features
+     *                      - message: string (optional) Information message
+     *                      - error: string (optional) Error message
+     *
+     * @throws \InvalidArgumentException If user not found (404)
+     */
     public function getCurrentSubscription(
         int $userId
     ): JsonResponse {
