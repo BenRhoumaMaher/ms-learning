@@ -85,8 +85,6 @@ class CategoryService implements CategoryServiceInterface
      * Delete a category
      *
      * @param Category $category The category to delete
-     *
-     * @return void
      */
     public function deleteCategory(Category $category): void
     {

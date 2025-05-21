@@ -26,7 +26,6 @@ use App\Query\Lesson\GetUserLiveSessionsQuery;
 use App\Repository\LessonRepository;
 use App\Service\CommandBusService\CommandBusService;
 use App\Service\QueryBusService\QueryBusService;
-use App\Service\UserService\UserService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;

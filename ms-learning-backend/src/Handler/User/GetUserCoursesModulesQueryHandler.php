@@ -3,10 +3,10 @@
 namespace App\Handler\User;
 
 use App\Entity\User;
-use App\Repository\UserRepository;
 use App\Query\Course\GetUserCoursesModulesQuery;
-use Symfony\Component\Messenger\Attribute\AsMessageHandler;
+use App\Repository\UserRepository;
 use App\Service\ElasticSearch\VideoEngagementAnalyticsService;
+use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
 #[AsMessageHandler]
 class GetUserCoursesModulesQueryHandler
@@ -71,44 +71,43 @@ class GetUserCoursesModulesQueryHandler
         return $this->formatUserCourses($user);
     }
 
-
-   /**
-    * Format user courses with modules, lessons, and analytics
-    *
-    * Builds a nested data structure representing the user's courses, each with
-    * related modules and lessons, including video analytics for registered lessons.
-    *
-    * @param User $user The user whose course/module/lesson structure will be formatted
-    *
-    * @return array{
-    *     username: string,
-    *     courses: array<int, array{
-    *         id: int,
-    *         title: string,
-    *         description: string,
-    *         price: float,
-    *         duration: int,
-    *         image: string,
-    *         category: string,
-    *         modules: array<int, array{
-    *             id: int,
-    *             title: string,
-    *             position: int,
-    *             course: string,
-    *             lessons: array<int, array{
-    *                 id: int,
-    *                 title: string,
-    *                 type: string,
-    *                 video_url: ?string,
-    *                 duration: ?int,
-    *                 analytics?: array{totalPauses: int, totalReplays: int}
-    *             }>
-    *         }>
-    *     }>,
-    *     videoAnalytics: array<string, mixed>
-    * }
-    */
-   private function formatUserCourses(User $user): array
+    /**
+     * Format user courses with modules, lessons, and analytics
+     *
+     * Builds a nested data structure representing the user's courses, each with
+     * related modules and lessons, including video analytics for registered lessons.
+     *
+     * @param User $user The user whose course/module/lesson structure will be formatted
+     *
+     * @return array{
+     *     username: string,
+     *     courses: array<int, array{
+     *         id: int,
+     *         title: string,
+     *         description: string,
+     *         price: float,
+     *         duration: int,
+     *         image: string,
+     *         category: string,
+     *         modules: array<int, array{
+     *             id: int,
+     *             title: string,
+     *             position: int,
+     *             course: string,
+     *             lessons: array<int, array{
+     *                 id: int,
+     *                 title: string,
+     *                 type: string,
+     *                 video_url: ?string,
+     *                 duration: ?int,
+     *                 analytics?: array{totalPauses: int, totalReplays: int}
+     *             }>
+     *         }>
+     *     }>,
+     *     videoAnalytics: array<string, mixed>
+     * }
+     */
+    private function formatUserCourses(User $user): array
     {
         $courses = [];
 

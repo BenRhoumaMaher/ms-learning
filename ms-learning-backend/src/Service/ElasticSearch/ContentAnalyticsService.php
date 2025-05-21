@@ -190,14 +190,14 @@ class ContentAnalyticsService
             $positiveBool->addShould(
                 new Term(
                     [
-                    'content.words' => $term,
+                        'content.words' => $term,
                     ]
                 )
             );
             $positiveBool->addShould(
                 new Term(
                     [
-                    'content.raw_words' => $term,
+                        'content.raw_words' => $term,
                     ]
                 )
             );
@@ -212,14 +212,14 @@ class ContentAnalyticsService
             $neutralBool->addShould(
                 new Term(
                     [
-                    'content.words' => $term,
+                        'content.words' => $term,
                     ]
                 )
             );
             $neutralBool->addShould(
                 new Term(
                     [
-                    'content.raw_words' => $term,
+                        'content.raw_words' => $term,
                     ]
                 )
             );
@@ -234,14 +234,14 @@ class ContentAnalyticsService
             $negativeBool->addShould(
                 new Term(
                     [
-                    'content.words' => $term,
+                        'content.words' => $term,
                     ]
                 )
             );
             $negativeBool->addShould(
                 new Term(
                     [
-                    'content.raw_words' => $term,
+                        'content.raw_words' => $term,
                     ]
                 )
             );
@@ -279,7 +279,7 @@ class ContentAnalyticsService
 
     /**
      * @param array<string, mixed> $sentimentData
-     * 
+     *
      * @return array{positive: float, neutral: float, negative: float}
      */
     private function processSentiment(array $sentimentData): array
@@ -323,7 +323,7 @@ class ContentAnalyticsService
 
     /**
      * @param array<int, array{key: string, doc_count: int}> $termsData
-     * 
+     *
      * @return array<int, array{term: string, count: int}>
      */
     private function processTerms(array $termsData): array

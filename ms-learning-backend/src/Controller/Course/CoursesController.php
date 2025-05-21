@@ -867,7 +867,7 @@ class CoursesController extends AbstractController
         );
 
         $data = array_map(
-            fn($score) => [
+            fn ($score) => [
                 'id' => $score->getId(),
                 'user_id' => $score->getUser()?->getId(),
                 'quiz_id' => $score->getQuiz()?->getId(),

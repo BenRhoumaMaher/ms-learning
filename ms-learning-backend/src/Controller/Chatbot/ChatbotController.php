@@ -152,7 +152,7 @@ class ChatbotController extends AbstractController
         return $this->json(
             [
                 'messages' => array_map(
-                    fn(ChatbotMessage $message) => [
+                    fn (ChatbotMessage $message) => [
                         'id' => $message->getId(),
                         'message' => $message->getMessage(),
                         'response' => $message->getResponse(),
@@ -190,7 +190,7 @@ class ChatbotController extends AbstractController
         return $this->json(
             [
                 'messages' => array_map(
-                    fn(ChatbotMessage $message) => [
+                    fn (ChatbotMessage $message) => [
                         'id' => $message->getId(),
                         'userId' => $message->getUser()->getId(),
                         'userName' => $message->getUser()->getUsername(),

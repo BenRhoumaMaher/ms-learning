@@ -20,7 +20,6 @@ namespace App\Controller\BecomeInstructor;
 
 use App\Command\Instructor\RegisterInstructorCommand;
 use App\Service\CommandBusService\CommandBusService;
-use App\Service\UserService\BecomeInstructorService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -42,7 +41,6 @@ use Symfony\Component\HttpFoundation\Request;
 class BecomeInstructor extends AbstractController
 {
     /**
-     *                                                  
      * @param CommandBusService       $commandBusService The command bus service
      *                                                   for handling commands
      */

@@ -130,7 +130,7 @@ class UserControllerTest extends WebTestCase
         $user = $this->entityManager->getRepository(User::class)
             ->findOneBy(
                 [
-                'email' => 'testuser0@example.com',
+                    'email' => 'testuser0@example.com',
                 ]
             );
 

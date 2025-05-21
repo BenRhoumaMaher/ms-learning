@@ -20,7 +20,7 @@ class GetAllUsersQueryHandler
 
     /**
      * Handle get all users query
-     * 
+     *
      * @param GetAllUsersQuery $query The query object
      * @return array List of all users
      */

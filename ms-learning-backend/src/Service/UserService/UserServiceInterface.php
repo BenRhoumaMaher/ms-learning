@@ -9,7 +9,7 @@ interface UserServiceInterface
 {
     /**
      * @param array<string, mixed> $data
-     * 
+     *
      * @return array<string, string>  Validation errors
      */
     public function validateUserData(

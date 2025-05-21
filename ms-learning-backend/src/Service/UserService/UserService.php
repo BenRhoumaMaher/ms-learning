@@ -29,8 +29,6 @@ class UserService implements UserServiceInterface
     }
 
     /**
-     * @param User $user
-     * 
      * @return array<string, mixed>
      */
     public function getUserData(User $user): array
@@ -66,7 +64,7 @@ class UserService implements UserServiceInterface
 
     /**
      * @param array<string, mixed> $data
-     * 
+     *
      * @return array<string, string>
      */
     public function validateUserData(

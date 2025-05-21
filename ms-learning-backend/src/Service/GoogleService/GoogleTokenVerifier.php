@@ -15,8 +15,6 @@ class GoogleTokenVerifier
     }
 
     /**
-     * @param string $token
-     * 
      * @return array<string, mixed>|null
      */
     public function verifyToken(

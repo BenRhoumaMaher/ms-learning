@@ -322,7 +322,6 @@ class Lesson
     }
 
     /**
-     * @param string $language
      * @param array<string, mixed> $subtitles
      */
     public function addTranslation(string $language, array $subtitles): void
@@ -331,8 +330,6 @@ class Lesson
     }
 
     /**
-     * @param string $language
-     * 
      * @return array<string, mixed>|null
      */
     public function getTranslation(string $language): ?array

@@ -247,8 +247,6 @@ final class UserController extends AbstractController
      *
      * @param int                    $id            User ID
      * @param EntityManagerInterface $entityManager Doctrine entity manager
-     *
-     * @return JsonResponse
      */
     public function deleteAccount(
         int $id,
@@ -289,8 +287,10 @@ final class UserController extends AbstractController
         Request $request
     ): JsonResponse {
         $user = $this->getUser();
-        if (!$user instanceof User) {
-            return new JsonResponse(['error' => 'Unauthorized'], 401);
+        if (! $user instanceof User) {
+            return new JsonResponse([
+                'error' => 'Unauthorized',
+            ], 401);
         }
         $userId = $user->getId();
 
@@ -854,7 +854,7 @@ final class UserController extends AbstractController
         );
 
         $formattedPosts = array_map(
-            fn($post) => [
+            fn ($post) => [
                 'id' => $post->getId(),
                 'title' => $post->getTitle(),
                 'content' => $post->getContent(),

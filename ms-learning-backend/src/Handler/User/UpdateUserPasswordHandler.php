@@ -33,8 +33,6 @@ class UpdateUserPasswordHandler
      *                                           - userId: int
      *                                           - data: array{newPassword: string, confirmPassword: string}
      *
-     * @return void
-     *
      * @throws \Exception When user is not found or validation fails
      */
     public function __invoke(UpdateUserPasswordCommand $command)

@@ -2,12 +2,12 @@
 
 namespace App\Controller\authentification;
 
+use App\Entity\User;
 use App\Service\AuthService\AuthServiceInterface;
 use OpenApi\Attributes as OA;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use App\Entity\User;
 
 final class LoginController extends AbstractController
 {
@@ -83,7 +83,9 @@ final class LoginController extends AbstractController
 
         if (! $user instanceof User) {
             return $this->json(
-                ['error' => 'Unauthorized'],
+                [
+                    'error' => 'Unauthorized',
+                ],
                 401
             );
         }

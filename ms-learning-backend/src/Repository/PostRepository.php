@@ -30,7 +30,7 @@ class PostRepository extends ServiceEntityRepository
      * @return array<int, Post> Array of matching Post entities
      */
     public function findPostsByUserOrCourses(User $user, array $courseTitles): array
-     {
+    {
         $qb = $this->createQueryBuilder('p');
         $qb->where(
             'p.title LIKE :username 

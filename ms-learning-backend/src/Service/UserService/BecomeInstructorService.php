@@ -7,7 +7,6 @@ use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class BecomeInstructorService implements UserServiceInterface
 {
@@ -21,7 +20,7 @@ class BecomeInstructorService implements UserServiceInterface
 
     /**
      * @param array<string, mixed> $data
-     * 
+     *
      * @return array<string, string>
      */
     public function validateUserData(

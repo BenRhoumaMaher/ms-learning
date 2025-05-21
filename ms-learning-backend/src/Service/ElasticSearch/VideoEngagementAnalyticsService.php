@@ -20,8 +20,6 @@ class VideoEngagementAnalyticsService
     }
 
     /**
-     * @param int $instructorId
-     *
      * @return array{
      *     totalViews: int|float,
      *     averageWatchTime: int|float,
@@ -50,7 +48,7 @@ class VideoEngagementAnalyticsService
         $boolQuery->addMust(
             new Term(
                 [
-            'type' => 'registered',
+                    'type' => 'registered',
                 ]
             )
         );
@@ -129,8 +127,6 @@ class VideoEngagementAnalyticsService
     }
 
     /**
-     * @param int $lessonId
-     * 
      * @return array{
      *     totalViews: int|float,
      *     totalWatchTime: int|float,

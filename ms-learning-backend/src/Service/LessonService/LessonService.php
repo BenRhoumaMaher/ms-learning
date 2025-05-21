@@ -2,17 +2,17 @@
 
 namespace App\Service\LessonService;
 
-use DateTime;
-use App\Entity\User;
+use App\Entity\Courses;
 use App\Entity\Lesson;
 use App\Entity\Module;
-use DateTimeImmutable;
-use App\Entity\Courses;
-use App\Repository\UserRepository;
+use App\Entity\User;
+use App\Repository\CoursesRepository;
 use App\Repository\LessonRepository;
 use App\Repository\ModuleRepository;
-use App\Repository\CoursesRepository;
+use App\Repository\UserRepository;
 use App\Service\Course\CourseService;
+use DateTime;
+use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
@@ -31,8 +31,6 @@ class LessonService
     }
 
     /**
-     * @param User $user
-     * 
      * @return int[]  Returns an array of lesson IDs (integers).
      */
     public function getLessonsWithoutResources(User $user): array
@@ -48,10 +46,7 @@ class LessonService
     }
 
     /**
-     * @param Lesson $lesson
      * @param array<string, mixed> $data
-     * 
-     * @return void
      */
     public function updateLessonData(
         Lesson $lesson,
@@ -87,8 +82,6 @@ class LessonService
     }
 
     /**
-     * @param Lesson $lesson
-     * 
      * @return array<string, string>  Errors keyed by property path.
      */
     public function validateLesson(Lesson $lesson): array
@@ -108,8 +101,6 @@ class LessonService
 
     /**
      * @param array<string, mixed> $data
-     * 
-     * @return string|null
      */
     public function validateLessonData(array $data): ?string
     {
@@ -137,7 +128,7 @@ class LessonService
 
     /**
      * @param array<string, mixed> $data
-     * 
+     *
      * @return array{
      *   user?: User,
      *   course?: Courses,
@@ -163,8 +154,6 @@ class LessonService
     /**
      * @param array<string, mixed> $data
      * @param array{user: User, course: Courses, module: Module} $entities
-     
-     * @return Lesson
      */
     public function createLessonEntity(array $data, array $entities): Lesson
     {

@@ -20,8 +20,6 @@ class QuizAnalyticsService
     }
 
     /**
-     * @param int $instructorId
-     * 
      * @return array{
      *     totalAttempts: int,
      *     averageScore: float,

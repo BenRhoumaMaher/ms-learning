@@ -2,11 +2,11 @@
 
 namespace App\Handler\User;
 
-use ECSPrefix202505\array;
-use App\Repository\UserRepository;
-use App\Repository\LessonRepository;
-use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 use App\Query\Course\GetCoursesModulesLessonsWithoutResourcesQuery;
+use App\Repository\LessonRepository;
+use App\Repository\UserRepository;
+use ECSPrefix202505\array;
+use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
 #[AsMessageHandler]
 

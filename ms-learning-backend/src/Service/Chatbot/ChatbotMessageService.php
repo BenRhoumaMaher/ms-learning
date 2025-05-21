@@ -76,7 +76,6 @@ class ChatbotMessageService
     /**
      * Get all chatbot messages for a specific user
      *
-     * @param int $userId
      * @return array<int, array{
      *     id: int|null,
      *     message: string|null,
@@ -96,10 +95,10 @@ class ChatbotMessageService
 
         $messages = $this->messageRepository->findBy(
             [
-            'user' => $user,
+                'user' => $user,
             ],
             [
-            'createdAt' => 'ASC',
+                'createdAt' => 'ASC',
             ]
         );
 

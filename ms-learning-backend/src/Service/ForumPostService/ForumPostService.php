@@ -116,8 +116,6 @@ class ForumPostService
     }
 
     /**
-     * @param int $id
-     * 
      * @return array{
      *     id: int,
      *     title: string|null,
@@ -156,8 +154,6 @@ class ForumPostService
     }
 
     /**
-     * @param int $id
-     * 
      * @return array{
      *     previous: int|null,
      *     next: int|null,
@@ -193,8 +189,6 @@ class ForumPostService
     }
 
     /**
-     * @param string $content
-     * 
      * @return list<string>
      */
     private function extractTags(string $content): array
@@ -204,8 +198,6 @@ class ForumPostService
     }
 
     /**
-     * @param UploadedFile|null $file
-     * 
      * @return list<string>
      */
     private function uploadForumPostImage(?UploadedFile $file): array

@@ -66,7 +66,6 @@ class RegisterTest extends WebTestCase
      * @dataProvider \App\Tests\DataProvider\RegisterDataProvider::emptyFieldsDataProvider
      *
      * @param array<string, mixed> $userData
-     * @param int $expectedStatusCode
      */
     public function testEmptyRegisterFields(
         array $userData,
@@ -90,7 +89,6 @@ class RegisterTest extends WebTestCase
      * @dataProvider \App\Tests\DataProvider\RegisterDataProvider::validSignupDataProvider
      *
      * @param array<string, mixed> $userData
-     * @param int $expectedStatusCode
      */
     public function testValidSignup(array $userData, int $expectedStatusCode): void
     {
@@ -124,8 +122,6 @@ class RegisterTest extends WebTestCase
      * @dataProvider \App\Tests\DataProvider\RegisterDataProvider::passwordValidationDataProvider
      *
      * @param array<string, mixed> $userData
-     * @param int $expectedStatusCode
-     * @param string $expectedMessage
      */
     public function testPasswordValidation(
         array $userData,
@@ -215,7 +211,6 @@ class RegisterTest extends WebTestCase
      * @dataProvider \App\Tests\DataProvider\RegisterDataProvider::redirectAfterSignupDataProvider
      *
      * @param array<string, mixed> $userData
-     * @param int $expectedStatusCode
      */
     public function testRedirectAfterSignup(
         array $userData,

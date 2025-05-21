@@ -19,7 +19,7 @@ class MessageService
 
     /**
      * @param array<string, mixed> $data
-     * 
+     *
      * @return array<string, mixed>
      */
     public function sendMessage(array $data): array
@@ -78,8 +78,6 @@ class MessageService
     }
 
     /**
-     * @param int|string $currentUserId
-     * 
      * @return array<int, array<string, mixed>>
      */
     public function getMessagesForRoom(string $roomId, int|string $currentUserId): array

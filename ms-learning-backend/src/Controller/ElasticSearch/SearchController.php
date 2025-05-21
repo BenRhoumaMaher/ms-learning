@@ -83,7 +83,7 @@ class SearchController extends AbstractController
             $courses = $this->coursesFinder->find($elasticaQuery);
 
             $results = array_map(
-                fn($course) => [
+                fn ($course) => [
                     'id' => $course->getId(),
                     'title' => $course->getTitle(),
                     'description' => $course->getDescription(),

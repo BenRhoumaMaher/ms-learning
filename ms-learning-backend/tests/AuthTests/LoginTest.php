@@ -92,7 +92,6 @@ class LoginTest extends WebTestCase
      * @dataProvider \App\Tests\DataProvider\LoginDataProvider::emptyFieldsDataProvider
      *
      * @param array<string, mixed> $loginData
-     * @param int $expectedStatusCode
      */
     public function testLoginEmptyFields(
         array $loginData,
@@ -116,8 +115,6 @@ class LoginTest extends WebTestCase
      * @dataProvider \App\Tests\DataProvider\LoginDataProvider::invalidCredentialsDataProvider
      *
      * @param array<string, mixed> $loginData
-     * @param int $expectedStatusCode
-     * @param string $expectedMessage
      */
     public function testInvalidCredentials(
         array $loginData,
@@ -150,7 +147,6 @@ class LoginTest extends WebTestCase
      * @dataProvider \App\Tests\DataProvider\LoginDataProvider::validLoginDataProvider
      *
      * @param array<string, mixed> $loginData
-     * @param int $expectedStatusCode
      */
     public function testValidLogin(array $loginData, int $expectedStatusCode): void
     {

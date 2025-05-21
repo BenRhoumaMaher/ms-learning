@@ -36,8 +36,6 @@ class AddUserInterestsHandler
      *                                         - userId: int (required) User ID
      *                                         - categoryIds: array<int> (required) Category IDs to associate
      *
-     * @return void
-     *
      * @throws \InvalidArgumentException When user is not found
      */
     public function __invoke(AddUserInterestsCommand $command): void

@@ -94,7 +94,7 @@ class PostService
 
     /**
      * @param array<string, mixed> $data
-     * 
+     *
      * @return array<string, mixed>
      */
     public function updatePost(int $id, array $data): array

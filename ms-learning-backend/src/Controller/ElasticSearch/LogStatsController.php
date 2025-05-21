@@ -15,10 +15,11 @@
 
 namespace App\Controller\ElasticSearch;
 
+use Elasticsearch\Client;
 use Elasticsearch\ClientBuilder;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Elasticsearch\Client;
+
 /**
  * Provides analytics on application logs stored in Elasticsearch.
  * Extracts and aggregates log level statistics for monitoring purposes.

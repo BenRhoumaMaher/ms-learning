@@ -24,8 +24,6 @@ class CommentService
      * Create a new comment for a post
      *
      * @param array{post_id: int, user_id: int, content: string} $data
-     *
-     * @return Comment
      */
     public function create(array $data): Comment
     {
@@ -59,9 +57,6 @@ class CommentService
      * Create a reply to an existing comment
      *
      * @param array{user_id: int, content: string} $data
-     * @param int $commentId
-     *
-     * @return CommentReply
      */
     public function createReply(array $data, int $commentId): CommentReply
     {
@@ -91,8 +86,6 @@ class CommentService
 
     /**
      * List replies for a given comment
-     *
-     * @param int $commentId
      *
      * @return array<int, array{
      *     id: int|null,
@@ -133,8 +126,6 @@ class CommentService
     /**
      * List comments for a given post
      *
-     * @param int $postId
-     *
      * @return array<int, array{
      *     id: int|null,
      *     content: string|null,
@@ -169,8 +160,6 @@ class CommentService
 
     /**
      * Get a single comment's detailed data
-     *
-     * @param int $id
      *
      * @return array{
      *     id: int|null,
