@@ -37,12 +37,12 @@ use Symfony\Component\HttpFoundation\Request;
 class TestimonialsController extends AbstractController
 {
     /**
-     * @param EntityManagerInterface $entityManager         Doctrine entity manager
-     * @param TestimonialRepository  $testimonialRepository Testimonials repository
+     * @param EntityManagerInterface $entityManager Doctrine entity manager
+     * @param TestimonialRepository  $testRepo      Testimonials repository
      */
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
-        private readonly TestimonialRepository $testimonialRepository
+        private readonly TestimonialRepository $testRepo
     ) {
     }
 
@@ -64,7 +64,7 @@ class TestimonialsController extends AbstractController
      */
     public function getTestimonials(): JsonResponse
     {
-        $testimonials = $this->testimonialRepository->findBy(
+        $testimonials = $this->testRepo->findBy(
             [],
             [
                 'createdAt' => 'DESC',
@@ -94,11 +94,11 @@ class TestimonialsController extends AbstractController
      *
      * Creates and stores a new testimonial with user association
      *
-     * @param Request                $request HTTP request containing JSON:
-     *                                        {
-     *                                        "content": string,
-     *                                        "userId": int
-     *                                        }
+     * @param Request $request HTTP request containing JSON:
+     *                         {
+     *                         "content": string,
+     *                         "userId": int
+     *                         }
      *
      * @return JsonResponse {
      *     - id: Created testimonial ID

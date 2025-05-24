@@ -1,7 +1,8 @@
 <?php
 
 /**
- * This file defines the PlanController which handles all subscription plan operations
+ * This file defines the PlanController which handles all subscription
+ * plan operations
  * including plan listing, subscription management, and current subscription status
  * for the MS-LEARNING platform.
  *
@@ -41,16 +42,18 @@ use Symfony\Component\HttpFoundation\Request;
 class PlanController extends AbstractController
 {
     /**
-     * @param SubscriptionPlanRepository $subscriptionPlanRepository Subscription plans repository
-     * @param EntityManagerInterface     $em                         Doctrine entity manager
-     * @param UserRepository             $userRepository             Users repository
-     * @param UserSubscriptionRepository $userSubscriptionRepository User subscriptions repository
+     * @param SubscriptionPlanRepository $subPlanRepo    Subscription plans
+     *                                                   repository
+     * @param EntityManagerInterface     $em             Doctrine entity manager
+     * @param UserRepository             $userRepository Users repository
+     * @param UserSubscriptionRepository $userSubRepo    User subscriptions
+     *                                                   repository
      */
     public function __construct(
-        private readonly SubscriptionPlanRepository $subscriptionPlanRepository,
+        private readonly SubscriptionPlanRepository $subPlanRepo,
         private readonly EntityManagerInterface $em,
         private readonly UserRepository $userRepository,
-        private readonly UserSubscriptionRepository $userSubscriptionRepository
+        private readonly UserSubscriptionRepository $userSubRepo
     ) {
     }
 
@@ -68,7 +71,7 @@ class PlanController extends AbstractController
      */
     public function getPlans(
     ): JsonResponse {
-        $plans = $this->subscriptionPlanRepository->findBy(
+        $plans = $this->subPlanRepo->findBy(
             [
                 'isActive' => true,
             ]
@@ -92,10 +95,10 @@ class PlanController extends AbstractController
      * Subscribe a user to a plan.
      *
      * @param Request $request HTTP request containing JSON:
-     *                        {
-     *                          "planId": int,
-     *                          "userId": int
-     *                        }
+     *                         {
+     *                         "planId": int,
+     *                         "userId": int
+     *                         }
      *
      * @return JsonResponse Returns JSON with keys:
      *                      - success: bool Whether subscription was successful
@@ -124,7 +127,7 @@ class PlanController extends AbstractController
             );
         }
 
-        $plan = $this->subscriptionPlanRepository->find($planId);
+        $plan = $this->subPlanRepo->find($planId);
         $user = $this->userRepository->find($userId);
 
         if (! $plan || ! $user) {
@@ -145,13 +148,8 @@ class PlanController extends AbstractController
         $subscription->setEndDate($endDate);
         $subscription->setCreatedAt(new DateTimeImmutable());
 
-        if ($plan->getPrice() > 0) {
-            $subscription->setStatus('active');
-            $subscription->setPaymentStatus('pending');
-        } else {
-            $subscription->setStatus('active');
-            $subscription->setPaymentStatus('free');
-        }
+        $subscription->setStatus('active');
+        $subscription->setPaymentStatus($plan->getPrice() > 0 ? 'pending' : 'free');
 
         $this->em->persist($subscription);
         $this->em->flush();
@@ -195,7 +193,7 @@ class PlanController extends AbstractController
         }
 
         $subscription = $this
-            ->userSubscriptionRepository->findCurrentSubscription($user);
+            ->userSubRepo->findCurrentSubscription($user);
 
         if (! $subscription) {
             return new JsonResponse(

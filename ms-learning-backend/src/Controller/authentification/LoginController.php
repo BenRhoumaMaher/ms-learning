@@ -76,7 +76,6 @@ final class LoginController extends AbstractController
     )]
     #[OA\Tag(name: 'Authentication')]
     public function login(
-        Request $request
     ): JsonResponse {
 
         $user = $this->getUser();

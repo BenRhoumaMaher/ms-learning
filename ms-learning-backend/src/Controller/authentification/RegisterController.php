@@ -112,7 +112,6 @@ final class RegisterController extends AbstractController
     #[OA\Tag(name: 'Authentication')]
     public function register(
         Request $request,
-        ValidatorInterface $validator
     ): JsonResponse {
 
         $data = json_decode($request->getContent(), true);

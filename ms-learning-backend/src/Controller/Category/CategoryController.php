@@ -94,8 +94,7 @@ class CategoryController extends AbstractController
      *
      * Processes category creation requests and validates required fields
      *
-     * @param Request            $request   The HTTP request containing category data
-     * @param ValidatorInterface $validator The validator service
+     * @param Request $request The HTTP request containing category data
      *
      * @return JsonResponse The created category or validation errors
      *
@@ -103,7 +102,6 @@ class CategoryController extends AbstractController
      */
     public function create(
         Request $request,
-        ValidatorInterface $validator
     ): JsonResponse {
         $data = json_decode($request->getContent(), true);
         if (! isset($data['name'])) {

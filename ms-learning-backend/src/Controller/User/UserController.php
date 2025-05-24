@@ -288,11 +288,13 @@ final class UserController extends AbstractController
     ): JsonResponse {
         $user = $this->getUser();
         if (! $user instanceof User) {
-            return new JsonResponse([
+            return new JsonResponse(
+                [
                 'error' => 'Unauthorized',
-            ], 401);
+                ],
+                401
+            );
         }
-        $userId = $user->getId();
 
         $data = json_decode($request->getContent(), true);
         $categoryIds = $data['categories'] ?? [];
@@ -526,16 +528,16 @@ final class UserController extends AbstractController
      *
      * Retrieves course enrollment information for a student
      *
-     * @param User                    $user                    User entity
-     * @param StudentCourseRepository $studentCourseRepository Student courses repository
+     * @param User                    $user         User entity
+     * @param StudentCourseRepository $stCourseRepo Student courses repository
      *
      * @return JsonResponse Returns array with student course data
      */
     public function getStudentCourseTitles(
         User $user,
-        StudentCourseRepository $studentCourseRepository
+        StudentCourseRepository $stCourseRepo
     ): JsonResponse {
-        $enrollmentData = $studentCourseRepository->
+        $enrollmentData = $stCourseRepo->
             findCourseTitlesByUserId($user->getId());
 
         return $this->json(
@@ -650,14 +652,12 @@ final class UserController extends AbstractController
      *
      * Retrieves suggested users to follow based on common interests
      *
-     * @param Request        $request        HTTP request
      * @param int            $userId         User ID
      * @param UserRepository $userRepository Users repository
      *
      * @return JsonResponse Returns array of User entities
      */
     public function suggested(
-        Request $request,
         int $userId,
         UserRepository $userRepository
     ): JsonResponse {
@@ -820,16 +820,16 @@ final class UserController extends AbstractController
      *
      * Retrieves all content (reviews, posts) created by a user with analytics
      *
-     * @param User                    $user                    User entity
-     * @param PostRepository          $postRepository          Posts repository
-     * @param ContentAnalyticsService $contentAnalyticsService Content analytics service
+     * @param User                    $user             User entity
+     * @param PostRepository          $postRepository   Posts repository
+     * @param ContentAnalyticsService $contentAnalytics Content analytics service
      *
      * @return JsonResponse Returns array with user content data
      */
     public function getUserContent(
         User $user,
         PostRepository $postRepository,
-        ContentAnalyticsService $contentAnalyticsService
+        ContentAnalyticsService $contentAnalytics
     ): JsonResponse {
         $reviews = [];
         foreach ($user->getCourses() as $course) {
@@ -864,7 +864,7 @@ final class UserController extends AbstractController
             $posts
         );
 
-        $analytics = $contentAnalyticsService->getContentAnalytics($user->getId());
+        $analytics = $contentAnalytics->getContentAnalytics($user->getId());
 
         return $this->json(
             [
@@ -885,14 +885,14 @@ final class UserController extends AbstractController
      *
      * Retrieves QA instructor details
      *
-     * @param QAInstructorRepository $qainstructorRepository QA instructors repository
+     * @param QAInstructorRepository $qainsRepo QA instructors repository
      *
      * @return JsonResponse Returns array of QA instructor data
      */
     public function getQaInstructor(
-        QAInstructorRepository $qainstructorRepository
+        QAInstructorRepository $qainsRepo
     ): JsonResponse {
-        $qaItems = $qainstructorRepository
+        $qaItems = $qainsRepo
             ->findAll();
 
         return $this->json(

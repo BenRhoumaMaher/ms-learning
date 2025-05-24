@@ -53,14 +53,12 @@ final class InstructorDemands extends AbstractController
      *
      * Retrieves a list of all approved instructors in the system
      *
-     * @param UserRepository      $userRepository Users repository
-     * @param SerializerInterface $serializer     Serializer service
+     * @param UserRepository $userRepository Users repository
      *
      * @return JsonResponse Array of instructors with 'user:read' group serialization
      */
     public function index(
         UserRepository $userRepository,
-        SerializerInterface $serializer
     ): JsonResponse {
         $instructors = $userRepository->findInstructors();
 
@@ -77,14 +75,12 @@ final class InstructorDemands extends AbstractController
     /**
      * Approves a user's instructor application and sends notification email.
      *
-     * @param User                   $user          User entity to approve as instructor
-     * @param EntityManagerInterface $entityManager Doctrine entity manager
+     * @param User $user User entity to approve as instructor
      *
      * @return JsonResponse JSON response with a confirmation message.
      */
     public function acceptInstructor(
         User $user,
-        EntityManagerInterface $entityManager
     ): JsonResponse {
 
         $this->mailService->sendEmail(
@@ -114,16 +110,12 @@ final class InstructorDemands extends AbstractController
      *
      * @param Request                $request       HTTP request containing user data
      * @param EntityManagerInterface $entityManager Doctrine entity manager
-     * @param SerializerInterface    $serializer    Serializer service
-     * @param ValidatorInterface     $validator     Validation service
      *
      * @return JsonResponse Created user data or validation errors
      */
     public function new(
         Request $request,
         EntityManagerInterface $entityManager,
-        SerializerInterface $serializer,
-        ValidatorInterface $validator
     ): JsonResponse {
         $data = json_decode($request->getContent(), true);
 
@@ -184,8 +176,6 @@ final class InstructorDemands extends AbstractController
      * @param Request                $request       HTTP request containing update data
      * @param User                   $user          User entity to update
      * @param EntityManagerInterface $entityManager Doctrine entity manager
-     * @param SerializerInterface    $serializer    Serializer service
-     * @param ValidatorInterface     $validator     Validation service
      *
      * @return JsonResponse Updated user data or validation errors
      */
@@ -194,8 +184,6 @@ final class InstructorDemands extends AbstractController
         Request $request,
         User $user,
         EntityManagerInterface $entityManager,
-        SerializerInterface $serializer,
-        ValidatorInterface $validator
     ): JsonResponse {
         $data = json_decode($request->getContent(), true);
         $form = $this->createForm(UserType::class, $user);
@@ -227,14 +215,12 @@ final class InstructorDemands extends AbstractController
      *
      * Removes a user from the system
      *
-     * @param Request                $request       HTTP request
      * @param User                   $user          User entity to delete
      * @param EntityManagerInterface $entityManager Doctrine entity manager
      *
      * @return JsonResponse Deletion confirmation message
      */
     public function delete(
-        Request $request,
         User $user,
         EntityManagerInterface $entityManager
     ): JsonResponse {

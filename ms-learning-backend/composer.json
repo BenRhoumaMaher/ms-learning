@@ -110,7 +110,8 @@
             "bin/console lint:yaml config --parse-tags",
             "bin/console lint:container",
             "./vendor/bin/phpstan analyse --memory-limit=-1",
-            "./vendor/bin/rector --dry-run"
+            "./vendor/bin/rector --dry-run",
+            "./vendor/bin/phpmd src/Controller text phpmd.xml"
         ]
     },
     "conflict": {
@@ -125,6 +126,7 @@
     "require-dev": {
         "dama/doctrine-test-bundle": "*",
         "doctrine/doctrine-fixtures-bundle": "*",
+        "phpmd/phpmd": "^2.15",
         "phpstan/phpstan": "^2.1",
         "phpstan/phpstan-doctrine": "^2.0",
         "phpstan/phpstan-symfony": "^2.0",

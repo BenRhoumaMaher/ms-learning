@@ -15,10 +15,12 @@
 
 namespace App\Controller\msconnect\message;
 
-use App\Service\MessageService\MessageService;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
+use GuzzleHttp\Client;
+use InvalidArgumentException;
 use Symfony\Component\HttpFoundation\Request;
+use App\Service\MessageService\MessageService;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 /**
  * Handles all messaging operations including:
@@ -138,10 +140,10 @@ class MessagesController extends AbstractController
             $targetLang = $request->request->get('lang', 'fr');
 
             if (! $messageText) {
-                throw new \InvalidArgumentException('Message text is required.');
+                throw new InvalidArgumentException('Message text is required.');
             }
 
-            $client = new \GuzzleHttp\Client();
+            $client = new Client();
             $response = $client->post(
                 'http://whisper:5000/translate-text',
                 [

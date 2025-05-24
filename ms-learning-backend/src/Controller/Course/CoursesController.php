@@ -66,17 +66,17 @@ use Symfony\Component\Serializer\SerializerInterface;
 class CoursesController extends AbstractController
 {
     /**
-     * @param QueryBusService                 $queryBusService       Query bus
-     *                                                               service
-     * @param CommandBusService               $commandBusService     Command bus
-     *                                                               service
-     * @param QuizScoreRepository             $quizScoreRepository   Quiz score
-     *                                                               repository
-     * @param EntityManagerInterface          $entityManager         Entity manager
-     * @param UserRepository                  $userRepository        User repository
-     * @param QuizRepository                  $quizRepository        Quiz repository
-     * @param VideoEngagementAnalyticsService $videoAnalyticsService Video analytics
-     *                                                               service
+     * @param QueryBusService                 $queryBusService     Query bus
+     *                                                             service
+     * @param CommandBusService               $commandBusService   Command bus
+     *                                                             service
+     * @param QuizScoreRepository             $quizScoreRepository Quiz score
+     *                                                             repository
+     * @param EntityManagerInterface          $entityManager       Entity manager
+     * @param UserRepository                  $userRepository      User repository
+     * @param QuizRepository                  $quizRepository      Quiz repository
+     * @param VideoEngagementAnalyticsService $videoAnalytics      Video analytics
+     *                                                             service
      */
     public function __construct(
         private readonly QueryBusService $queryBusService,
@@ -85,7 +85,7 @@ class CoursesController extends AbstractController
         private readonly EntityManagerInterface $entityManager,
         private readonly UserRepository $userRepository,
         private readonly QuizRepository $quizRepository,
-        private readonly VideoEngagementAnalyticsService $videoAnalyticsService
+        private readonly VideoEngagementAnalyticsService $videoAnalytics
     ) {
     }
 
@@ -230,28 +230,26 @@ class CoursesController extends AbstractController
     /**
      * Get user courses with modules and analytics
      *
-     * @param int                 $id       User ID
-     * @param MessageBusInterface $queryBus Query bus interface
+     * @param int $id User ID
      *
      * @return JsonResponse User courses data with video analytics
      */
     public function getUserCoursesModules(
         int $id,
-        MessageBusInterface $queryBus,
     ): JsonResponse {
         try {
             $userData = $this->queryBusService->handle(
                 new GetUserCoursesModulesQuery($id)
             );
 
-            $videoAnalytics = $this->videoAnalyticsService
+            $videoAnalytics = $this->videoAnalytics
                 ->getInstructorVideoAnalytics($id);
 
             foreach ($userData['courses'] as &$course) {
                 foreach ($course['modules'] as &$module) {
                     foreach ($module['lessons'] as &$lesson) {
                         if ($lesson['type'] === 'registered') {
-                            $lessonAnalytics = $this->videoAnalyticsService
+                            $lessonAnalytics = $this->videoAnalytics
                                 ->getLessonAnalytics($lesson['id']);
                             $lesson['analytics'] = $lessonAnalytics;
                         }
@@ -278,14 +276,12 @@ class CoursesController extends AbstractController
     /**
      * Get courses with modules and lessons (without resources)
      *
-     * @param int                 $id       Course ID
-     * @param MessageBusInterface $queryBus Query bus interface
+     * @param int $id Course ID
      *
      * @return JsonResponse Courses data without resources
      */
     public function getCoursesModulesLessonsWithoutResources(
         int $id,
-        MessageBusInterface $queryBus
     ): JsonResponse {
         try {
             $coursesData = $this->queryBusService->handle(
@@ -757,17 +753,17 @@ class CoursesController extends AbstractController
     /**
      * Get trending courses
      *
-     * @param StudentCourseRepository $studentCourseRepository Student course
-     *                                                         repository
-     * @param SerializerInterface     $serializer              Serializer interface
+     * @param StudentCourseRepository $studentCourseRepo Student course
+     *                                                   repository
+     * @param SerializerInterface     $serializer        Serializer interface
      *
      * @return JsonResponse List of popular courses
      */
     public function getTrendingCourses(
-        StudentCourseRepository $studentCourseRepository,
+        StudentCourseRepository $studentCourseRepo,
         SerializerInterface $serializer
     ): JsonResponse {
-        $courses = $studentCourseRepository->findTrendingCourses();
+        $courses = $studentCourseRepo->findTrendingCourses();
 
         return new JsonResponse(
             $serializer->serialize(
