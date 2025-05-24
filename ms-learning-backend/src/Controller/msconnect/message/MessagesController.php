@@ -15,12 +15,12 @@
 
 namespace App\Controller\msconnect\message;
 
+use App\Service\MessageService\MessageService;
 use GuzzleHttp\Client;
 use InvalidArgumentException;
-use Symfony\Component\HttpFoundation\Request;
-use App\Service\MessageService\MessageService;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Handles all messaging operations including:

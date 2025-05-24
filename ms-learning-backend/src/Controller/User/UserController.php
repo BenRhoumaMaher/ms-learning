@@ -290,7 +290,7 @@ final class UserController extends AbstractController
         if (! $user instanceof User) {
             return new JsonResponse(
                 [
-                'error' => 'Unauthorized',
+                    'error' => 'Unauthorized',
                 ],
                 401
             );
