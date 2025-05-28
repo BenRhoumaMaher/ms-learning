@@ -35,7 +35,6 @@ class RegisterInstructorCommand
      * @param string      $email         The instructor's email address
      * @param string      $firstname     The instructor's first name
      * @param string      $lastname      The instructor's last name
-     * @param object|null $resume        The instructor's resume document (optional)
      * @param string      $expertise     The instructor's area of expertise
      * @param string|null $plainPassword The instructor's password
      *                                   in plain text (optional)

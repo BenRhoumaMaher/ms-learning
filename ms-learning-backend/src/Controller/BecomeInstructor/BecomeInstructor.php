@@ -18,12 +18,10 @@
 
 namespace App\Controller\BecomeInstructor;
 
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use App\Service\CommandBusService\CommandBusService;
 use App\Service\UserService\BecomeInstructorService;
-use App\Command\Instructor\RegisterInstructorCommand;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * BecomeInstructor Controller
@@ -41,10 +39,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
  */
 class BecomeInstructor extends AbstractController
 {
-    /**
-     * @param CommandBusService       $commandBusService The command bus service
-     *                                                   for handling commands
-     */
     public function __construct(
         private readonly BecomeInstructorService $instructorService
     ) {
@@ -74,7 +68,9 @@ class BecomeInstructor extends AbstractController
         foreach (['email', 'firstname', 'lastname', 'expertise'] as $field) {
             if (empty($data[$field])) {
                 return $this->json(
-                    ['error' => "Missing required field: $field"],
+                    [
+                        'error' => "Missing required field: {$field}",
+                    ],
                     400
                 );
             }
@@ -85,7 +81,9 @@ class BecomeInstructor extends AbstractController
         )
         ) {
             return $this->json(
-                ['error' => 'User already exists'],
+                [
+                    'error' => 'User already exists',
+                ],
                 400
             );
         }
@@ -104,8 +102,8 @@ class BecomeInstructor extends AbstractController
 
             return $this->json(
                 [
-                'message' => 'Instructor registered successfully',
-                'user_id' => $user->getId(),
+                    'message' => 'Instructor registered successfully',
+                    'user_id' => $user->getId(),
                 ],
                 201
             );
@@ -113,8 +111,8 @@ class BecomeInstructor extends AbstractController
         } catch (\Throwable $e) {
             return $this->json(
                 [
-                'error' => 'Registration failed',
-                'details' => $e->getMessage()
+                    'error' => 'Registration failed',
+                    'details' => $e->getMessage(),
                 ],
                 500
             );
