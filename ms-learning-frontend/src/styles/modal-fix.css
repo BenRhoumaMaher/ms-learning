@@ -1,0 +1,32 @@
+/* Solution pour les modals qui n'apparaissent pas au-dessus de tout */
+
+/* Forcer le z-index des modals et backdrops à être supérieur à tout */
+.modal-backdrop {
+  z-index: 1040 !important;
+}
+
+.modal {
+  z-index: 1050 !important;
+}
+
+/* S'assurer que le conteneur parent n'interfère pas avec le stacking context */
+.modal-open {
+  overflow: hidden;
+  padding-right: 0 !important;
+}
+
+/* Garantir que le backdrop couvre bien toute la page */
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+}
+
+/* Assurer que le contenu du modal est bien au-dessus du backdrop */
+.modal-content {
+  position: relative;
+  z-index: 1;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+}

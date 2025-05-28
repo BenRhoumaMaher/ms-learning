@@ -24,7 +24,7 @@ const InstructorPublic = () => {
         <UpcomingCourses />
       </section>
       <section className='section-container'>
-        <ConnectSection />
+        <ConnectSection id={id} />
       </section>
       <Footer />
     </section>

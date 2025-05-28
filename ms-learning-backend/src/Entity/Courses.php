@@ -228,6 +228,7 @@ class Courses
         return $this->enrollments;
     }
 
+
     public function addEnrollment(User $enrollment): static
     {
         if (! $this->enrollments->contains($enrollment)) {

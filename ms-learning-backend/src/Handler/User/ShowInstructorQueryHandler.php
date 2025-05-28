@@ -44,7 +44,11 @@ class ShowInstructorQueryHandler
     {
         $instructor = $this->userRepository->find($query->instructorId);
 
-        if (! $instructor || ! in_array('ROLE_INSTRUCTOR', $instructor->getRoles())) {
+        if (! $instructor || ! in_array(
+            'ROLE_INSTRUCTOR',
+            $instructor->getRoles()
+        )
+        ) {
             throw new NotFoundHttpException('Instructor not found');
         }
 
@@ -57,6 +61,9 @@ class ShowInstructorQueryHandler
             'expertise' => $instructor->getExpertise(),
             'courseCount' => count($courses),
             'occupation' => $instructor->getOccupation(),
+            'forumpoststitles' => $instructor->getForumPosts()->map(
+                fn ($post) => $post->getTitle()
+            )->toArray(),
             'specializations' => $instructor->getSpecialization(),
             'picture' => $instructor->getPicture(),
         ];

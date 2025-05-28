@@ -8,8 +8,6 @@ import {
 
 const InstructorDemands = () => {
   const [users, setUsers] = useState([])
-  const [showModal, setShowModal] = useState(false)
-  const [userToDelete, setUserToDelete] = useState(null)
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -24,30 +22,17 @@ const InstructorDemands = () => {
     fetchUsers()
   }, [])
 
-  // Open confirmation modal
-  const handleShowModal = id => {
-    setUserToDelete(id)
-    setShowModal(true)
-  }
+  const handleDeleteConfirmation = async (id) => {
+    const isConfirmed = window.confirm("Are you sure you want to decline this instructor request?");
 
-  // Close confirmation modal
-  const handleCloseModal = () => {
-    setShowModal(false)
-    setUserToDelete(null)
-  }
-
-  // Handle delete function
-  const handleDelete = async () => {
-    if (!userToDelete) return
-
-    try {
-      await DeleteINstructorDemands(userToDelete)
-      setUsers(users.filter(user => user.id !== userToDelete))
-    } catch (error) {
-      console.error('Failed to delete user:', error)
+    if (isConfirmed) {
+      try {
+        await DeleteINstructorDemands(id);
+        setUsers(users.filter(user => user.id !== id));
+      } catch (error) {
+        console.error('Failed to delete user:', error);
+      }
     }
-
-    handleCloseModal()
   }
 
   const handleAcceptInstructor = async id => {
@@ -72,7 +57,7 @@ const InstructorDemands = () => {
               <th>Avatar</th>
               <th>FirstName</th>
               <th>LastName</th>
-              <th>UserName</th>
+              <th>Resume</th>
               <th>Email</th>
               <th>Courses</th>
               <th>Actions</th>
@@ -94,7 +79,21 @@ const InstructorDemands = () => {
                 </td>
                 <td>{user.firstname}</td>
                 <td>{user.lastname}</td>
-                <td>{user.username}</td>
+                <td>
+                  {user.resume ? (
+                    <a
+                      href={user.resume}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="btn btn-sm btn-outline-primary"
+                    >
+                      📄 View
+                    </a>
+                  ) : (
+                    'No resume'
+                  )}
+
+                </td>
                 <td>{user.email}</td>
                 {user.courses && user.courses.length > 0 ? (
                   user.courses.map((course, index) => (
@@ -111,14 +110,14 @@ const InstructorDemands = () => {
                     className='btn btn-warning btn-sm me-2'
                     onClick={() => handleAcceptInstructor(user.id)}
                   >
-                    <i className='fas fa-edit'></i> Accept
+                    <i className='fas fa-edit'></i>
                   </button>
 
                   <button
                     className='btn btn-danger btn-sm'
-                    onClick={() => handleShowModal(user.id)}
+                    onClick={() => handleDeleteConfirmation(user.id)}
                   >
-                    <i className='fas fa-trash'></i> Decline
+                    <i className='fas fa-trash'></i>
                   </button>
                 </td>
               </tr>
@@ -127,45 +126,6 @@ const InstructorDemands = () => {
         </table>
       </div>
 
-      <div
-        className={`modal fade ${showModal ? 'show d-block' : ''}`}
-        tabIndex='-1'
-        role='dialog'
-      >
-        <div className='modal-dialog' role='document'>
-          <div className='modal-content'>
-            <div className='modal-header'>
-              <h5 className='modal-title'>Confirm Deletion</h5>
-              <button
-                type='button'
-                className='btn-close'
-                onClick={handleCloseModal}
-              ></button>
-            </div>
-            <div className='modal-body'>
-              <p>Are you sure you want to decline this instructor request?</p>
-            </div>
-            <div className='modal-footer'>
-              <button
-                type='button'
-                className='btn btn-secondary'
-                onClick={handleCloseModal}
-              >
-                Cancel
-              </button>
-              <button
-                type='button'
-                className='btn btn-danger'
-                onClick={handleDelete}
-              >
-                Confirm
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {showModal && <div className='modal-backdrop fade show'></div>}
     </div>
   )
 }

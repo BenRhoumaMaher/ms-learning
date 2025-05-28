@@ -45,7 +45,8 @@ class RegisterInstructorCommand
         public string $email,
         public string $firstname,
         public string $lastname,
-        public ?object $resume,
+        public ?string $resumeContent,
+        public ?string $resumeFilename,
         public string $expertise,
         public ?string $plainPassword,
         public array $courses

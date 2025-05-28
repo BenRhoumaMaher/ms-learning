@@ -18,11 +18,12 @@
 
 namespace App\Controller\BecomeInstructor;
 
-use App\Command\Instructor\RegisterInstructorCommand;
-use App\Service\CommandBusService\CommandBusService;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use App\Service\CommandBusService\CommandBusService;
+use App\Service\UserService\BecomeInstructorService;
+use App\Command\Instructor\RegisterInstructorCommand;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 /**
  * BecomeInstructor Controller
@@ -45,7 +46,7 @@ class BecomeInstructor extends AbstractController
      *                                                   for handling commands
      */
     public function __construct(
-        private readonly CommandBusService $commandBusService
+        private readonly BecomeInstructorService $instructorService
     ) {
     }
 
@@ -65,38 +66,58 @@ class BecomeInstructor extends AbstractController
      *
      * @throws \InvalidArgumentException If required fields are missing
      */
-    public function register(
-        Request $request
-    ): JsonResponse {
+    public function register(Request $request): JsonResponse
+    {
         $data = $request->request->all();
         $resumeFile = $request->files->get('resume');
 
-        if (! isset($data['email'], $data['firstname'], $data['lastname'], $data['expertise'])) {
+        foreach (['email', 'firstname', 'lastname', 'expertise'] as $field) {
+            if (empty($data[$field])) {
+                return $this->json(
+                    ['error' => "Missing required field: $field"],
+                    400
+                );
+            }
+        }
+
+        if ($this->instructorService->userExists(
+            $data['email']
+        )
+        ) {
             return $this->json(
-                [
-                    'error' => 'Missing required fields',
-                ],
+                ['error' => 'User already exists'],
                 400
             );
         }
 
-        $command = new RegisterInstructorCommand(
-            $data['email'],
-            $data['firstname'],
-            $data['lastname'],
-            $resumeFile,
-            $data['expertise'],
-            $data['password'] ?? null,
-            $data['courses'] ?? []
-        );
+        try {
+            $user = $this->instructorService->createUser(
+                email: $data['email'],
+                firstname: $data['firstname'],
+                lastname: $data['lastname'],
+                googleId: null,
+                plainPassword: $data['password'] ?? null,
+                expertise: $data['expertise'],
+                resume: $resumeFile,
+                courses: $data['courses'] ?? []
+            );
 
-        $this->commandBusService->handle($command);
+            return $this->json(
+                [
+                'message' => 'Instructor registered successfully',
+                'user_id' => $user->getId(),
+                ],
+                201
+            );
 
-        return $this->json(
-            [
-                'message' => 'Instructor registration started',
-            ],
-            202
-        );
+        } catch (\Throwable $e) {
+            return $this->json(
+                [
+                'error' => 'Registration failed',
+                'details' => $e->getMessage()
+                ],
+                500
+            );
+        }
     }
 }

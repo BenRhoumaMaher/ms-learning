@@ -79,7 +79,7 @@ const SuggestedPeopleBox = ({ currentUserId }) => {
                                         }}
                                     />
                                 </figure>
-                                <span className='text-white-50'>{user.firstname} {user.lastname}</span>
+                                <span className='text-danger-50'>{user.firstname} {user.lastname}</span>
                                 {/* <ins>{user.email}</ins> */}
                                 <button
                                     onClick={() => handleFollowToggle(user.id)}

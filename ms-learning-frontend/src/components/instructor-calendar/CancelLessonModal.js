@@ -27,7 +27,7 @@ const CancelLessonModal = ({
   }
 
   return (
-    <Modal show={show} onHide={onHide}>
+    <Modal show={show} onHide={onHide} style={{ zIndex: 9999 }}>
       <Modal.Header closeButton>
         <Modal.Title>Cancel Live Session</Modal.Title>
       </Modal.Header>

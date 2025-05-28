@@ -76,10 +76,10 @@ const LearningJourney = () => {
                   <Card.Text className='course-description'>
                     {course.description}
                   </Card.Text>
-                  <div className='rating'>
+                  {/* <div className='rating'>
                     <span className='stars'>⭐⭐⭐⭐⭐</span> 4.9/5
                   </div>
-                  <p className='enrollments'>+350 enrollments</p>
+                  <p className='enrollments'>+350 enrollments</p> */}
                   <Button variant='info' className='enroll-btn'>
                     Enroll
                   </Button>

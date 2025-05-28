@@ -129,6 +129,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $expertise = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups('user:read')]
     private ?string $resume = null;
 
     /**

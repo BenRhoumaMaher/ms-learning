@@ -60,7 +60,7 @@ const ModifyLessonModal = ({
   }
 
   return (
-    <Modal show={show} onHide={onHide} size='lg'>
+    <Modal show={show} onHide={onHide} size='lg' style={{ zIndex: 9999 }}>
       <Modal.Header closeButton>
         <Modal.Title>Modify Live Session</Modal.Title>
       </Modal.Header>
