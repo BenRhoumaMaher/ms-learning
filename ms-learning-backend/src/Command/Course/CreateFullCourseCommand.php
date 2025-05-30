@@ -33,13 +33,13 @@ class CreateFullCourseCommand
      * with complete course data.
      *
      * @param int   $userId   The ID of the user creating/owning the course.
-     * @param int   $courseId The ID of the course being created.
+     * @param array   $courseData The ID of the course being created.
      * @param array $modules  Array of module data associated with the course.
      * @param array $files    Array of file data associated with the course.
      */
     public function __construct(
         public int $userId,
-        public int $courseId,
+        public array $courseData,
         public array $modules,
         public array $files
     ) {
