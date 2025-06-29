@@ -14,36 +14,36 @@
 
 namespace App\Controller\User;
 
-use App\Entity\User;
-use App\Entity\Review;
-use DateTimeImmutable;
-use App\Repository\PostRepository;
-use App\Repository\UserRepository;
-use App\Query\User\GetAllUsersQuery;
-use App\Repository\ReviewRepository;
-use App\Command\User\EditUserCommand;
-use App\Query\User\GetUserInfosQuery;
-use App\Repository\CoursesRepository;
-use App\Query\User\GetInstructorsQuery;
-use App\Query\User\GetUserCoursesQuery;
-use App\Query\User\ShowInstructorQuery;
-use App\Service\UserService\UserService;
-use Doctrine\ORM\EntityManagerInterface;
-use App\Repository\QAInstructorRepository;
-use App\Repository\StudentCourseRepository;
-use App\Query\Course\GetEnrolledCourseQuery;
 use App\Command\Course\EnrollInCourseCommand;
 use App\Command\User\AddUserInterestsCommand;
-use Symfony\Component\HttpFoundation\Request;
-use App\Repository\UserSubscriptionRepository;
+use App\Command\User\EditUserCommand;
 use App\Command\User\UpdateUserPasswordCommand;
-use App\Service\QueryBusService\QueryBusService;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use App\Service\ElasticSearch\QuizAnalyticsService;
+use App\Entity\Review;
+use App\Entity\User;
+use App\Query\Course\GetEnrolledCourseQuery;
+use App\Query\User\GetAllUsersQuery;
+use App\Query\User\GetInstructorCoursesWithoutQuizQuery;
+use App\Query\User\GetInstructorsQuery;
+use App\Query\User\GetUserCoursesQuery;
+use App\Query\User\GetUserInfosQuery;
+use App\Query\User\ShowInstructorQuery;
+use App\Repository\CoursesRepository;
+use App\Repository\PostRepository;
+use App\Repository\QAInstructorRepository;
+use App\Repository\ReviewRepository;
+use App\Repository\StudentCourseRepository;
+use App\Repository\UserRepository;
+use App\Repository\UserSubscriptionRepository;
 use App\Service\CommandBusService\CommandBusService;
 use App\Service\ElasticSearch\ContentAnalyticsService;
-use App\Query\User\GetInstructorCoursesWithoutQuizQuery;
+use App\Service\ElasticSearch\QuizAnalyticsService;
+use App\Service\QueryBusService\QueryBusService;
+use App\Service\UserService\UserService;
+use DateTimeImmutable;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Handles all user operations including:

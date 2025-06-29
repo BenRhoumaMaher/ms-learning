@@ -5,7 +5,6 @@ namespace App\Handler\User;
 use App\Query\User\GetInstructorCoursesWithoutQuizQuery;
 use App\Repository\UserRepository;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
-use App\Entity\Courses;
 
 #[AsMessageHandler]
 class GetInstructorCoursesWithoutQuizQueryHandler
@@ -14,6 +13,7 @@ class GetInstructorCoursesWithoutQuizQueryHandler
         private UserRepository $userRepository
     ) {
     }
+
     public function __invoke(GetInstructorCoursesWithoutQuizQuery $query): array
     {
         $instructor = $this->userRepository->find($query->instructorId);

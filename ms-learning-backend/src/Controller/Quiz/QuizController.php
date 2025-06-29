@@ -9,8 +9,8 @@ use App\Entity\Quiz;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Security;   // Security is still useful for general route protection
 use Symfony\Component\Validator\Validator\ValidatorInterface;
@@ -27,17 +27,18 @@ class QuizController extends AbstractController
     {
         $data = json_decode($request->getContent(), true);
 
-        $instructorIdFromPayload = (int)$data['instructorId'];
+        $instructorIdFromPayload = (int) $data['instructorId'];
 
         $instructor = $this->entityManager->getRepository(
             User::class
         )->find($instructorIdFromPayload);
 
-        if (!$instructor) {
+        if (! $instructor) {
             return $this->json(
                 [
                     'message' => "Instructor with ID {$instructorIdFromPayload} 
-                    not found."],
+                    not found.",
+                ],
                 404
             );
         }
@@ -46,16 +47,20 @@ class QuizController extends AbstractController
             Courses::class
         )->find($data['courseId']);
 
-        if (!$course) {
+        if (! $course) {
             return $this->json(
-                ['message' => 'Course not found.'],
+                [
+                    'message' => 'Course not found.',
+                ],
                 404
             );
         }
 
         if ($course->getQuiz() !== null) {
             return $this->json(
-                ['message' => 'This course already has an associated quiz.'],
+                [
+                    'message' => 'This course already has an associated quiz.',
+                ],
                 404
             );
         }
@@ -65,8 +70,8 @@ class QuizController extends AbstractController
             $quiz = new Quiz();
             $quiz->setTitle($data['title']);
             $quiz->setDescription($data['description'] ?? null);
-            $quiz->setTimeLimit((int)$data['timeLimit']);
-            $quiz->setPassingScore((int)$data['passingScore']);
+            $quiz->setTimeLimit((int) $data['timeLimit']);
+            $quiz->setPassingScore((int) $data['passingScore']);
             $quiz->setCourse($course);
             $quiz->setInstructor($instructor);
             $quiz->setCreatedAt(new \DateTimeImmutable());
@@ -85,7 +90,7 @@ class QuizController extends AbstractController
                 $this->entityManager->persist($question);
 
                 foreach ($qData['answers'] as $ansData) {
-                    if (!isset($ansData['text']) || !isset($ansData['isCorrect'])) {
+                    if (! isset($ansData['text']) || ! isset($ansData['isCorrect'])) {
                         throw new \InvalidArgumentException(
                             "Invalid answer data for question \"{$qData['text']}\". 
                             Text and isCorrect are required."
@@ -93,7 +98,7 @@ class QuizController extends AbstractController
                     }
                     $answer = new Answer();
                     $answer->setText($ansData['text']);
-                    $answer->setIsCorrect((bool)$ansData['isCorrect']);
+                    $answer->setIsCorrect((bool) $ansData['isCorrect']);
                     $answer->setQuestion($question);
 
                     $this->entityManager->persist($answer);
@@ -105,8 +110,8 @@ class QuizController extends AbstractController
 
             return $this->json(
                 [
-                'message' => 'Quiz created successfully!',
-                'quizId' => $quiz->getId()
+                    'message' => 'Quiz created successfully!',
+                    'quizId' => $quiz->getId(),
                 ],
                 201
             );
@@ -114,14 +119,17 @@ class QuizController extends AbstractController
         } catch (\InvalidArgumentException $e) {
             $this->entityManager->rollback();
             return $this->json(
-                ['message' => $e->getMessage()],
+                [
+                    'message' => $e->getMessage(),
+                ],
                 400
             );
         } catch (\Exception $e) {
             $this->entityManager->rollback();
             return $this->json(
-                ['message' => 'An unexpected error occurred while 
-                creating the quiz.'],
+                [
+                    'message' => 'An unexpected error occurred while 
+                creating the quiz.', ],
                 500
             );
         }
