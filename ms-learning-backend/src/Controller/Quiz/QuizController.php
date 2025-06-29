@@ -128,8 +128,8 @@ class QuizController extends AbstractController
             $this->entityManager->rollback();
             return $this->json(
                 [
-                    'message' => 'An unexpected error occurred while 
-                creating the quiz.', ],
+                    'message' => 'An unexpected error occurred while creating the quiz.',
+                ],
                 500
             );
         }
