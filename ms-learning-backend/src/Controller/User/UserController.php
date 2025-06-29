@@ -14,35 +14,36 @@
 
 namespace App\Controller\User;
 
-use App\Command\Course\EnrollInCourseCommand;
-use App\Command\User\AddUserInterestsCommand;
-use App\Command\User\EditUserCommand;
-use App\Command\User\UpdateUserPasswordCommand;
-use App\Entity\Review;
 use App\Entity\User;
-use App\Query\Course\GetEnrolledCourseQuery;
+use App\Entity\Review;
+use DateTimeImmutable;
+use App\Repository\PostRepository;
+use App\Repository\UserRepository;
 use App\Query\User\GetAllUsersQuery;
+use App\Repository\ReviewRepository;
+use App\Command\User\EditUserCommand;
+use App\Query\User\GetUserInfosQuery;
+use App\Repository\CoursesRepository;
 use App\Query\User\GetInstructorsQuery;
 use App\Query\User\GetUserCoursesQuery;
-use App\Query\User\GetUserInfosQuery;
 use App\Query\User\ShowInstructorQuery;
-use App\Repository\CoursesRepository;
-use App\Repository\PostRepository;
+use App\Service\UserService\UserService;
+use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\QAInstructorRepository;
-use App\Repository\ReviewRepository;
 use App\Repository\StudentCourseRepository;
-use App\Repository\UserRepository;
+use App\Query\Course\GetEnrolledCourseQuery;
+use App\Command\Course\EnrollInCourseCommand;
+use App\Command\User\AddUserInterestsCommand;
+use Symfony\Component\HttpFoundation\Request;
 use App\Repository\UserSubscriptionRepository;
+use App\Command\User\UpdateUserPasswordCommand;
+use App\Service\QueryBusService\QueryBusService;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use App\Service\ElasticSearch\QuizAnalyticsService;
 use App\Service\CommandBusService\CommandBusService;
 use App\Service\ElasticSearch\ContentAnalyticsService;
-use App\Service\ElasticSearch\QuizAnalyticsService;
-use App\Service\QueryBusService\QueryBusService;
-use App\Service\UserService\UserService;
-use DateTimeImmutable;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Query\User\GetInstructorCoursesWithoutQuizQuery;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Handles all user operations including:
@@ -94,9 +95,9 @@ final class UserController extends AbstractController
     }
 
     /**
-     * Get user's enrolled courses
+     * Get instructor courses
      *
-     * Retrieves courses a user is enrolled in along with quiz analytics
+     * Retrieves courses of a specific instructor along with quiz analytics
      *
      * @param int $id User ID
      *
@@ -133,6 +134,34 @@ final class UserController extends AbstractController
                     'error' => $e->getMessage(),
                 ],
                 404
+            );
+        }
+    }
+
+    /**
+     * Retrieves a list of courses for an instructor that do not have a quiz.
+     * Each course in the list will only include its id and title.
+     *
+     * Example route (if using annotations):
+     * #[Route("/courses/instructor/{id}/without-quiz", name="get_instructor_courses_without_quiz", methods:["GET"])]
+     */
+    public function getInstructorCoursesWithoutQuiz(int $id): JsonResponse
+    {
+        try {
+            $courses = $this->queryBusService->handle(
+                new GetInstructorCoursesWithoutQuizQuery($id)
+            );
+
+            return $this->json($courses, 200);
+        } catch (\Exception $e) {
+            $statusCode = (
+                $e->getMessage() === 'Instructor not found'
+            ) ? 404 : 500;
+            return $this->json(
+                [
+                    'error' => $e->getMessage(),
+                ],
+                $statusCode
             );
         }
     }
@@ -548,6 +577,31 @@ final class UserController extends AbstractController
                 'enrollment_ids' => $enrollmentData['enrollmentIds'],
                 'course_images' => $enrollmentData['courseImages'],
                 'live_lessons' => $enrollmentData['liveLessons'],
+            ]
+        );
+    }
+
+    /**
+     * Get student enrolled courses
+     *
+     * Retrieves course enrollment information for a student
+     *
+     * @param User                    $user         User entity
+     * @param StudentCourseRepository $stCourseRepo Student courses repository
+     *
+     * @return JsonResponse Returns array with student enrolled courses ids
+     */
+    public function getStudentEnrolCourse(
+        User $user,
+        StudentCourseRepository $stCourseRepo
+    ): JsonResponse {
+        $enrollmentData = $stCourseRepo->
+            findCourseTitlesByUserId($user->getId());
+
+        return $this->json(
+            [
+                'student' => $user->getId(),
+                'course_ids' => $enrollmentData['ids'],
             ]
         );
     }

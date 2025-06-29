@@ -5,6 +5,7 @@ import ResetPasswordContainer from './components/containers/auth/ResetPasswordCo
 import ForgotPasswordContainer from './components/containers/auth/ForgotPasswordContainer'
 import Navbar from "./layouts/Navbar";
 import Home from './pages/home/Home'
+import RoleBasedRoute from './components/RoleBasedRoute'
 import StudentDashboard from './pages/student-dashboard/StudentDashboard'
 import StudentNotification from './pages/student-notifications/StudentNotification'
 import StudentPayment from './pages/student-payment/StudentPayment'
@@ -40,13 +41,15 @@ import ChatbotWidget from './pages/admin/ChatbotWidget'
 import QuizQuestion from './pages/quiz/sections/QuizQuestion'
 import InstructorIotDashboard from './pages/instructor-iot-dashboard/InstructorIotDashboard'
 import InstructorRouteGuard from './components/instructor-dashboard/InstructorRouteGuard'
+import UserSpecificRoute from './components/UserSpecificRoute';
 import StudentManagement from './pages/instructor-iot-dashboard/sections/StudentManagement'
 import EngagementAnalytics from './pages/instructor-iot-dashboard/sections/EngagementAnalytics'
 import OverView from './pages/instructor-iot-dashboard/sections/OverView'
 import FeedbackAndSentiment from './pages/instructor-iot-dashboard/sections/FeedbackAndSentiment'
 import UserEnrollements from './pages/studentenrollements/UserEnrollements'
 import LogsDashboard from './pages/admin/LogsDashboard'
-
+import EnrollmentCheckRoute from './components/EnrollmentCheckRoute'
+import LessonAccessCheckRoute from './components/LessonAccessCheckRoute'
 
 function App() {
 
@@ -60,54 +63,54 @@ function App() {
           <Route path='/' element={<Home />} />
           <Route path='/forgot-password' element={<ForgotPasswordContainer />} />
           <Route path='/reset-password' element={<ResetPasswordContainer />} />
-          <Route path='/student-dashboard' element={<StudentDashboard />} />
+          <Route path='/student-dashboard' element={<RoleBasedRoute allowedRoles={['ROLE_STUDENT']}><StudentDashboard /></RoleBasedRoute>} />
           <Route path='/student-notifications' element={<StudentNotification />} />
-          <Route path='/student-payment' element={<StudentPayment />} />
-          <Route path='/student-calendar' element={<StudentCalendar />} />
-          <Route path='/registered-courses/:id' element={<RegisteredCourses />} />
-          <Route path='/user-enrollements/:id' element={<UserEnrollements />} />
-          <Route path="/quiz/:id" element={<Quiz />} />
-          <Route path="/quiz/:id/question/:questionId" element={<QuizQuestion />} />
-          <Route path='/instructor-public/:id' element={<InstructorPublic />} />
-          <Route path='/instructor-dashboard' element={<InsctructorDashboard />} />
-          <Route path='/course-catalog' element={<CourseCatalog />} />
-          <Route path='/account-settings' element={<AccountSettings />} />
+          <Route path='/student-payment' element={<RoleBasedRoute allowedRoles={['ROLE_STUDENT']}><StudentPayment /></RoleBasedRoute>} />
+          <Route path='/student-calendar' element={<RoleBasedRoute allowedRoles={['ROLE_STUDENT']}><StudentCalendar /></RoleBasedRoute>} />
+          <Route path='/registered-courses/:id' element={<RoleBasedRoute allowedRoles={['ROLE_STUDENT']}><EnrollmentCheckRoute><RegisteredCourses /></EnrollmentCheckRoute></RoleBasedRoute>} />
+          <Route path='/user-enrollements/:id' element={<RoleBasedRoute allowedRoles={['ROLE_STUDENT']}><UserSpecificRoute><UserEnrollements /></UserSpecificRoute></RoleBasedRoute>} />
+          <Route path="/quiz/:id" element={<RoleBasedRoute allowedRoles={['ROLE_STUDENT']}><LessonAccessCheckRoute><Quiz /></LessonAccessCheckRoute></RoleBasedRoute>} />
+          <Route path="/quiz/:id/question/:questionId" element={<RoleBasedRoute allowedRoles={['ROLE_STUDENT']}><QuizQuestion /></RoleBasedRoute>} />
+          <Route path='/instructor-public/:id' element={<RoleBasedRoute allowedRoles={['ROLE_STUDENT', 'ROLE_INSTRUCTOR', 'ROLE_ADMIN']}><InstructorPublic /></RoleBasedRoute>} />
+          <Route path='/instructor-dashboard' element={<RoleBasedRoute allowedRoles={['ROLE_INSTRUCTOR']}><InsctructorDashboard /></RoleBasedRoute>} />
+          <Route path='/course-catalog' element={<RoleBasedRoute allowedRoles={['ROLE_STUDENT', 'ROLE_INSTRUCTOR', 'ROLE_ADMIN']}><CourseCatalog /></RoleBasedRoute>} />
+          <Route path='/account-settings' element={<RoleBasedRoute allowedRoles={['ROLE_STUDENT', 'ROLE_INSTRUCTOR']}><AccountSettings /></RoleBasedRoute>} />
           <Route path='/become-instructor' element={<BecomeInstructor />} />
-          <Route path='/lesson-player/:id' element={<LessonPlayer />} />
+          <Route path='/lesson-player/:id' element={<RoleBasedRoute allowedRoles={['ROLE_STUDENT', 'ROLE_INSTRUCTOR']}><LessonAccessCheckRoute><LessonPlayer /></LessonAccessCheckRoute></RoleBasedRoute>} />
           <Route path='/live-course' element={<LiveCourse />} />
-          <Route path='/admin' element={<Dashboard />} />
-          <Route path='/admin/users' element={<Users />} />
-          <Route path='/admin/users-list' element={<UsersList />} />
-          <Route path='/admin/instructor-demands' element={<InstructorDemands />} />
-          <Route path='/admin/chatbot-messages' element={<ChatbotMessagesList />} />
-          <Route path="/admin/logs" element={<LogsDashboard />} />
-          <Route path='/create-course' element={<CreateCourse />} />
-          <Route path='/account-settings-instructor' element={<AccoyntSettingsInstructor />} />
-          <Route path='/instructor-calendar' element={<InstructorCalendar />} />
-          <Route path='/msconnect-home/:id' element={<MsConnectHome />} />
-          <Route path='/msconnect-message/:id' element={<MsconnectMessage />} />
-          <Route path='/msconnect-forum/:id' element={<MsconnectForum />} />
-          <Route path='/forum-post/:id' element={<MsconnectForumPost />} />
+          <Route path='/admin' element={<RoleBasedRoute allowedRoles={['ROLE_ADMIN']}><Dashboard /></RoleBasedRoute>} />
+          <Route path='/admin/users' element={<RoleBasedRoute allowedRoles={['ROLE_ADMIN']}><Users /></RoleBasedRoute>} />
+          <Route path='/admin/users-list' element={<RoleBasedRoute allowedRoles={['ROLE_ADMIN']}><UsersList /></RoleBasedRoute>} />
+          <Route path='/admin/instructor-demands' element={<RoleBasedRoute allowedRoles={['ROLE_ADMIN']}><InstructorDemands /></RoleBasedRoute>} />
+          <Route path='/admin/chatbot-messages' element={<RoleBasedRoute allowedRoles={['ROLE_ADMIN']}><ChatbotMessagesList /></RoleBasedRoute>} />
+          <Route path="/admin/logs" element={<RoleBasedRoute allowedRoles={['ROLE_ADMIN']}><LogsDashboard /></RoleBasedRoute>} />
+          <Route path='/create-course' element={<RoleBasedRoute allowedRoles={['ROLE_INSTRUCTOR']}><CreateCourse /></RoleBasedRoute>} />
+          <Route path='/account-settings-instructor' element={<RoleBasedRoute allowedRoles={['ROLE_INSTRUCTOR']}><AccoyntSettingsInstructor /></RoleBasedRoute>} />
+          <Route path='/instructor-calendar' element={<RoleBasedRoute allowedRoles={['ROLE_INSTRUCTOR']}><InstructorCalendar /></RoleBasedRoute>} />
+          <Route path='/msconnect-home/:id' element={<RoleBasedRoute allowedRoles={['ROLE_STUDENT', 'ROLE_INSTRUCTOR']}><UserSpecificRoute><MsConnectHome /></UserSpecificRoute></RoleBasedRoute>} />
+          <Route path='/msconnect-message/:id' element={<RoleBasedRoute allowedRoles={['ROLE_STUDENT', 'ROLE_INSTRUCTOR']}><UserSpecificRoute><MsconnectMessage /></UserSpecificRoute></RoleBasedRoute>} />
+          <Route path='/msconnect-forum/:id' element={<RoleBasedRoute allowedRoles={['ROLE_STUDENT', 'ROLE_INSTRUCTOR']}><UserSpecificRoute><MsconnectForum /></UserSpecificRoute></RoleBasedRoute>} />
+          <Route path='/forum-post/:id' element={<RoleBasedRoute allowedRoles={['ROLE_STUDENT', 'ROLE_INSTRUCTOR']}><MsconnectForumPost /></RoleBasedRoute>} />
           <Route
             path='/instructor-iot-dashboard/:id'
             element={
-              <InstructorRouteGuard>
-                <InstructorIotDashboard />
-              </InstructorRouteGuard>
+              <RoleBasedRoute allowedRoles={['ROLE_INSTRUCTOR']}>
+                <UserSpecificRoute><InstructorIotDashboard /></UserSpecificRoute>
+              </RoleBasedRoute>
             }
           >
-            <Route path="student-management" element={<StudentManagement />} />
-            <Route path="engagement-analytics" element={<EngagementAnalytics />} />
-            <Route path="feedback" element={<FeedbackAndSentiment />} />
-            <Route path="" element={<OverView />} />
+            <Route path="student-management" element={<RoleBasedRoute allowedRoles={['ROLE_INSTRUCTOR']}><StudentManagement /></RoleBasedRoute>} />
+            <Route path="engagement-analytics" element={<RoleBasedRoute allowedRoles={['ROLE_INSTRUCTOR']}><EngagementAnalytics /></RoleBasedRoute>} />
+            <Route path="feedback" element={<RoleBasedRoute allowedRoles={['ROLE_INSTRUCTOR']}><FeedbackAndSentiment /></RoleBasedRoute>} />
+            <Route path="" element={<RoleBasedRoute allowedRoles={['ROLE_INSTRUCTOR']}><OverView /></RoleBasedRoute>} />
           </Route>
-          <Route path='/msconnect-notifications/:id' element={<MsconnectNotifications />} />
-          <Route path="/msconnect-profile/:id" element={<UserProfilePage />}>
+          <Route path='/msconnect-notifications/:id' element={<RoleBasedRoute allowedRoles={['ROLE_STUDENT', 'ROLE_INSTRUCTOR']}><UserSpecificRoute><MsconnectNotifications /></UserSpecificRoute></RoleBasedRoute>} />
+          <Route path="/msconnect-profile/:id" element={<RoleBasedRoute allowedRoles={['ROLE_STUDENT', 'ROLE_INSTRUCTOR']}><UserProfilePage /></RoleBasedRoute>}>
             <Route index element={<UserProfileSection />} />
-            <Route path="profile" element={<UserProfileSection />} />
-            <Route path="activity" element={<UserActivitySection />} />
-            <Route path="friends" element={<UserFriendsSection />} />
-            <Route path="forum" element={<UserForumSection />} />
+            <Route path="profile" element={<RoleBasedRoute allowedRoles={['ROLE_STUDENT', 'ROLE_INSTRUCTOR']}><UserProfileSection /></RoleBasedRoute>} />
+            <Route path="activity" element={<RoleBasedRoute allowedRoles={['ROLE_STUDENT', 'ROLE_INSTRUCTOR']}><UserActivitySection /></RoleBasedRoute>} />
+            <Route path="friends" element={<RoleBasedRoute allowedRoles={['ROLE_STUDENT', 'ROLE_INSTRUCTOR']}><UserFriendsSection /></RoleBasedRoute>} />
+            <Route path="forum" element={<RoleBasedRoute allowedRoles={['ROLE_STUDENT', 'ROLE_INSTRUCTOR']}><UserForumSection /></RoleBasedRoute>} />
           </Route>
         </Routes>
         <ChatbotConditional />

@@ -107,10 +107,10 @@ const InstructorDemands = () => {
                 )}
                 <td>
                   <button
-                    className='btn btn-warning btn-sm me-2'
+                    className='btn btn-success btn-sm me-2'
                     onClick={() => handleAcceptInstructor(user.id)}
                   >
-                    <i className='fas fa-edit'></i>
+                    <i className='fas fa-check'></i>
                   </button>
 
                   <button

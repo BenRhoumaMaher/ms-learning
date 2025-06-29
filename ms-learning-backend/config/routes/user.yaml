@@ -13,6 +13,11 @@ courses:
   controller: App\Controller\User\UserController::getUserCourses
   methods: GET
 
+instructor_courses_without_quiz:
+  path: /courses/instructor/{id}/without-quiz
+  controller: App\Controller\User\UserController::getInstructorCoursesWithoutQuiz
+  methods: GET  
+
 instructor_content:
   path: /content/user/{id}
   controller: App\Controller\User\UserController::getUserContent
@@ -32,6 +37,8 @@ update:
   path: /user/{id}
   controller: App\Controller\User\UserController::edit
   methods: [PUT, POST]
+  requirements:
+    id: '\d+'
 
 update_password:
   path: /user/{id}/password
@@ -102,6 +109,11 @@ student_enrollement_courses:
   path: /student/{id}/courses/
   controller: App\Controller\User\UserController::getStudentCourseTitles
   methods: GET
+
+student_enrollement_courses_ids:
+  path: /student/{id}/enrcourses/
+  controller: App\Controller\User\UserController::getStudentEnrolCourse
+  methods: GET  
 
 user_current_plan:
   path: /plans/user/{userId}

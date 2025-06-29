@@ -1,4 +1,5 @@
 import React from 'react'
+import ReactDOM from 'react-dom'
 import { Modal, Button, Form, Alert } from 'react-bootstrap'
 
 const CancelLessonModal = ({
@@ -26,8 +27,8 @@ const CancelLessonModal = ({
     onSubmit(cancelAction)
   }
 
-  return (
-    <Modal show={show} onHide={onHide} style={{ zIndex: 9999 }}>
+  return ReactDOM.createPortal(
+    <Modal show={show} onHide={onHide}>
       <Modal.Header closeButton>
         <Modal.Title>Cancel Live Session</Modal.Title>
       </Modal.Header>
@@ -96,7 +97,8 @@ const CancelLessonModal = ({
           {isLoading ? 'Processing...' : 'Confirm'}
         </Button>
       </Modal.Footer>
-    </Modal>
+    </Modal>,
+    document.getElementById('modal-root')
   )
 }
 

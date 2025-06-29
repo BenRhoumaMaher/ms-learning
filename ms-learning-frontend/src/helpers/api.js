@@ -486,6 +486,26 @@ export const getInstructorCourses = async instructorId => {
   }
 }
 
+export const getInstructorCoursesWithoutQuizes = async instructorId => {
+  try {
+    const response = await bc.get(`/courses/instructor/${instructorId}/without-quiz`)
+    return response.data
+  } catch (error) {
+    console.error('Error fetching instructor courses:', error)
+    throw error
+  }
+}
+
+export const createQuiz = async (quizData) => {
+  try {
+    const response = await bc.post('/quizzes', quizData); 
+    return response.data;
+  } catch (error) {
+    console.error('Error creating quiz:', error.response || error);
+    throw error;
+  }
+};
+
 export const getInstructorContent = async Id => {
   try {
     const response = await bc.get(`/content/user/${Id}`)
@@ -643,6 +663,23 @@ export const getUserEnrollements = async (userId = null) => {
     }
 
     const response = await bc.get(`/student/${userId}/courses/`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching user infos:', error);
+    throw error;
+  }
+};
+
+export const getUserEnrCourses = async (userId = null) => {
+  try {
+    if (!userId) {
+      const token =
+        localStorage.getItem('token') || sessionStorage.getItem('token');
+      const user = JSON.parse(atob(token.split('.')[1]));
+      userId = user?.user_id;
+    }
+
+    const response = await bc.get(`/student/${userId}/enrcourses`);
     return response.data;
   } catch (error) {
     console.error('Error fetching user infos:', error);

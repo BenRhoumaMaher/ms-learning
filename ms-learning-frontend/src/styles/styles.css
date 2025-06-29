@@ -230,7 +230,6 @@
   margin-bottom: 0;
 }
 
-
 /* User Enrollments Page Styles */
 .enrcard {
   transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -4749,4 +4748,12 @@
 
 .session-link a:hover {
   text-decoration: underline;
+}
+.modal-backdrop.show {
+  opacity: 0.5 !important;
+}
+
+.modal.show {
+  display: block !important;
+  opacity: 1 !important;
 }

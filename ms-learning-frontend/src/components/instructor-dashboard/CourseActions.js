@@ -5,7 +5,7 @@ const CourseActions = ({ setDeleteModalOpen, setShowContentModal }) => {
     <div className='row justify-content-center'>
       <div className='col-md-8'>
         <div className='row'>
-          {/* Edit Course Section */}
+          {/* Edit Course Section
           <div className='col-md-4'>
             <div className='insctrucours-step'>
               <div className='insctrucours-step-number'>01</div>
@@ -23,7 +23,7 @@ const CourseActions = ({ setDeleteModalOpen, setShowContentModal }) => {
                 </button>
               </div>
             </div>
-          </div>
+          </div> */}
 
           {/* New Content Section */}
           <div className='col-md-4'>

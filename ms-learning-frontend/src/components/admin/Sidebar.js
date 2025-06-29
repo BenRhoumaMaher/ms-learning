@@ -20,7 +20,7 @@ const Sidebar = () => {
       className='d-flex flex-column bg-dark text-white vh-100 p-3'
       style={{ width: '250px' }}
     >
-      <div className='text-center mb-4 position-relative'>
+      {/* <div className='text-center mb-4 position-relative'>
         <img
           src='https://via.placeholder.com/50'
           alt='Profile'
@@ -29,7 +29,7 @@ const Sidebar = () => {
           onClick={() => setProfileMenuOpen(!profileMenuOpen)}
         />
         {profileMenuOpen && <ProfileMenu />}
-      </div>
+      </div> */}
 
       <ul className='list-unstyled'>
         <li>

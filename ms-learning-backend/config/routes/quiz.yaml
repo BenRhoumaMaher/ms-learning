@@ -1,0 +1,4 @@
+add_quiz:
+  path: /quizzes
+  controller: App\Controller\Quiz\QuizController::createQuiz
+  methods: POST

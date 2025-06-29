@@ -46,17 +46,20 @@ const Navbar = () => {
             <img src={logo} alt='Logo' height='40' />
           </Link>
 
-          {!userRoles.includes('ROLE_INSTRUCTOR') && (
+          {isAuthenticated && !userRoles?.includes('ROLE_INSTRUCTOR') && (
             <>
               <Link to='/course-catalog' className='nav-link'>
                 <span className='nav-text me-3'>{t('Explore')}</span>
               </Link>
             </>
           )}
-
-          <div className='d-none d-md-flex me-2 nav-search-container'>
-            <CourseSearch compact />
-          </div>
+          {isAuthenticated && (
+            <>
+              <div className='d-none d-md-flex me-2 nav-search-container'>
+                <CourseSearch compact />
+              </div>
+            </>
+          )}
         </div>
 
         <div className='d-flex align-items-center'>
@@ -71,15 +74,6 @@ const Navbar = () => {
                 <>
                   <Link to={`/instructor-iot-dashboard/${userId}`} className='nav-link'>
                     <i class="bi bi-clipboard-data"></i>
-                  </Link>
-                  <div className='nav-separator'></div>
-                </>
-              )}
-
-              {!userRoles.includes('ROLE_INSTRUCTOR') && (
-                <>
-                  <Link to='/become-instructor' className='nav-link'>
-                    {t('Careers')}
                   </Link>
                   <div className='nav-separator'></div>
                 </>
@@ -224,19 +218,26 @@ const Navbar = () => {
                 )}
               </div>
 
-              <div className='nav-separator'></div>
-            </>
-          ) : (
-            <>
+              {/* <div className='nav-separator'></div>
               <Link to='/' className='nav-link'>
                 <i className='bi bi-house-door'></i>
               </Link>
-              <div className='nav-separator'></div>
-
-              <Link to='/become-instructor' className='nav-link'>
+              <div className='nav-separator'></div> */}
+            </>
+          ) : (
+            <>
+              {/* <Link to='/become-instructor' className='nav-link'>
                 {t('Careers')}
               </Link>
-              <div className='nav-separator'></div>
+              <div className='nav-separator'></div> */}
+              {(!isAuthenticated || (isAuthenticated && !userRoles?.includes('ROLE_INSTRUCTOR'))) && (
+                <>
+                  <Link to='/become-instructor' className='nav-link'>
+                    {t('Careers')}
+                  </Link>
+                  <div className='nav-separator'></div>
+                </>
+              )}
 
               <Link to='/login' className='nav-link'>
                 {t('Login')}

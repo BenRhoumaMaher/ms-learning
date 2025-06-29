@@ -4,7 +4,6 @@ import ModifyLessonModal from '../../../components/instructor-calendar/ModifyLes
 import CancelLessonModal from '../../../components/instructor-calendar/CancelLessonModal'
 import LessonCountdown from '../../../components/instructor-calendar/LessonCountdown'
 import LessonActions from '../../../components/instructor-calendar/LessonActions'
-
 const HeroSection = () => {
   const [showModifyModal, setShowModifyModal] = useState(false)
   const [showCancelModal, setShowCancelModal] = useState(false)
@@ -22,12 +21,12 @@ const HeroSection = () => {
     handleCancelAction
   } = useLiveLesson()
 
+  // if (isLoading && !latestLesson) {
+  //   return <LessonCountdown title='Loading live session...' />;
+  // }
+  
   if (!userId) {
     return <LessonCountdown title='Please log in to view live sessions' />
-  }
-
-  if (isLoading && !latestLesson) {
-    return <LessonCountdown title='Loading live session...' />
   }
 
   if (!latestLesson) {
@@ -43,7 +42,6 @@ const HeroSection = () => {
         />
 
         <LessonActions
-          isLoading={isLoading}
           onModify={() => setShowModifyModal(true)}
           onCancel={() => setShowCancelModal(true)}
         />

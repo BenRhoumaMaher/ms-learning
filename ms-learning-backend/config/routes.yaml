@@ -31,6 +31,11 @@ App\Controller\Course\CoursesController:
   prefix: /
   name_prefix: "courses_"
 
+App\Controller\Quiz\QuizController:
+  resource: routes/quiz.yaml
+  prefix: /
+  name_prefix: "quiz_"  
+
 App\Controller\BecomeInstructor\BecomeInstructor:
   resource: routes/becomeinstructor.yaml
   prefix: /
