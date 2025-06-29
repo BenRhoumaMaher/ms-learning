@@ -2,15 +2,17 @@
 
 namespace App\Controller\Quiz;
 
-use App\Entity\Answer;
-use App\Entity\Courses;
-use App\Entity\Question;
 use App\Entity\Quiz;
 use App\Entity\User;
+use App\Entity\Answer;
+use DateTimeImmutable;
+use App\Entity\Courses;
+use App\Entity\Question;
+use InvalidArgumentException;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class QuizController extends AbstractController
 {
@@ -23,16 +25,16 @@ class QuizController extends AbstractController
     {
         $data = json_decode($request->getContent(), true);
 
-        $instructorIdFromPayload = (int) $data['instructorId'];
+        $instructorId = (int) $data['instructorId'];
 
         $instructor = $this->entityManager->getRepository(
             User::class
-        )->find($instructorIdFromPayload);
+        )->find($instructorId);
 
         if (! $instructor) {
             return $this->json(
                 [
-                    'message' => "Instructor with ID {$instructorIdFromPayload} 
+                    'message' => "Instructor with ID {$instructorId} 
                     not found.",
                 ],
                 404
@@ -70,7 +72,7 @@ class QuizController extends AbstractController
             $quiz->setPassingScore((int) $data['passingScore']);
             $quiz->setCourse($course);
             $quiz->setInstructor($instructor);
-            $quiz->setCreatedAt(new \DateTimeImmutable());
+            $quiz->setCreatedAt(new DateTimeImmutable());
 
             $this->entityManager->persist($quiz);
 
@@ -81,13 +83,13 @@ class QuizController extends AbstractController
                 $question->setType($qData['type']);
                 $question->setPosition($qData['position'] ?? ($index + 1));
                 $question->setQuiz($quiz);
-                $question->setCreatedAt(new \DateTimeImmutable());
+                $question->setCreatedAt(new DateTimeImmutable());
 
                 $this->entityManager->persist($question);
 
                 foreach ($qData['answers'] as $ansData) {
                     if (! isset($ansData['text']) || ! isset($ansData['isCorrect'])) {
-                        throw new \InvalidArgumentException(
+                        throw new InvalidArgumentException(
                             "Invalid answer data for question \"{$qData['text']}\". 
                             Text and isCorrect are required."
                         );
