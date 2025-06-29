@@ -15,7 +15,7 @@ use Symfony\Component\HttpFoundation\Request;
 class QuizController extends AbstractController
 {
     public function __construct(
-        private EntityManagerInterface $entityManager,
+        private readonly EntityManagerInterface $entityManager,
     ) {
     }
 
@@ -120,7 +120,7 @@ class QuizController extends AbstractController
                 ],
                 400
             );
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             $this->entityManager->rollback();
             return $this->json(
                 [
