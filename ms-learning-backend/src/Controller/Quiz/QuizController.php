@@ -2,17 +2,17 @@
 
 namespace App\Controller\Quiz;
 
-use App\Entity\Quiz;
-use App\Entity\User;
 use App\Entity\Answer;
-use DateTimeImmutable;
 use App\Entity\Courses;
 use App\Entity\Question;
-use InvalidArgumentException;
+use App\Entity\Quiz;
+use App\Entity\User;
+use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\JsonResponse;
+use InvalidArgumentException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 
 class QuizController extends AbstractController
 {
