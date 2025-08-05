@@ -1,112 +1,112 @@
-# ms-learning: A Comprehensive E-Learning Platform
+# ms-learning : Une Plateforme E-Learning Complète
 
-**ms-learning** is an open-source, feature-rich e-learning platform designed for interactive and secure online education. Built with a modern microservices architecture, it provides a robust and scalable environment for instructors to create content and for learners to engage with it effectively.
-
------
-
-## I. Core Features
-
-The platform is built on a foundation of powerful, distinct features designed to create a complete learning ecosystem.
-
-  * **Secure JWT Authentication:** Manages secure user access with role-based permissions (learners, instructors) using JSON Web Tokens. Protects all sensitive routes and data with a robust authentication and authorization system.
-
-  * **Quizzes & Certificate Generation:** Offers an interactive quiz system to assess learner understanding. Upon successful completion, the platform automatically generates and issues digital certificates to validate achievements.
-
-  * **Automatic Audio/Video Transcription:** Enhances accessibility and searchability by automatically transcribing spoken content from audio and video lessons into text format.
-
-  * **Elasticsearch-Powered Search:** Implements a powerful and fast search engine using Elasticsearch, allowing users to instantly find courses and content with keyword-based searching.
-
-  * **Multilingual Support:**
-
-      * **UI Translation:** The user interface is available in both English and French.
-      * **Real-time Chat Translation:** Live chat messages can be instantly translated between multiple languages (EN, FR, IT, DE, ES), fostering a global community.
-      * **Video Content Translation:** Supports translation for video materials to broaden audience reach.
-
-  * **Instructor Dashboard:** A comprehensive backend interface for instructors to manage their courses, view student progress, handle enrollments, and analyze engagement metrics powered by Elasticsearch data.
-
-  * **Dynamic Instructor Approval System:** A workflow for administrators to review and approve instructor applications, ensuring high-quality content and teaching standards on the platform.
-
-  * **Secure Payment Integration:** Includes a secure payment gateway interface (e.g., Stripe/PayPal) for processing transactions for paid courses, ensuring safe and reliable financial operations.
-
-  * **Comprehensive Testing Infrastructure:** The codebase is thoroughly tested using a combination of unit and integration tests to ensure reliability, stability, and maintainability.
-
-  * **Automated Email Notifications:** Keeps users informed with automated email notifications for key events such as registration, course enrollment, and platform announcements.
-
-  * **API Documentation (Swagger/OpenAPI):** Provides clear and detailed API documentation using Swagger (OpenAPI) to facilitate integrations and assist developers working with the platform's backend services.
-
-  * **Dockerized Environment:** The entire application and its services are containerized using Docker and orchestrated with Docker Compose. This ensures a consistent development environment, simplifies deployment, and allows for easy scalability.
-
-  * **User-Centric UI/UX Design:** Features an intuitive, clean, and responsive user interface designed to provide a seamless and engaging user experience for both learners and instructors.
-
-  * **Integrated Social Platform (`ms-connect`):** Includes a dedicated social module where users can create posts, engage in discussions, comment, and send direct messages, building a collaborative learning community.
+**ms-learning** est une plateforme e-learning open-source et riche en fonctionnalités, conçue pour un enseignement en ligne interactif et sécurisé. Construite sur une architecture de microservices moderne, elle offre un environnement robuste et évolutif pour que les formateurs puissent créer du contenu et que les apprenants puissent s'y engager efficacement.
 
 -----
 
-## II. Development & DevOps Principles
+## I. Fonctionnalités Principales
 
-The project adheres to modern DevOps practices to ensure code quality, security, and a rapid, reliable development lifecycle.
+La plateforme est construite sur une base de fonctionnalités puissantes et distinctes, conçues pour créer un écosystème d'apprentissage complet.
 
-  * **Continuous Code Quality:** We use a suite of static analysis tools within our GitHub Actions workflow to maintain a clean and modern codebase. This includes **ECS** for coding standards, **Linters** for configuration files, **PHPStan** for type checking, and **Rector** for automated code refactoring.
+  * **Authentification JWT Sécurisée :** Gère l'accès sécurisé des utilisateurs avec des autorisations basées sur les rôles (apprenants, formateurs) en utilisant les JSON Web Tokens. Protège toutes les routes et données sensibles avec un système d'authentification et d'autorisation robuste.
 
-  * **Automated Security Auditing:** A CI job automatically runs **Composer Audit** to scan for known vulnerabilities in project dependencies. The system is configured to flag high-severity issues and report outdated packages to prevent security risks.
+  * **Quiz & Génération de Certificats :** Propose un système de quiz interactif pour évaluer la compréhension des apprenants. Après une réussite, la plateforme génère et délivre automatiquement des certificats numériques pour valider les accomplissements.
 
-  * **CI/CD Pipeline:** Every code change triggers a Continuous Integration/Continuous Deployment (CI/CD) pipeline using GitHub Actions. The pipeline automatically builds the application in an isolated Docker environment, runs the full suite of PHPUnit tests, and validates code integrity before allowing it to be merged, ensuring that the main branch is always stable and deployable.
+  * **Transcription Automatique Audio/Vidéo :** Améliore l'accessibilité et la capacité de recherche en transcrivant automatiquement le contenu parlé des leçons audio et vidéo en format texte.
+
+  * **Recherche Propulsée par Elasticsearch :** Met en œuvre un moteur de recherche puissant et rapide utilisant Elasticsearch, permettant aux utilisateurs de trouver instantanément des cours et du contenu grâce à la recherche par mots-clés.
+
+  * **Support Multilingue :**
+
+      * **Traduction de l'interface utilisateur :** L'interface utilisateur est disponible en anglais et en français.
+      * **Traduction du chat en temps réel :** Les messages du chat en direct peuvent être instantanément traduits entre plusieurs langues (EN, FR, IT, DE, ES), favorisant une communauté mondiale.
+      * **Traduction du contenu vidéo :** Prend en charge la traduction des supports vidéo pour élargir l'audience.
+
+  * **Tableau de Bord du Formateur :** Une interface backend complète pour les formateurs afin de gérer leurs cours, visualiser les progrès des étudiants, gérer les inscriptions et analyser les métriques d'engagement alimentées par les données d'Elasticsearch.
+
+  * **Système Dynamique d'Approbation des Formateurs :** Un flux de travail pour les administrateurs afin d'examiner et d'approuver les candidatures des formateurs, garantissant un contenu et des normes d'enseignement de haute qualité sur la plateforme.
+
+  * **Intégration de Paiement Sécurisé :** Inclut une interface de passerelle de paiement sécurisée (par exemple, Stripe/PayPal) pour traiter les transactions des cours payants, garantissant des opérations financières sûres et fiables.
+
+  * **Infrastructure de Test Complète :** Le code base est minutieusement testé à l'aide d'une combinaison de tests unitaires et d'intégration pour garantir la fiabilité, la stabilité et la maintenabilité.
+
+  * **Notifications par E-mail Automatisées :** Maintient les utilisateurs informés avec des notifications par e-mail automatisées pour les événements clés tels que l'inscription, l'enrôlement à un cours et les annonces de la plateforme.
+
+  * **Documentation de l'API (Swagger/OpenAPI) :** Fournit une documentation claire et détaillée de l'API en utilisant Swagger (OpenAPI) pour faciliter les intégrations et aider les développeurs travaillant avec les services backend de la plateforme.
+
+  * **Environnement Conteneurisé (Docker) :** L'application entière et ses services sont conteneurisés avec Docker et orchestrés avec Docker Compose. Cela garantit un environnement de développement cohérent, simplifie le déploiement et permet une évolutivité facile.
+
+  * **Conception UI/UX Centrée sur l'Utilisateur :** Propose une interface utilisateur intuitive, épurée et réactive, conçue pour offrir une expérience utilisateur fluide et engageante tant pour les apprenants que pour les formateurs.
+
+  * **Plateforme Sociale Intégrée (`ms-connect`) :** Inclut un module social dédié où les utilisateurs peuvent créer des publications, participer à des discussions, commenter et envoyer des messages directs, construisant ainsi une communauté d'apprentissage collaborative.
 
 -----
 
-## III. Monitoring and Observability
+## II. Principes de Développement & DevOps
 
-To ensure system health and provide deep operational insights, we have implemented a centralized monitoring solution using the ELK Stack.
+Le projet adhère aux pratiques DevOps modernes pour garantir la qualité du code, la sécurité et un cycle de développement rapide et fiable.
 
-  * **Elasticsearch:** Acts as the central datastore, indexing all logs and application events for fast and powerful querying.
-  * **Logstash:** Processes, transforms, and enriches log data from various sources before sending it to Elasticsearch.
-  * **Kibana:** Provides powerful visualization dashboards to monitor application health, track user activity, analyze performance trends, and troubleshoot issues like payment failures in real-time.
-  * **Filebeat:** A lightweight agent deployed across the services to collect and forward logs to the ELK stack, ensuring complete data capture.
+  * **Qualité de Code Continue :** Nous utilisons une suite d'outils d'analyse statique dans notre flux de travail GitHub Actions pour maintenir un code base propre et moderne. Cela inclut **ECS** pour les standards de codage, des **Linters** pour les fichiers de configuration, **PHPStan** pour la vérification des types, et **Rector** pour la refactorisation automatisée du code.
 
-This stack gives us full visibility into the platform's operations, enabling proactive problem-solving, rapid debugging, and data-driven decision-making.
+  * **Audit de Sécurité Automatisé :** Une tâche d'intégration continue exécute automatiquement **Composer Audit** pour rechercher les vulnérabilités connues dans les dépendances du projet. Le système est configuré pour signaler les problèmes de haute gravité et les paquets obsolètes afin de prévenir les risques de sécurité.
+
+  * **Pipeline CI/CD :** Chaque modification du code déclenche un pipeline d'Intégration Continue/Déploiement Continu (CI/CD) utilisant GitHub Actions. Le pipeline construit automatiquement l'application dans un environnement Docker isolé, exécute la suite complète des tests PHPUnit et valide l'intégrité du code avant d'autoriser sa fusion, garantissant que la branche principale est toujours stable et déployable.
 
 -----
 
-## IV. Getting Started
+## III. Surveillance et Observabilité
 
-Follow these steps to set up the project locally for development or testing.
+Pour garantir la santé du système et fournir des informations opérationnelles approfondies, nous avons mis en place une solution de surveillance centralisée utilisant la suite ELK.
+
+  * **Elasticsearch :** Agit comme le magasin de données central, indexant tous les journaux et événements de l'application pour des requêtes rapides et puissantes.
+  * **Logstash :** Traite, transforme et enrichit les données de journalisation provenant de diverses sources avant de les envoyer à Elasticsearch.
+  * **Kibana :** Fournit de puissants tableaux de bord de visualisation pour surveiller la santé de l'application, suivre l'activité des utilisateurs, analyser les tendances de performance et résoudre les problèmes tels que les échecs de paiement en temps réel.
+  * **Filebeat :** Un agent léger déployé sur les services pour collecter et transférer les journaux vers la suite ELK, garantissant une capture complète des données.
+
+Cette pile nous donne une visibilité complète sur les opérations de la plateforme, permettant une résolution proactive des problèmes, un débogage rapide et une prise de décision basée sur les données.
+
+-----
+
+## IV. Démarrage
+
+Suivez ces étapes pour configurer le projet localement pour le développement ou les tests.
 
 ```bash
-# 1. Clone the development branch of the repository
+# 1. Clonez la branche de développement du dépôt
 git clone https://github.com/BenRhoumaMaher/ms-learning/tree/develop
 
-# 2. Navigate into the project directory
+# 2. Naviguez dans le répertoire du projet
 cd ms-learning
 
-# 3. Create your local environment configuration file
+# 3. Créez votre fichier de configuration d'environnement local
 cp .env.example .env
 
-# 4. Open the .env file and configure your database, mail, and other variables
+# 4. Ouvrez le fichier .env et configurez votre base de données, e-mail et autres variables
 
-# 5. Build and run the application containers
+# 5. Construisez et lancez les conteneurs de l'application
 docker-compose up -d
 
-# 6. Install PHP dependencies
+# 6. Installez les dépendances PHP
 docker-compose exec app composer install
 
-# 7. Run database migrations
+# 7. Exécutez les migrations de la base de données
 docker-compose exec app php bin/console doctrine:migrations:migrate
 ```
 
 -----
 
-## V. Contributing
+## V. Contribuer
 
-Contributions are welcome\! If you would like to help improve **ms-learning**, please feel free to file issues or submit pull requests. We recommend following these general steps:
+Les contributions sont les bienvenues \! Si vous souhaitez aider à améliorer **ms-learning**, n'hésitez pas à signaler des problèmes ou à soumettre des pull requests. Nous vous recommandons de suivre ces étapes générales :
 
-1.  Fork the repository.
-2.  Create a new feature branch (`git checkout -b feature/AmazingFeature`).
-3.  Commit your changes (`git commit -m 'Add some AmazingFeature'`).
-4.  Push to the branch (`git push origin feature/AmazingFeature`).
-5.  Open a Pull Request.
+1.  Forkez le dépôt.
+2.  Créez une nouvelle branche de fonctionnalité (`git checkout -b feature/AmazingFeature`).
+3.  Faites un commit de vos modifications (`git commit -m 'Add some AmazingFeature'`).
+4.  Poussez vos modifications vers la branche (`git push origin feature/AmazingFeature`).
+5.  Ouvrez une Pull Request.
 
 -----
 
-## VI. License
+## VI. Licence
 
-This project is owned and maintained by **Maher Ben Rhouma**.
+Ce projet est la propriété de et est maintenu par **Maher Ben Rhouma**.
