@@ -180,7 +180,7 @@ class CoursesController extends AbstractController
         if (! $jsonData) {
             return new JsonResponse(
                 [
-                    'error' => 'Invalid request, missing data',
+                    'error' => 'This is Invalid request, missing data',
                 ],
                 400
             );
